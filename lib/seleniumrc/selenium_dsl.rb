@@ -99,12 +99,7 @@ module Seleniumrc
 
     # Assert and wait for the locator attribute to have a value.
     def assert_attribute(locator, value)
-      assert_element_present locator
-      wait_for do |context|
-        actual = selenium.get_attribute(locator)  #todo: actual value
-        context.message = "Expected attribute '#{locator}' to be '#{value}' but was '#{actual}'"
-        value == actual
-      end
+      SeleniumElement.new(@selenium, locator).has_attribute(value)
     end
 
     # Assert and wait for the page title.
