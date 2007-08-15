@@ -6,7 +6,7 @@ describe SeleniumElement, :shared => true do
   
   before do
     @selenium = "Selenium"
-    @element_locator = "id=foobar"
+    @element_locator ||= "id=foobar"
     @element = SeleniumElement.new(@selenium, @element_locator)
     stub_wait_for @element
   end
@@ -49,6 +49,27 @@ describe SeleniumElement, "#has_value" do
     stub(@selenium).is_element_present(@element_locator) {false}
     proc do
       @element.has_value("joe")
+    end.should raise_error
+  end
+end
+
+describe SeleniumElement, "#has_attribute" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar@theattribute"
+  end
+
+  it "passes when element is present and value is expected value" do
+    mock(@selenium).is_element_present(@element_locator) {true}
+    mock(@selenium).get_attribute(@element_locator) {"joe"}
+    @element.has_attribute("joe")
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.has_attribute("joe")
     end.should raise_error
   end
 end
