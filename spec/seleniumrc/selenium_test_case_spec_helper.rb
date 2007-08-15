@@ -1,12 +1,11 @@
 module SeleniumTestCaseSpec
-  def test_case
-    test_case = MySeleniumTestCase.new
+  def stub_wait_for(subject)
     time = Time.now
     time_class = "Time Class"
-    mock(time_class).now.any_number_of_times.returns { time += 1 }
-    stub(test_case).time_class.returns time_class
-    stub(test_case).sleep.returns
-    test_case
+    stub(time_class).now.returns { time += 1 }
+    stub(subject).time_class.returns time_class
+    stub(subject).sleep.returns
+    subject
   end
 
   def base_selenium
@@ -15,7 +14,7 @@ module SeleniumTestCaseSpec
       @test_case.base_selenium = @base_selenium
     end
   end
-
+  
   class MySeleniumTestCase < Seleniumrc::SeleniumTestCase
     def initialize(*args)
       @_result = Test::Unit::TestResult.new

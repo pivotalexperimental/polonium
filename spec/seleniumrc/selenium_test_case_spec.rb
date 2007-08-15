@@ -1,11 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
-describe "SeleniumTestCase", :shared => true do
+describe SeleniumTestCase, :shared => true do
   include SeleniumTestCaseSpec
 
   before(:each) do
-    @test_case = test_case
+    @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
+    stub_wait_for(@test_case)
+    stub.probe(SeleniumElement).new do |element|
+      stub_wait_for element
+      element
+    end
   end
 
   def sample_locator
@@ -25,7 +30,7 @@ describe "SeleniumTestCase", :shared => true do
 end
 
 describe SeleniumTestCase, "instance methods" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "setup should not allow transactional fixtures" do
     stub(@test_case.class).use_transactional_fixtures.returns true
@@ -221,7 +226,7 @@ describe SeleniumTestCase, "instance methods" do
 end
 
 describe SeleniumTestCase, "#assert_visible" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "fails when element is not visible" do
     stub(base_selenium).is_visible.returns {false}
@@ -240,7 +245,7 @@ describe SeleniumTestCase, "#assert_visible" do
 end
 
 describe SeleniumTestCase, "#assert_not_visible" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "fails when element is visible" do
     stub(base_selenium).is_visible.returns {true}
@@ -259,7 +264,7 @@ describe SeleniumTestCase, "#assert_not_visible" do
 end
 
 describe SeleniumTestCase, "#type" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
@@ -282,7 +287,7 @@ describe SeleniumTestCase, "#type" do
 end
 
 describe SeleniumTestCase, "#click" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
@@ -305,7 +310,7 @@ describe SeleniumTestCase, "#click" do
 end
 
 describe SeleniumTestCase, "#select" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
@@ -328,7 +333,7 @@ describe SeleniumTestCase, "#select" do
 end
 
 describe SeleniumTestCase, "#wait_for_and_click" do
-  it_should_behave_like "SeleniumTestCase"
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
@@ -351,11 +356,7 @@ describe SeleniumTestCase, "#wait_for_and_click" do
 end
 
 describe "SeleniumTestCase in test browser mode and test fails" do
-  include SeleniumTestCaseSpec
-
-  before(:each) do
-    @test_case = test_case
-  end
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should stop interpreter when configuration says to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
@@ -384,11 +385,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
 end
 
 describe "SeleniumTestCase in test browser mode and test pass" do
-  include SeleniumTestCaseSpec
-
-  before(:each) do
-    @test_case = test_case
-  end
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should stop interpreter when configuration says to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
@@ -417,11 +414,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
 end
 
 describe "SeleniumTestCase not in suite browser mode" do
-  include SeleniumTestCaseSpec
-
-  before(:each) do
-    @test_case = test_case
-  end
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should not stop interpreter when tests fail" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
@@ -447,11 +440,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 end
 
 describe "SeleniumTestCase in test browser mode and test pass" do
-  include SeleniumTestCaseSpec
-
-  before(:each) do
-    @test_case = test_case
-  end
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should stop interpreter when configuration says to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"

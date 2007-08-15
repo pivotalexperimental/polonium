@@ -5,11 +5,7 @@ module Seleniumrc
       @configuration ||= SeleniumConfiguration.instance
     end
     attr_writer :configuration
-
-    # The default time in seconds a wait_for method will poll until raising an error.
-    def default_wait_for_time
-      5
-    end
+    include WaitFor
 
     def type(locator,value)
       assert_element_present locator
@@ -184,10 +180,7 @@ module Seleniumrc
 
     # Assert and wait for locator element to be present.
     def assert_element_present(locator, params = {})
-      params = {:message => "Expected element '#{locator}' to be present, but it was not"}.merge(params)
-      wait_for(params) do
-       selenium.is_element_present(locator)
-     end
+      SeleniumElement.new(@selenium, locator).is_present(params)
     end
 
     # Assert and wait for locator element to contain text.
@@ -310,25 +303,6 @@ module Seleniumrc
        wait_for_page_to_load
     end
 
-    Context = Struct.new(:message)
-
-    # Poll continuously for the return value of the block to be true. You can use this to assert that a client side
-    # or server side condition was met.
-    #   wait_for do
-    #     User.count == 5
-    #   end
-    def wait_for(params={})
-      timeout = params[:timeout] || default_wait_for_time
-      message = params[:message] || "Timeout exceeded"
-      context = Context.new(message)
-      begin_time = time_class.now
-      while (time_class.now - begin_time) < timeout
-        return if yield(context)
-        sleep 0.25
-      end
-      flunk(context.message + " (after #{timeout} sec)")
-    end
-
     def wait_for_element_to_contain(locator, text, message=nil, timeout=default_wait_for_time)
       wait_for({:message => message, :timeout => timeout}) {element_contains_text(locator, text)}
     end
@@ -373,9 +347,5 @@ module Seleniumrc
       return false unless configuration.test_browser_mode?
       configuration.stop_selenese_interpreter?(passed?)
     end
-
-    def time_class
-      Time
-    end    
   end
 end
