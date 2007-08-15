@@ -9,12 +9,8 @@ require "tmpdir"
 require "hpricot"
 require 'tempfile'
 
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
-require "seleniumrc_fu/extensions/test_runner_mediator"
-
-require "selenium"
-require File.dirname(__FILE__) + "/seleniumrc_fu/selenium_test_case_spec_helper"
+require "seleniumrc"
+require File.dirname(__FILE__) + "/seleniumrc/selenium_test_case_spec_helper"
 
 Test::Unit.run = true
 
