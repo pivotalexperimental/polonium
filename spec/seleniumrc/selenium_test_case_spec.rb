@@ -144,19 +144,6 @@ describe SeleniumTestCase, "instance methods" do
       should raise_error(Test::Unit::AssertionFailedError)
   end
 
-  it "assert_value should assert the element is present and its value is equal to that passed in" do
-    expected_value = "value"
-
-    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
-    stub(base_selenium).get_value {expected_value}
-
-    @test_case.assert_value(sample_locator, expected_value)
-    proc {@test_case.assert_value('locator_fails', 'hello')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_value(sample_locator, 'goodbye')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-  end
-
    it "assert_selected should assert the element is present and its selected label is equal to that passed in" do
     expected_selected = "selected"
 
@@ -223,6 +210,23 @@ describe SeleniumTestCase, "instance methods" do
 
     @test_case.open_home_page
   end
+end
+
+describe SeleniumTestCase, "#assert_visible" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  it "assert_value should assert the element is present and its value is equal to that passed in" do
+    expected_value = "value"
+
+    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
+    stub(base_selenium).get_value {expected_value}
+
+    @test_case.assert_value(sample_locator, expected_value)
+    proc {@test_case.assert_value('locator_fails', 'hello')}.
+      should raise_error(Test::Unit::AssertionFailedError)
+    proc {@test_case.assert_value(sample_locator, 'goodbye')}.
+      should raise_error(Test::Unit::AssertionFailedError)
+  end  
 end
 
 describe SeleniumTestCase, "#assert_visible" do
