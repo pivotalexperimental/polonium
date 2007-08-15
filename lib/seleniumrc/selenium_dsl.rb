@@ -94,12 +94,7 @@ module Seleniumrc
 
     # Assert and wait for the locator element to have value.
     def assert_value(locator, value)
-      assert_element_present locator
-      wait_for do |context|
-        actual = selenium.get_value(locator)
-        context.message = "Expected '#{locator}' to be '#{value}' but was '#{actual}'"
-        value == actual
-      end
+      SeleniumElement.new(@selenium, locator).has_value(value)
     end
 
     # Assert and wait for the locator attribute to have a value.
