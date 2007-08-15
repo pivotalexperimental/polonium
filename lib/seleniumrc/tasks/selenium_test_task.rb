@@ -1,3 +1,4 @@
+
 module Seleniumrc
   module Tasks
     class SeleniumTestTask

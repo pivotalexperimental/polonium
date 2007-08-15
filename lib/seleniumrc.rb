@@ -19,6 +19,5 @@ require "seleniumrc/selenium_configuration"
 require "seleniumrc/selenium_dsl"
 require "seleniumrc/selenium_test_case"
 require "seleniumrc/tasks/selenium_test_task"
-require "seleniumrc/tasks/selenium_server_task"
 
 require 'webrick_server' if self.class.const_defined? :RAILS_ROOT
