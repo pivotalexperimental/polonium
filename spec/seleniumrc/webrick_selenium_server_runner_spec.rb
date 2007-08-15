@@ -28,8 +28,8 @@ describe WebrickSeleniumServerRunner do
   it "start method should require the environment and dispatcher" do
     runner = create_runner_that_is_stubbed_so_start_method_works
 
-    runner.should_receive(:require).with("foobar")
-    runner.should_receive(:require).with("dispatcher")
+    mock(runner).require.with("foobar")
+    mock(runner).require.with("dispatcher")
 
     runner.environment_path = "foobar"
     runner.start
@@ -38,7 +38,7 @@ describe WebrickSeleniumServerRunner do
   it "start method should require environment when rails_root is not set" do
     runner = create_runner_that_is_stubbed_so_start_method_works
     requires = []
-    runner.should_receive(:require).any_number_of_times.and_return {|val| requires << val}
+    stub(runner).require {|val| requires << val}
 
     runner.start
     requires.any? {|r| r =~ /\/config\/environment/}.should == true
@@ -52,7 +52,7 @@ describe WebrickSeleniumServerRunner do
       @trap_signal_name = signal_name
       block.call
     end
-    @mock_server.should_receive(:shutdown).once
+    mock(@mock_server).shutdown.once
 
     runner.start
     runner.trap_signal_name.should == "INT"
@@ -61,7 +61,7 @@ describe WebrickSeleniumServerRunner do
   it "should shutdown webrick server" do
     runner = create_runner_that_is_stubbed_so_start_method_works
     runner.start
-    @mock_server.should_receive(:shutdown).once
+    mock(@mock_server).shutdown.once
     runner.stop
   end
 
@@ -73,14 +73,11 @@ describe WebrickSeleniumServerRunner do
     def runner.require(*args)
     end
 
-    mock_socket = mock("mock_socket")
+    mock_socket = "mock_socket"
     runner.socket = mock_socket
-    mock_socket.
-      should_receive(:do_not_reverse_lookup=).
-      with(true).
-      once
+    stub(mock_socket).do_not_reverse_lookup=(true)
 
-    @mock_server = mock_server = mock("mock_server")
+    @mock_server = mock_server = "mock_server"
     (class << @context; self; end).class_eval do
       define_method :create_webrick_server do
         mock_server
@@ -90,10 +87,11 @@ describe WebrickSeleniumServerRunner do
     @context.internal_app_server_port = 4000
     @context.internal_app_server_host = "localhost"
     @context.rails_env = "test"
-    @mock_server.
-      should_receive(:mount).
-      once.
-      with('/', DispatchServlet, {
+    stub(@mock_server).mount('/')
+    mock(@mock_server).mount(
+      '/',
+      DispatchServlet,
+      {
         :port            => @context.internal_app_server_port,
         :ip              => @context.internal_app_server_host,
         :environment     => @context.rails_env,
@@ -102,16 +100,14 @@ describe WebrickSeleniumServerRunner do
         :charset         => "UTF-8",
         :mime_types      => WEBrick::HTTPUtils::DefaultMimeTypes,
         :working_directory => File.expand_path(@context.rails_root.to_s)
-      })
+      }
+    )
 
-    @mock_server.should_receive(:start).once
+    mock(@mock_server).start.once
 
-    mock_thread_class = mock("mock_thread_class")
+    mock_thread_class = "mock_thread_class"
     runner.thread_class = mock_thread_class
-    mock_thread_class.
-      should_receive(:start).
-      once.
-      and_return {|block| block.call}
+    mock(mock_thread_class).start {|block| block.call}
 
     return runner
   end

@@ -15,8 +15,8 @@ describe SeleneseInterpreter do
   it "should start" do
     @interpreter = Selenium::SeleneseInterpreter.new("localhost", 4444, "*iexplore", "localhost:3000")
 
-    @interpreter.should_receive(:do_command).
-      with("getNewBrowserSession", ["*iexplore", "localhost:3000"]).and_return("   12345")
+    mock(@interpreter).do_command.
+      with("getNewBrowserSession", ["*iexplore", "localhost:3000"]).returns("   12345")
 
     @interpreter.start
     @interpreter.instance_eval {@session_id}.should == "12345"

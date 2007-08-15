@@ -2,16 +2,16 @@ module SeleniumTestCaseSpec
   def test_case
     test_case = MySeleniumTestCase.new
     time = Time.now
-    time_class = Spec::Mocks::Mock.new("time_class", {})
-    time_class.should_receive(:now).any_number_of_times.and_return { time += 1 }
-    test_case.stub!(:time_class).and_return time_class
-    test_case.stub!(:sleep).and_return
+    time_class = "Time Class"
+    mock(time_class).now.any_number_of_times.returns { time += 1 }
+    stub(test_case).time_class.returns time_class
+    stub(test_case).sleep.returns
     test_case
   end
 
   def base_selenium
     @base_selenium ||= begin
-      @base_selenium = mock("Base Selenium")
+      @base_selenium = "Base Selenium"
       @test_case.base_selenium = @base_selenium
     end
   end

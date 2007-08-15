@@ -1,6 +1,7 @@
 require 'rubygems'
 gem 'rspec', ">=0.7.5"
 require 'spec'
+require 'rr'
 
 dir = File.dirname(__FILE__)
 $LOAD_PATH << File.expand_path("#{dir}/../lib")
@@ -30,4 +31,8 @@ ProcessStub.class_eval do
   def stop
     self.is_running = false
   end
+end
+
+Spec::Runner.configure do |config|
+  config.mock_with :rr
 end

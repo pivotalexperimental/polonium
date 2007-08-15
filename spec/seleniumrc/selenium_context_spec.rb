@@ -75,8 +75,8 @@ describe SeleniumContext do
 
     stub_interpreter = Object.new
     start_called = false
-    stub_interpreter.stub!(:start).and_return {start_called = true}
-    @context.stub!(:create_interpreter).and_return {stub_interpreter}
+    stub(stub_interpreter).start.returns {start_called = true}
+    stub(@context).create_interpreter.returns {stub_interpreter}
     interpreter = @context.create_and_initialize_interpreter
     interpreter.should == stub_interpreter
     passed_interpreter.should == interpreter
@@ -103,9 +103,9 @@ describe SeleniumContext do
     @context.internal_app_server_port = 4000
     @context.internal_app_server_host = "localhost"
 
-    mock_logger = mock("logger")
-    @context.should_receive(:new_logger).and_return(mock_logger)
-    WEBrick::HTTPServer.should_receive(:new).with({
+    mock_logger = "logger"
+    mock(@context).new_logger.returns(mock_logger)
+    mock(WEBrick::HTTPServer).new.with({
       :Port => 4000,
       :BindAddress => "localhost",
       :ServerType  => WEBrick::SimpleServer,

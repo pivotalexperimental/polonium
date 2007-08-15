@@ -19,11 +19,8 @@ describe SeleniumServerRunner do
       define_method :start_server do; start_server_called = true; end
     end
     def @runner.stop_server; end
-    mock_thread_class = mock("mock_thread_class")
-    mock_thread_class.
-      should_receive(:start).
-      once.
-      and_return {|block| block.call}
+    mock_thread_class = "mock_thread_class"
+    mock(mock_thread_class).start {|block| block.call}
     @runner.thread_class = mock_thread_class
 
     @runner.start

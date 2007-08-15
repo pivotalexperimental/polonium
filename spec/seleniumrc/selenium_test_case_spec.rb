@@ -28,7 +28,7 @@ describe SeleniumTestCase, "instance methods" do
   it_should_behave_like "SeleniumTestCase"
 
   it "setup should not allow transactional fixtures" do
-    @test_case.class.stub!(:use_transactional_fixtures).and_return true
+    stub(@test_case.class).use_transactional_fixtures.returns true
 
     expected_message = "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)."
     proc {@test_case.setup}.should raise_error(RuntimeError, expected_message)
@@ -53,9 +53,10 @@ describe SeleniumTestCase, "instance methods" do
   it "wait_for_element_to_contain should pass when finding text within time limit" do
     is_element_present_results = [false, true]
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:get_eval).with("this.page().findElement(\"#{sample_locator}\").innerHTML").and_return(sample_text)
+    stub(base_selenium).is_element_present {is_element_present_results.shift}
+    stub(base_selenium).get_eval("this.page().findElement(\"#{sample_locator}\").innerHTML") do
+      sample_text
+    end
 
     @test_case.wait_for_element_to_contain(sample_locator, sample_text)
   end
@@ -63,8 +64,7 @@ describe SeleniumTestCase, "instance methods" do
   it "wait_for_element_to_contain should fail when element not found in time" do
     is_element_present_results = [false, false, false, false]
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {is_element_present_results.shift}
+    stub(base_selenium).is_element_present {is_element_present_results.shift}
 
     proc do
       @test_case.wait_for_element_to_contain(sample_locator, "")
@@ -74,12 +74,10 @@ describe SeleniumTestCase, "instance methods" do
   it "wait_for_element_to_contain should fail when text does not match in time" do
     is_element_present_results = [false, true, true, true]
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:get_eval).
+    stub(base_selenium).is_element_present {is_element_present_results.shift}
+    stub(base_selenium).get_eval.
       with("this.page().findElement(\"#{sample_locator}\").innerHTML").
-      any_number_of_times.
-      and_return(sample_text)
+      returns(sample_text)
 
     proc do
       @test_case.wait_for_element_to_contain(sample_locator, "wrong text", nil, 1)
@@ -89,7 +87,7 @@ describe SeleniumTestCase, "instance methods" do
   it "element_does_not_contain_text returns true when element is not on the page" do
     locator = "id=element_id"
     expected_text = "foobar"
-    base_selenium.should_receive(:is_element_present).with(locator).and_return(false)
+    mock(base_selenium).is_element_present.with(locator).returns(false)
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == true
   end
@@ -98,8 +96,8 @@ describe SeleniumTestCase, "instance methods" do
     locator = "id=element_id"
     inner_html = "Some text that does not contain the expected_text"
     expected_text = "foobar"
-    base_selenium.should_receive(:is_element_present).with(locator).and_return(true)
-    @test_case.should_receive(:get_inner_html).with(locator).and_return(inner_html)
+    mock(base_selenium).is_element_present.with(locator).returns(true)
+    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == true
   end
@@ -108,8 +106,8 @@ describe SeleniumTestCase, "instance methods" do
     locator = "id=element_id"
     inner_html = "foobar foobar foobar"
     expected_text = "foobar"
-    base_selenium.should_receive(:is_element_present).with(locator).and_return(true)
-    @test_case.should_receive(:get_inner_html).with(locator).and_return(inner_html)
+    mock(base_selenium).is_element_present.with(locator).returns(true)
+    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
@@ -118,10 +116,10 @@ describe SeleniumTestCase, "instance methods" do
     expected_text = "foobar"
     element_does_not_contain_text_results = [false, false, false, false]
 
-    @test_case.should_receive(:element_does_not_contain_text).
+    mock(@test_case).element_does_not_contain_text.
       with(sample_locator, expected_text).
       any_number_of_times.
-      and_return {element_does_not_contain_text_results.shift}
+      returns {element_does_not_contain_text_results.shift}
 
     proc do
       @test_case.assert_element_does_not_contain_text(sample_locator, expected_text, "Failure Message", 1)
@@ -131,10 +129,8 @@ describe SeleniumTestCase, "instance methods" do
   it "assert_text should assert the element is present and its text is equal to that passed in" do
     expected_text = "text"
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {|locator| locator == sample_locator}
-    base_selenium.should_receive(:get_text).any_number_of_times.
-      and_return(expected_text)
+    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
+    stub(base_selenium).get_text {expected_text}
 
     @test_case.assert_text(sample_locator, expected_text)
     proc {@test_case.assert_text('locator_fails', 'hello')}.
@@ -146,10 +142,8 @@ describe SeleniumTestCase, "instance methods" do
   it "assert_value should assert the element is present and its value is equal to that passed in" do
     expected_value = "value"
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {|locator| locator == sample_locator}
-    base_selenium.should_receive(:get_value).any_number_of_times.
-      and_return(expected_value)
+    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
+    stub(base_selenium).get_value {expected_value}
 
     @test_case.assert_value(sample_locator, expected_value)
     proc {@test_case.assert_value('locator_fails', 'hello')}.
@@ -161,10 +155,8 @@ describe SeleniumTestCase, "instance methods" do
    it "assert_selected should assert the element is present and its selected label is equal to that passed in" do
     expected_selected = "selected"
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {|locator| locator == sample_locator}
-    base_selenium.should_receive(:get_selected_label).any_number_of_times.
-      and_return(expected_selected)
+    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
+    stub(base_selenium).get_selected_label {expected_selected}
 
     @test_case.assert_selected(sample_locator, expected_selected)
     proc {@test_case.assert_selected('locator_fails', 'hello')}.
@@ -176,10 +168,8 @@ describe SeleniumTestCase, "instance methods" do
   it "assert_attribute should assert if the element is present AND if the element attribute is equal to that passed in" do
     expected_attribute = "attribute"
 
-    base_selenium.should_receive(:is_element_present).any_number_of_times.
-      and_return {|locator| locator == sample_locator}
-    base_selenium.should_receive(:get_attribute).any_number_of_times.
-      and_return(expected_attribute)
+    stub(base_selenium).is_element_present.returns {|locator| locator == sample_locator}
+    stub(base_selenium).get_attribute.returns(expected_attribute)
 
     @test_case.assert_attribute(sample_locator, expected_attribute)
     proc {@test_case.assert_attribute('locator_fails', 'hello')}.
@@ -189,8 +179,8 @@ describe SeleniumTestCase, "instance methods" do
   end
 
   it "assert_location_ends_in should assert that the url location ends with the passed in value" do
-    base_selenium.should_receive(:get_location).any_number_of_times.
-      and_return("http://home/location/1?thing=pa+ra+me+ter")
+    mock(base_selenium).get_location.any_number_of_times.
+      returns("http://home/location/1?thing=pa+ra+me+ter")
 
     expected_url = '/home/location/1?thing=pa+ra+me+ter'
     @test_case.assert_location_ends_in expected_url
@@ -203,8 +193,8 @@ describe SeleniumTestCase, "instance methods" do
   end
 
   it "assert_location_ends_in should not care about the order of the parameters" do
-    base_selenium.should_receive(:get_location).any_number_of_times.
-      and_return("http://home/location/1?thing=parameter&foo=bar")
+    mock(base_selenium).get_location.any_number_of_times.
+      returns("http://home/location/1?thing=parameter&foo=bar")
 
     @test_case.assert_location_ends_in '/home/location/1?thing=parameter&foo=bar'
     @test_case.assert_location_ends_in '/home/location/1?foo=bar&thing=parameter'
@@ -212,7 +202,7 @@ describe SeleniumTestCase, "instance methods" do
 
   it "is_text_in_order should check if text is in order" do
     locator = "id=foo"
-    base_selenium.should_receive(:get_text).with(locator).any_number_of_times.and_return("one\ntwo\nthree\n")
+    mock(base_selenium).get_text.with(locator).any_number_of_times.returns("one\ntwo\nthree\n")
 
     @test_case.is_text_in_order locator, "one", "two", "three"
   end
@@ -222,9 +212,9 @@ describe SeleniumTestCase, "instance methods" do
 
     @test_case.base_selenium = base_selenium
 
-    base_selenium.should_receive(:open).with("http://test.com:80").once
-    base_selenium.should_receive(:wait_for_page_to_load).with(@test_case.default_timeout).once
-    base_selenium.should_receive(:send).any_number_of_times.and_return("")
+    mock(base_selenium).open("http://test.com:80")
+    mock(base_selenium).wait_for_page_to_load(@test_case.default_timeout)
+    stub(base_selenium).send {""}
 
     @test_case.open_home_page
   end
@@ -234,7 +224,7 @@ describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "SeleniumTestCase"
 
   it "fails when element is not visible" do
-    base_selenium.stub!(:is_visible).and_return {false}
+    stub(base_selenium).is_visible.returns {false}
 
     proc {
       @test_case.assert_visible("id=element")
@@ -243,7 +233,7 @@ describe SeleniumTestCase, "#assert_visible" do
 
   it "passes when element is not visible" do
     ticks = [false, false, false, true]
-    base_selenium.stub!(:is_visible).and_return {ticks.shift}
+    stub(base_selenium).is_visible.returns {ticks.shift}
 
     @test_case.assert_visible("id=element")
   end
@@ -253,7 +243,7 @@ describe SeleniumTestCase, "#assert_not_visible" do
   it_should_behave_like "SeleniumTestCase"
 
   it "fails when element is visible" do
-    base_selenium.stub!(:is_visible).and_return {true}
+    stub(base_selenium).is_visible.returns {true}
 
     proc {
       @test_case.assert_not_visible("id=element")
@@ -262,7 +252,7 @@ describe SeleniumTestCase, "#assert_not_visible" do
 
   it "passes when element is visible" do
     ticks = [true, true, true, false]
-    base_selenium.stub!(:is_visible).and_return {ticks.shift}
+    stub(base_selenium).is_visible.returns {ticks.shift}
 
     @test_case.assert_not_visible("id=element")
   end
@@ -273,17 +263,17 @@ describe SeleniumTestCase, "#type" do
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").twice.and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:type).with("id=foobar", "The Text")
+    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
+    mock(base_selenium).type.with("id=foobar", "The Text")
 
     @test_case.type "id=foobar", "The Text"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").exactly(4).times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_not_receive(:type)
+    mock(base_selenium).is_element_present.with("id=foobar").times(4).
+      returns {is_element_present_results.shift}
+    dont_allow(base_selenium).type
 
     proc {
       @test_case.type "id=foobar", "The Text"
@@ -296,17 +286,17 @@ describe SeleniumTestCase, "#click" do
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").twice.and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:click).with("id=foobar")
+    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
+    mock(base_selenium).click.with("id=foobar")
 
     @test_case.click "id=foobar"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").exactly(4).times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_not_receive(:click)
+    mock(base_selenium).is_element_present.with("id=foobar").times(4).
+      returns {is_element_present_results.shift}
+    dont_allow(base_selenium).click
 
     proc {
       @test_case.click "id=foobar"
@@ -319,17 +309,17 @@ describe SeleniumTestCase, "#select" do
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").twice.and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:select).with("id=foobar", "value=3")
+    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
+    mock(base_selenium).select.with("id=foobar", "value=3")
 
     @test_case.select "id=foobar", "value=3"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").exactly(4).times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_not_receive(:select)
+    mock(base_selenium).is_element_present.with("id=foobar").times(4).
+      returns {is_element_present_results.shift}
+    dont_allow(base_selenium).select
 
     proc {
       @test_case.select "id=foobar", "value=3"
@@ -342,17 +332,17 @@ describe SeleniumTestCase, "#wait_for_and_click" do
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").twice.and_return {is_element_present_results.shift}
-    base_selenium.should_receive(:click).with("id=foobar")
+    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
+    mock(base_selenium).click.with("id=foobar")
 
     @test_case.wait_for_and_click "id=foobar"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    base_selenium.should_receive(:is_element_present).with("id=foobar").exactly(4).times.
-      and_return {is_element_present_results.shift}
-    base_selenium.should_not_receive(:click)
+    mock(base_selenium).is_element_present.with("id=foobar").times(4).
+      returns {is_element_present_results.shift}
+    dont_allow(base_selenium).click
 
     proc {
       @test_case.wait_for_and_click "id=foobar"
@@ -368,24 +358,24 @@ describe "SeleniumTestCase in test browser mode and test fails" do
   end
 
   it "should stop interpreter when configuration says to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(false)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(false).and_return(true)
+    stub(@test_case).passed?.returns(false)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(true)
 
-    base_selenium.should_receive(:stop).once
+    mock(base_selenium).stop.once
     @test_case.base_selenium = base_selenium
 
     @test_case.teardown
   end
 
   it "should not stop interpreter when configuration says not to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(false)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(false).and_return(false)
+    stub(@test_case).passed?.returns(false)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(false)
 
     @test_case.base_selenium = base_selenium
 
@@ -401,24 +391,24 @@ describe "SeleniumTestCase in test browser mode and test pass" do
   end
 
   it "should stop interpreter when configuration says to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(true)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(true).and_return(true)
+    stub(@test_case).passed?.returns(true)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
-    base_selenium.should_receive(:stop).once
+    mock(base_selenium).stop.once
     @test_case.base_selenium = base_selenium
 
     @test_case.teardown
   end
 
   it "should not stop interpreter when configuration says not to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(true)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(true).and_return(false)
+    stub(@test_case).passed?.returns(true)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
     @test_case.base_selenium = base_selenium
 
@@ -434,8 +424,8 @@ describe "SeleniumTestCase not in suite browser mode" do
   end
 
   it "should not stop interpreter when tests fail" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(false)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(false)
 
     def @test_case.passed?; false; end
 
@@ -445,10 +435,10 @@ describe "SeleniumTestCase not in suite browser mode" do
   end
 
    it "should stop interpreter when tests pass" do
-     @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-     @test_case.configuration.should_receive(:test_browser_mode?).and_return(false)
+     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+     mock(@test_case.configuration).test_browser_mode?.returns(false)
 
-     @test_case.stub!(:passed?).and_return(true)
+     stub(@test_case).passed?.returns(true)
 
      @test_case.base_selenium = base_selenium
 
@@ -464,24 +454,24 @@ describe "SeleniumTestCase in test browser mode and test pass" do
   end
 
   it "should stop interpreter when configuration says to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(true)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(true).and_return(true)
+    stub(@test_case).passed?.returns(true)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
-    base_selenium.should_receive(:stop).once
+    mock(base_selenium).stop.once
     @test_case.base_selenium = base_selenium
 
     @test_case.teardown
   end
 
   it "should not stop interpreter when configuration says not to stop test" do
-    @test_case.configuration = mock("Seleniumrc::SeleniumConfiguration")
-    @test_case.configuration.should_receive(:test_browser_mode?).and_return(true)
+    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+    mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    @test_case.stub!(:passed?).and_return(true)
-    @test_case.configuration.should_receive(:stop_selenese_interpreter?).with(true).and_return(false)
+    stub(@test_case).passed?.returns(true)
+    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
     @test_case.base_selenium = base_selenium
 

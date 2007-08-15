@@ -135,16 +135,16 @@ context SeleniumConfiguration do
   end
 
   specify "stop_interpreter_if_necessary__when_suite_passes__should_stop_interpreter" do
-    mock_interpreter = mock("mock_interpreter")
-    mock_interpreter.should_receive(:stop).once
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop.once
     @context.interpreter = mock_interpreter
 
     @configuration.stop_interpreter_if_necessary true
   end
 
   specify "stop_interpreter_if_necessary__when_suite_fails_and_keep_browser_open_on_failure__should_not_stop_interpreter" do
-    mock_interpreter = mock("mock_interpreter")
-    mock_interpreter.should_receive(:stop).never
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop.never
     @context.interpreter = mock_interpreter
     @context.keep_browser_open_on_failure = true
 
@@ -152,8 +152,8 @@ context SeleniumConfiguration do
   end
 
   specify "stop_interpreter_if_necessary__when_suite_fails_and_not_keep_browser_open_on_failure__should_stop_interpreter" do
-    mock_interpreter = mock("mock_interpreter")
-    mock_interpreter.should_receive(:stop).once
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop
     @context.interpreter = mock_interpreter
     @context.keep_browser_open_on_failure = false
 
