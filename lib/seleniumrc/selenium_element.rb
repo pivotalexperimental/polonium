@@ -49,6 +49,16 @@ module Seleniumrc
       end
     end
 
+    def is_visible(options={})
+      is_present
+      options = {
+        :message => "Expected '#{locator}' to be visible, but it wasn't"
+      }.merge(options)
+      wait_for(options) do
+        selenium.is_visible(locator)
+      end
+    end
+
     def is_checked
       is_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
@@ -124,6 +134,18 @@ module Seleniumrc
       end
     end
 
+    def inner_html
+      selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
+    end
+
+    def ==(other)
+      return false unless other.is_a?(SeleniumElement)
+      return false unless self.selenium == other.selenium
+      return false unless self.locator == other.locator
+      true
+    end
+
+    protected
     def find_text_order_error_fragments(html, text_fragments)
       fragments_not_found = []
       fragments_out_of_order = []
@@ -150,18 +172,5 @@ module Seleniumrc
         :fragments_out_of_order => fragments_out_of_order
       }
     end
-
-    def inner_html
-      selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
-    end
-
-    def ==(other)
-      return false unless other.is_a?(SeleniumElement)
-      return false unless self.selenium == other.selenium
-      return false unless self.locator == other.locator
-      true
-    end
-
-    protected
   end
 end

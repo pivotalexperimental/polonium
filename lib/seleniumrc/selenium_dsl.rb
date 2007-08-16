@@ -184,10 +184,8 @@ module Seleniumrc
       assert !(get_title.include?("Exception caught")), "We got a new page, but it was an application exception page."
     end
 
-    def assert_visible(pattern, message = "Expected '#{pattern}' to be visible, but it wasn't", options = {})
-      wait_for({:message => message}.merge(options)) do
-        selenium.is_visible(pattern)
-      end
+    def assert_visible(locator, options = {})
+      element(locator).is_visible(options)
     end
 
     def assert_not_visible(pattern, message = "Expected '#{pattern}' to be not visible, but it was visible", options = {})
