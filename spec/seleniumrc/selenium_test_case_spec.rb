@@ -299,7 +299,7 @@ describe SeleniumTestCase, "#assert_selected" do
     end
   end
 
-  it "passes when attribute is expected" do
+  it "passes when selected is expected" do
     mock(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_selected_label(sample_locator) {"passed_in_element"}
@@ -307,7 +307,7 @@ describe SeleniumTestCase, "#assert_selected" do
     @test_case.assert_selected(sample_locator, "passed_in_element")
   end
 
-  it "fails when attribute is not expected" do
+  it "fails when selected is not expected" do
     stub(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_selected_label(sample_locator) {"another_element"}
@@ -329,7 +329,7 @@ describe SeleniumTestCase, "#assert_checked" do
     end
   end
 
-  it "passes when attribute is expected" do
+  it "passes when checked" do
     mock(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {true}
@@ -337,7 +337,7 @@ describe SeleniumTestCase, "#assert_checked" do
     @test_case.assert_checked(sample_locator)
   end
 
-  it "fails when attribute is not expected" do
+  it "fails when not checked" do
     stub(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {false}
@@ -359,7 +359,7 @@ describe SeleniumTestCase, "#assert_not_checked" do
     end
   end
 
-  it "passes when attribute is expected" do
+  it "passes when not checked" do
     mock(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {false}
@@ -367,7 +367,7 @@ describe SeleniumTestCase, "#assert_not_checked" do
     @test_case.assert_not_checked(sample_locator)
   end
 
-  it "fails when attribute is not expected" do
+  it "fails when checked" do
     stub(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {true}
