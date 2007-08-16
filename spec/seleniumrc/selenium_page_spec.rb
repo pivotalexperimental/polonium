@@ -145,4 +145,22 @@ describe SeleniumElement, "#url_ends_with" do
     end.should raise_error("Expected 'http://no.com' to end with '#{@ends_with}' (after 5 sec)")
   end
 end
+
+describe SeleniumElement, "#url_ends_with?" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  before do
+    @ends_with = "foobar.com?arg1=2"
+  end
+
+  it "passes when title is expected" do
+    mock(@selenium).get_location {"http://foobar.com?arg1=2"}
+    @page.url_ends_with?(@ends_with).should be_true
+  end
+
+  it "fails when element is not present" do
+    mock(@selenium).get_location {"http://no.com"}
+    @page.url_ends_with?(@ends_with).should be_false
+  end
+end
 end

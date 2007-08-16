@@ -47,7 +47,14 @@ module Seleniumrc
         :message => "Expected '#{selenium.get_location}' to end with '#{ends_with}'"
       }.merge(options)
       wait_for(options) do
-        selenium.get_location =~ Regexp.new("#{Regexp.escape(ends_with)}$")
+        url_ends_with? ends_with
+      end
+    end
+    def url_ends_with?(ends_with)
+      if selenium.get_location =~ Regexp.new("#{Regexp.escape(ends_with)}$")
+        true
+      else
+        false
       end
     end
 
