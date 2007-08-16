@@ -100,4 +100,34 @@ describe SeleniumElement, "#has_attribute" do
     end.should raise_error
   end
 end
+
+describe SeleniumElement, "#has_selected" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+  end
+
+  it "passes when element is present and value is expected value" do
+    ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) {true}
+    mock(@selenium).get_selected_label(@element_locator) {"joe"}
+    @element.has_selected("joe")
+  end
+
+  it "fails when element is present and value is not expected" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_selected_label(@element_locator) {"jane"}
+    proc do
+      @element.has_selected("joe")
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.has_selected("joe")
+    end.should raise_error
+  end
+end
 end
