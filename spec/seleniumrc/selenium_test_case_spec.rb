@@ -301,16 +301,9 @@ describe SeleniumTestCase, "#assert_value" do
   end
 
   it "passes when value is expected" do
-    present_ticks = [false, false, false, true]
-    value_ticks = ["another value", "another value", "another value", "passed in value"]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) do
-        present_ticks.shift
-      end.times(4)
-      
-      o.get_value(sample_locator) do
-        value_ticks.shift
-      end.times(4)
+      o.is_element_present(sample_locator) {true}
+      o.get_value(sample_locator) {"passed in value"}
     end
     @test_case.assert_value(sample_locator, "passed in value")
   end
@@ -338,15 +331,9 @@ describe SeleniumTestCase, "#assert_attribute" do
   end
 
   it "passes when attribute is expected" do
-    present_ticks = [false, false, false, true]
-    attribute_ticks = ["another value", "another value", "another value", "passed in value"]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) do
-        present_ticks.shift
-      end.times(4)
-      o.get_attribute(sample_locator) do
-        attribute_ticks.shift
-      end.times(4)
+      o.is_element_present(sample_locator) {true}
+      o.get_attribute(sample_locator) {"passed in value"}
     end
     @test_case.assert_attribute(sample_locator, "passed in value")
   end
@@ -374,20 +361,9 @@ describe SeleniumTestCase, "#assert_selected" do
   end
 
   it "passes when selected is expected" do
-    present_ticks = [false, false, false, true]
-    selected_ticks = [
-      "another_element",
-      "another_element",
-      "another_element",
-      "passed_in_element",
-    ]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) do
-        present_ticks.shift
-      end.times(4)
-      o.get_selected_label(sample_locator) do
-        selected_ticks.shift
-      end.times(4)
+      o.is_element_present(sample_locator) {true}
+      o.get_selected_label(sample_locator) {"passed_in_element"}
     end
     @test_case.assert_selected(sample_locator, "passed_in_element")
   end
@@ -496,19 +472,19 @@ end
 describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "passes when element is visible" do
-    ticks = [false, false, false, true]
-    stub(base_selenium).is_visible.returns {ticks.shift}
-
-    @test_case.assert_visible("id=element")
-  end
-
   it "fails when element is not visible" do
     stub(base_selenium).is_visible.returns {false}
 
     proc {
       @test_case.assert_visible("id=element")
     }.should raise_error(Test::Unit::AssertionFailedError)
+  end
+
+  it "passes when element is visible" do
+    ticks = [false, false, false, true]
+    stub(base_selenium).is_visible.returns {ticks.shift}
+
+    @test_case.assert_visible("id=element")
   end
 end
 
