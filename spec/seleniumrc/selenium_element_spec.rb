@@ -375,4 +375,45 @@ describe SeleniumElement, "#has_next_sibling" do
     end.should raise_error
   end
 end
+
+describe SeleniumElement, "#has_text_in_order" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+    @evaled_js = "this.page().findElement('#{@element_locator}').nextSibling.id"
+  end
+
+  it "passes when element is present and value is expected value" do
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    get_text_ticks = [
+      "no match",
+      "no match",
+      "no match",
+      "one\ntwo\nthree",
+    ]
+    mock(@selenium).get_text(@element_locator) do
+      get_text_ticks.shift
+    end.times(4)
+    @element.has_text_in_order('one', 'two', 'three')
+  end
+
+  it "fails when element is present and value is not expected" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_text(@element_locator) {"no match"}
+    proc do
+      @element.has_text_in_order 'one', 'two', 'three'
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.has_text_in_order 'one', 'two', 'three'
+    end.should raise_error
+  end
+end
 end

@@ -124,13 +124,6 @@ describe SeleniumTestCase, "instance methods" do
     @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
 
-  it "is_text_in_order should check if text is in order" do
-    locator = "id=foo"
-    mock(base_selenium).get_text.with(locator).any_number_of_times.returns("one\ntwo\nthree\n")
-
-    @test_case.is_text_in_order locator, "one", "two", "three"
-  end
-
   it "should open home page" do
     configuration = create_sample_configuration
 
@@ -613,7 +606,7 @@ describe SeleniumTestCase, "#assert_next_sibling" do
     @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
   end
 
-  it "passes when value is expected" do
+  it "passes when passed next sibling id" do
     mock(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"next_sibling"}
@@ -621,13 +614,44 @@ describe SeleniumTestCase, "#assert_next_sibling" do
     @test_case.assert_next_sibling(sample_locator, "next_sibling")
   end
 
-  it "fails when value is not expected" do
+  it "fails when not passed next sibling id" do
     stub(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"wrong_sibling"}
     end
     proc do
       @test_case.assert_next_sibling(sample_locator, "next_sibling")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_text_in_order" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_text_in_order("one", "two", "three")
+      element
+    end
+    @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
+  end
+
+  it "passes when text is in order" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_text(sample_locator) {"one\ntwo\nthree\n"}
+    end
+    @test_case.assert_text_in_order sample_locator, "one", "two", "three"
+  end
+
+  it "fails when element is present and text is not in order" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_text(sample_locator) {"<html>one\ntext not in order\n</html>"}
+    end
+    proc do
+      @test_case.assert_text_in_order sample_locator, "one", "two", "three"
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

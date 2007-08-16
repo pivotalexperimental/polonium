@@ -98,6 +98,58 @@ module Seleniumrc
       end
     end
 
+    def has_text_in_order(*text_fragments)
+      is_present
+      wait_for do |context|
+        success = true
+        container = selenium.get_text(locator)
+
+        everything_found = true
+        wasnt_found_message = "Certain fragments weren't found:\n"
+
+        everything_in_order = true
+        wasnt_in_order_message = "Certain fragments were out of order:\n"
+
+        text_fragments.inject([-1, nil]) do |old_results, new_fragment|
+          old_index = old_results[0]
+          old_fragment = old_results[1]
+          new_index = container.index(new_fragment)
+
+          unless new_index
+            everything_found = false
+            wasnt_found_message << "Fragment #{new_fragment} was not found\n"
+          end
+
+          if new_index && new_index < old_index
+            everything_in_order = false
+            wasnt_in_order_message << "Fragment #{new_fragment} out of order:\n"
+            wasnt_in_order_message << "\texpected '#{old_fragment}'\n"
+            wasnt_in_order_message << "\tto come before '#{new_fragment}'\n"
+          end
+
+          [new_index, new_fragment]
+        end
+
+        wasnt_found_message << "\n\nhtml follows:\n #{container}\n"
+        wasnt_in_order_message << "\n\nhtml follows:\n #{container}\n"
+
+        unless everything_found && everything_in_order
+          success = false
+          if everything_found
+            context.message = wasnt_in_order_message
+          else
+            context.message = wasnt_found_message
+          end
+        end
+        success
+      end
+    end
+
+    def do_is_text_in_order
+
+
+    end
+
     def inner_html
       selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
     end
