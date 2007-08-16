@@ -13,7 +13,13 @@ module Seleniumrc
       wait_for(params) do
         selenium.is_element_present(locator)
       end
-      true
+    end
+
+    def is_not_present(params={})
+      params = {:message => "Expected element '#{locator}' to be absent, but it was not"}.merge(params)
+      wait_for(:message => params[:message]) do
+        !selenium.is_element_present(locator)
+      end
     end
 
     def has_value(expected_value)

@@ -142,10 +142,8 @@ module Seleniumrc
     end
 
     # Assert and wait for locator element to not be present.
-    def assert_element_not_present(locator)
-      wait_for(:message => "Expected element '#{locator}' not to be present, but it was") do
-        !selenium.is_element_present(locator)
-      end
+    def assert_element_not_present(locator, params = {})
+      element(locator).is_not_present(params)
     end
 
     # Assert and wait for locator element to contain text.

@@ -289,6 +289,37 @@ describe SeleniumTestCase, "#assert_element_present" do
   end
 end
 
+describe SeleniumTestCase, "#assert_element_not_present" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).is_not_present({})
+      element
+    end
+  end
+
+  it "passes when element is not present" do
+    ticks = [true, true, true, false]
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) do
+        ticks.shift
+      end.times(4)
+    end
+    @test_case.assert_element_not_present(sample_locator)
+  end
+
+  it "fails when element is present" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+    end
+    proc do
+      @test_case.assert_element_not_present(sample_locator)
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_value" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
