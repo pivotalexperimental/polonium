@@ -161,19 +161,6 @@ describe SeleniumTestCase, "instance methods" do
       should raise_error(Test::Unit::AssertionFailedError)
   end
 
-  it "assert_attribute should assert if the element is present AND if the element attribute is equal to that passed in" do
-    expected_attribute = "attribute"
-
-    stub(base_selenium).is_element_present.returns {|locator| locator == sample_locator}
-    stub(base_selenium).get_attribute.returns(expected_attribute)
-
-    @test_case.assert_attribute(sample_locator, expected_attribute)
-    proc {@test_case.assert_attribute('locator_fails', 'hello')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_attribute(sample_locator, 'goodbye')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-  end
-
   it "assert_location_ends_in should assert that the url location ends with the passed in value" do
     mock(base_selenium).get_location.any_number_of_times.
       returns("http://home/location/1?thing=pa+ra+me+ter")
@@ -213,6 +200,36 @@ describe SeleniumTestCase, "instance methods" do
     stub(base_selenium).send {""}
 
     @test_case.open_home_page
+  end
+end
+
+describe SeleniumTestCase, "#assert_attribute" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_attribute("passed in value")
+      element
+    end
+  end
+
+  it "passes when attribute is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_attribute(sample_locator) {"passed in value"}
+    end
+    @test_case.assert_attribute(sample_locator, "passed in value")
+  end
+  
+  it "fails when attribute is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_attribute(sample_locator) {"another value"}
+    end
+    proc do
+      @test_case.assert_attribute(sample_locator, "passed in value")
+    end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end
 
