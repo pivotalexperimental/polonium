@@ -124,20 +124,6 @@ describe SeleniumTestCase, "instance methods" do
     @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
 
-  it "assert_element_does_not_contain should fail when text is present in element past timeout" do
-    expected_text = "foobar"
-    element_does_not_contain_text_results = [false, false, false, false]
-
-    mock(@test_case).element_does_not_contain_text.
-      with(sample_locator, expected_text).
-      any_number_of_times.
-      returns {element_does_not_contain_text_results.shift}
-
-    proc do
-      @test_case.assert_element_does_not_contain_text(sample_locator, expected_text, "Failure Message", 1)
-    end.should raise_error(Test::Unit::AssertionFailedError, "Failure Message (after 1 sec)")
-  end
-
   it "assert_location_ends_in should assert that the url location ends with the passed in value" do
     mock(base_selenium).get_location.any_number_of_times.
       returns("http://home/location/1?thing=pa+ra+me+ter")
@@ -362,7 +348,7 @@ describe SeleniumTestCase, "#assert_element_contains" do
     @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
   end
 
-  it "passes when value is expected" do
+  it "passes when text is in the element's inner_html" do
     mock(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) do
@@ -372,13 +358,46 @@ describe SeleniumTestCase, "#assert_element_contains" do
     @test_case.assert_element_contains(sample_locator, "passed in value")
   end
 
-  it "fails when value is not expected" do
+  it "fails when text is not in the element's inner_html" do
     stub(base_selenium) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"another value"}
     end
     proc do
       @test_case.assert_element_contains(sample_locator, "passed in value")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).does_not_contain_text("passed in value", {})
+      element
+    end
+    @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
+  end
+
+  it "passes when text is not in the element's inner_html" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) do
+        "another value"
+      end
+    end
+    @test_case.assert_element_does_not_contain_text(sample_locator, "passed in value")
+  end
+
+  it "fails when text is in the element's inner_html" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) {"html passed in value html"}
+    end
+    proc do
+      @test_case.assert_element_does_not_contain_text(sample_locator, "passed in value")
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

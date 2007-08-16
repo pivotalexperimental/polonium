@@ -74,9 +74,18 @@ module Seleniumrc
 
     def contains_text(expected_text, options={})
       is_present
-      message = options[:message] || "#{locator} should contain #{expected_text}"
-      wait_for(:message => message) do
+      options = {
+        :message => "#{locator} should contain #{expected_text}"
+      }.merge(options)
+      wait_for(options) do
         inner_html.include?(expected_text)
+      end
+    end
+
+    def does_not_contain_text(expected_text, options={})
+      is_present
+      wait_for(options) do
+        !inner_html.include?(expected_text)
       end
     end
 

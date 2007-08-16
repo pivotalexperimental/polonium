@@ -276,7 +276,7 @@ describe SeleniumElement, "#contains_text" do
     @evaled_js = "this.page().findElement(\"#{@element_locator}\").innerHTML"
   end
 
-  it "passes when element is present and value is expected value" do
+  it "passes when element is present and the element contains text" do
     element_ticks = [false, false, false, true]
     mock(@selenium).is_element_present(@element_locator) do
       element_ticks.shift
@@ -288,7 +288,7 @@ describe SeleniumElement, "#contains_text" do
     @element.contains_text("match")
   end
 
-  it "fails when element is present and value is not expected" do
+  it "fails when element is present and the element does not contain text" do
     stub(@selenium).is_element_present(@element_locator) {true}
     stub(@selenium).get_eval(@evaled_js) {"html"}
     proc do
@@ -300,6 +300,42 @@ describe SeleniumElement, "#contains_text" do
     stub(@selenium).is_element_present(@element_locator) {false}
     proc do
       @element.contains_text "match"
+    end.should raise_error
+  end
+end
+
+describe SeleniumElement, "#does_not_contain_text" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+    @evaled_js = "this.page().findElement(\"#{@element_locator}\").innerHTML"
+  end
+
+  it "passes when element is present and the element does not contain text" do
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    inner_html_ticks = ["html match html", "html match html", "html match html", "html"]
+    mock(@selenium).get_eval(@evaled_js) do
+      inner_html_ticks.shift
+    end.times(4)
+    @element.does_not_contain_text("match")
+  end
+
+  it "fails when element is present and the element contains text" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_eval(@evaled_js) {"html match html"}
+    proc do
+      @element.does_not_contain_text "match"
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.does_not_contain_text "match"
     end.should raise_error
   end
 end

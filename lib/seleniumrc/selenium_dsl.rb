@@ -152,8 +152,8 @@ module Seleniumrc
     end
 
     # Assert and wait for locator element to not contain text.
-    def assert_element_does_not_contain_text(locator, text, message=nil, timeout=default_wait_for_time)
-      wait_for({:message => message, :timeout => timeout}) {element_does_not_contain_text(locator, text)}
+    def assert_element_does_not_contain_text(locator, text, options={})
+      element(locator).does_not_contain_text(text, options)
     end
     alias_method :assert_element_does_not_contain, :assert_element_does_not_contain_text
     alias_method :wait_for_element_to_not_contain_text, :assert_element_does_not_contain_text
