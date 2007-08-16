@@ -43,6 +43,20 @@ describe SeleniumElement, "#is_present" do
   end
 end
 
+describe SeleniumElement, "#is_present?" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  it "returns true when element is present" do
+    mock(@selenium).is_element_present(@element_locator) {true}
+    @element.is_present?.should be_true
+  end
+
+  it "returns false when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    @element.is_present?.should be_false
+  end
+end
+
 describe SeleniumElement, "#is_not_present" do
   it_should_behave_like "Seleniumrc::SeleniumElement"
 
