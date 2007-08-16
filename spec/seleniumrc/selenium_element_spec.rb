@@ -121,6 +121,20 @@ describe SeleniumElement, "#has_value" do
   end
 end
 
+describe SeleniumElement, "#has_value?" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  it "returns true when value is expected value" do
+    mock(@selenium).get_value(@element_locator) {"joe"}
+    @element.has_value?("joe").should be_true
+  end
+
+  it "returns false when value is not expected value" do
+    stub(@selenium).get_value(@element_locator) {"jane"}
+    @element.has_value?("joe").should be_false
+  end
+end
+
 describe SeleniumElement, "#has_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumElement"
 

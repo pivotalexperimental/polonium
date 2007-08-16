@@ -31,10 +31,13 @@ module Seleniumrc
     def has_value(expected_value)
       is_present
       wait_for do |context|
-        actual = selenium.get_value(locator)
-        context.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual}'"
-        expected_value == actual
+        actual_value = selenium.get_value(locator)
+        context.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
+        has_value? expected_value, actual_value
       end
+    end
+    def has_value?(expected_value, actual_value=selenium.get_value(locator))
+      expected_value == actual_value
     end
 
     def has_attribute(expected_value)
