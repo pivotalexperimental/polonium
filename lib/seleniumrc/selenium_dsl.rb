@@ -104,11 +104,7 @@ module Seleniumrc
 
     # Assert and wait for the page title.
     def assert_title(title, params={})
-      wait_for(params) do |context|
-        actual = selenium.get_title
-        context.message = "Expected title '#{title}' but was '#{actual}'"
-        title == actual
-      end
+      SeleniumPage.new(@selenium).has_title(title, params)
     end
 
     # Assert and wait for locator select element to have value option selected.

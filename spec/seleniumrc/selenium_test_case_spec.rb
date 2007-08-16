@@ -11,6 +11,10 @@ describe SeleniumTestCase, :shared => true do
       stub_wait_for element
       element
     end
+    stub.probe(SeleniumPage).new do |page|
+      stub_wait_for page
+      page
+    end
   end
 
   def sample_locator
@@ -52,7 +56,7 @@ describe SeleniumTestCase, "instance methods" do
   it "wait_for should raise a AssertionFailedError when block times out" do
     proc do
       @test_case.wait_for(:timeout => 2) {false}
-    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec).")
+    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
   end
 
   it "wait_for_element_to_contain should pass when finding text within time limit" do
@@ -73,7 +77,7 @@ describe SeleniumTestCase, "instance methods" do
 
     proc do
       @test_case.wait_for_element_to_contain(sample_locator, "")
-    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 5 sec).")
+    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 5 sec)")
   end
 
   it "wait_for_element_to_contain should fail when text does not match in time" do
@@ -86,7 +90,7 @@ describe SeleniumTestCase, "instance methods" do
 
     proc do
       @test_case.wait_for_element_to_contain(sample_locator, "wrong text", nil, 1)
-    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 1 sec).")
+    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 1 sec)")
   end
 
   it "element_does_not_contain_text returns true when element is not on the page" do
@@ -128,7 +132,7 @@ describe SeleniumTestCase, "instance methods" do
 
     proc do
       @test_case.assert_element_does_not_contain_text(sample_locator, expected_text, "Failure Message", 1)
-    end.should raise_error(Test::Unit::AssertionFailedError, "Failure Message (after 1 sec).")
+    end.should raise_error(Test::Unit::AssertionFailedError, "Failure Message (after 1 sec)")
   end
 
   it "assert_text should assert the element is present and its text is equal to that passed in" do
@@ -212,6 +216,30 @@ describe SeleniumTestCase, "instance methods" do
   end
 end
 
+describe SeleniumTestCase, "#assert_title" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).has_title("my page", {})
+      page
+    end
+  end
+
+  it "passes when title is expected" do
+    mock(base_selenium).get_title {"my page"}
+    @test_case.assert_title("my page")
+  end
+
+  it "fails when title is not expected" do
+    stub(base_selenium).get_title {"no page"}
+    proc do
+      @test_case.assert_title("my page")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
@@ -240,7 +268,7 @@ describe SeleniumTestCase, "#assert_visible" do
     }.should raise_error(Test::Unit::AssertionFailedError)
   end
 
-  it "passes when element is not visible" do
+  it "passes when element is visible" do
     ticks = [false, false, false, true]
     stub(base_selenium).is_visible.returns {ticks.shift}
 

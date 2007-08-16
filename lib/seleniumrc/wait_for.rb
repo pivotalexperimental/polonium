@@ -26,5 +26,9 @@ module Seleniumrc
     def time_class
       Time
     end
+
+    def flunk(message)
+      raise Test::Unit::AssertionFailedError, message
+    end
   end
 end

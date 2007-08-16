@@ -33,9 +33,5 @@ module Seleniumrc
         expected_value == actual
       end
     end
-
-    def flunk(message)
-      raise Test::Unit::AssertionFailedError, message
-    end
   end
 end

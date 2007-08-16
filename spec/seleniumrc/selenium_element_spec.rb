@@ -18,13 +18,20 @@ describe SeleniumElement, "#initialize" do
   it "sets the locator" do
     @element.locator.should == @element_locator
   end
+
+  it "sets the selenium object" do
+    @element.selenium.should == @selenium
+  end
 end
 
 describe SeleniumElement, "#is_present" do
   it_should_behave_like "Seleniumrc::SeleniumElement"
 
   it "passes when element is present" do
-    mock(@selenium).is_element_present(@element_locator) {true}
+    ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      ticks.shift
+    end.times(4)
     @element.is_present
   end
   
@@ -41,8 +48,19 @@ describe SeleniumElement, "#has_value" do
 
   it "passes when element is present and value is expected value" do
     mock(@selenium).is_element_present(@element_locator) {true}
-    mock(@selenium).get_value(@element_locator) {"joe"}
+    ticks = [nil, nil, nil, "joe"]
+    mock(@selenium).get_value(@element_locator) do
+      ticks.shift
+    end.times(4)
     @element.has_value("joe")
+  end
+
+  it "fails when element is present and not expected value" do
+    mock(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_value(@element_locator) {"jane"}
+    proc do
+      @element.has_value("joe")
+    end.should raise_error
   end
 
   it "fails when element is not present" do
@@ -61,9 +79,18 @@ describe SeleniumElement, "#has_attribute" do
   end
 
   it "passes when element is present and value is expected value" do
+    ticks = [false, false, false, true]
     mock(@selenium).is_element_present(@element_locator) {true}
     mock(@selenium).get_attribute(@element_locator) {"joe"}
     @element.has_attribute("joe")
+  end
+
+  it "fails when element is present and value is not expected" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_attribute(@element_locator) {"jane"}
+    proc do
+      @element.has_attribute("joe")
+    end.should raise_error
   end
 
   it "fails when element is not present" do
