@@ -61,6 +61,7 @@ module Seleniumrc
       selenium.click locator
       wait_for_page_to_load(wait_for)
     end
+    alias_method :click_and_wait_for_page_to_load, :click_and_wait
 
     # Click the back button and wait for the page to load.
     def go_back_and_wait
@@ -97,11 +98,6 @@ module Seleniumrc
       if get_title.include?("Exception caught")
         flunk "We got a new page, but it was an application exception page.\n\n" + get_html_source
       end
-    end
-
-    def click_and_wait_for_page_to_load(locator)
-      click locator
-      wait_for_page_to_load
     end
 
     def wait_for_element_to_contain(locator, text, message=nil, timeout=default_wait_for_time)
