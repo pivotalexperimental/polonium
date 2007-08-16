@@ -47,7 +47,7 @@ describe SeleniumElement, "#has_title?" do
   end
 
   it "returns false when passed in title is not the page title" do
-    stub(@selenium).get_title {"no page"}
+    mock(@selenium).get_title {"no page"}
     @page.has_title?("my page").should be_false
   end
 end
@@ -68,6 +68,20 @@ describe SeleniumElement, "#is_text_present" do
     proc do
       @page.is_text_present("my page")
     end.should raise_error("Expected 'my page' to be present, but it wasn't (after 5 sec)")
+  end
+end
+
+describe SeleniumElement, "#is_text_present?" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  it "returns true when title is expected" do
+    mock(@selenium).is_text_present("my page") {true}
+    @page.is_text_present?("my page").should be_true
+  end
+
+  it "fails when element is not present" do
+    mock(@selenium).is_text_present("my page") {false}
+    @page.is_text_present?("my page").should be_false
   end
 end
 
