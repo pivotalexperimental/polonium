@@ -19,15 +19,19 @@ module Seleniumrc
     end
 
     def is_text_present(pattern, options = {})
-      message = options[:message] || "Expected '#{pattern}' to be present, but it wasn't"
-      wait_for({:message => message}.merge(options)) do
+      options = {
+        :message => "Expected '#{pattern}' to be present, but it wasn't"
+      }.merge(options)
+      wait_for(options) do
         selenium.is_text_present(pattern)
       end
     end
 
     def is_text_not_present(pattern, options = {})
-      message = options[:message] || "Expected '#{pattern}' to be absent, but it wasn't"
-      wait_for({:message => message}.merge(options)) do
+      options = {
+        :message => "Expected '#{pattern}' to be absent, but it wasn't"
+      }.merge(options)
+      wait_for(options) do
         !selenium.is_text_present(pattern)
       end
     end
