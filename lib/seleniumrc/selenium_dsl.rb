@@ -145,7 +145,7 @@ module Seleniumrc
 
     # Assert and wait for locator element to be present.
     def assert_element_present(locator, params = {})
-      SeleniumElement.new(@selenium, locator).is_present(params)
+      element(locator).is_present(params)
     end
 
     # Assert and wait for locator element to contain text.
