@@ -301,9 +301,16 @@ describe SeleniumTestCase, "#assert_value" do
   end
 
   it "passes when value is expected" do
+    present_ticks = [false, false, false, true]
+    value_ticks = ["another value", "another value", "another value", "passed in value"]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) {true}
-      o.get_value(sample_locator) {"passed in value"}
+      o.is_element_present(sample_locator) do
+        present_ticks.shift
+      end.times(4)
+      
+      o.get_value(sample_locator) do
+        value_ticks.shift
+      end.times(4)
     end
     @test_case.assert_value(sample_locator, "passed in value")
   end
@@ -331,9 +338,15 @@ describe SeleniumTestCase, "#assert_attribute" do
   end
 
   it "passes when attribute is expected" do
+    present_ticks = [false, false, false, true]
+    attribute_ticks = ["another value", "another value", "another value", "passed in value"]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) {true}
-      o.get_attribute(sample_locator) {"passed in value"}
+      o.is_element_present(sample_locator) do
+        present_ticks.shift
+      end.times(4)
+      o.get_attribute(sample_locator) do
+        attribute_ticks.shift
+      end.times(4)
     end
     @test_case.assert_attribute(sample_locator, "passed in value")
   end
