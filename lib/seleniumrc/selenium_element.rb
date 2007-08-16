@@ -102,38 +102,37 @@ module Seleniumrc
       is_present
       wait_for do |context|
         success = false
-        container = selenium.get_text(locator)
 
         fragments_not_found = []
         fragments_out_of_order = []
 
-        text_fragments.inject([-1, nil]) do |old_results, new_fragment|
-          old_index = old_results[0]
-          old_fragment = old_results[1]
-          new_index = container.index(new_fragment)
-
-          unless new_index
-            fragments_not_found << "Fragment #{new_fragment} was not found\n"
+        html = selenium.get_text(locator)
+        previous_index = -1
+        previous_fragment = ''
+        text_fragments.each do |current_fragment|
+          current_index = html.index(current_fragment)
+          if current_index
+            if current_index < previous_index
+              message = "Fragment #{current_fragment} out of order:\n" <<
+                      "\texpected '#{previous_fragment}'\n" <<
+                      "\tto come before '#{current_fragment}'\n"
+              fragments_out_of_order << message
+            end
+          else
+            fragments_not_found << "Fragment #{current_fragment} was not found\n"
           end
-
-          if new_index && new_index < old_index
-            message = "Fragment #{new_fragment} out of order:\n" <<
-                      "\texpected '#{old_fragment}'\n" <<
-                      "\tto come before '#{new_fragment}'\n"
-            fragments_out_of_order << message
-          end
-
-          [new_index, new_fragment]
+          previous_index = current_index
+          previous_fragment = current_fragment
         end
 
         if !fragments_not_found.empty?
           context.message = "Certain fragments weren't found:\n" <<
                             "#{fragments_not_found.join("\n")}\n" <<
-                            "\nhtml follows:\n #{container}\n"
+                            "\nhtml follows:\n #{html}\n"
         elsif !fragments_out_of_order.empty?
           context.message = "Certain fragments were out of order:\n" <<
                             "#{fragments_out_of_order.join("\n")}\n" <<
-                            "\nhtml follows:\n #{container}\n"
+                            "\nhtml follows:\n #{html}\n"
         else
           success = true
         end
