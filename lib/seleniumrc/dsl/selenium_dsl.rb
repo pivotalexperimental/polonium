@@ -100,8 +100,8 @@ module Seleniumrc
     end
 
     def click_and_wait_for_page_to_load(locator)
-       click locator
-       wait_for_page_to_load
+      click locator
+      wait_for_page_to_load
     end
 
     def wait_for_element_to_contain(locator, text, message=nil, timeout=default_wait_for_time)
