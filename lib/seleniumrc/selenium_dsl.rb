@@ -93,30 +93,27 @@ module Seleniumrc
 #------ Assertions and Conditions
     # Assert and wait for the page title.
     def assert_title(title, params={})
-      SeleniumPage.new(@selenium).has_title(title, params)
+      page.has_title(title, params)
     end
 
     # Assert and wait for the locator element to have value.
     def assert_value(locator, value)
-      SeleniumElement.new(@selenium, locator).has_value(value)
+      element(locator).has_value(value)
     end
 
     # Assert and wait for the locator attribute to have a value.
     def assert_attribute(locator, value)
-      SeleniumElement.new(@selenium, locator).has_attribute(value)
+      element(locator).has_attribute(value)
     end
 
     # Assert and wait for locator select element to have value option selected.
     def assert_selected(locator, value)
-      SeleniumElement.new(@selenium, locator).has_selected(value)
+      element(locator).has_selected(value)
     end
 
     # Assert and wait for locator check box to be checked.
     def assert_checked(locator)
-      assert_element_present locator
-      wait_for(:message => "Expected '#{locator}' to be checked") do
-        selenium.is_checked(locator)
-      end
+      element(locator).is_checked
     end
 
     # Assert and wait for locator check box to not be checked.
@@ -303,6 +300,14 @@ module Seleniumrc
     def fast_mode
       get_eval "slowMode = false"
       get_eval 'window.document.getElementsByName("FASTMODE")[0].checked = false'
+    end
+
+    def page
+      SeleniumPage.new(@selenium)
+    end
+
+    def element(locator)
+      SeleniumElement.new(@selenium, locator)
     end
 
     protected

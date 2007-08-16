@@ -6,6 +6,9 @@ describe SeleniumTestCase, :shared => true do
 
   before(:each) do
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
+    @base_selenium = "Base Selenium"
+    @test_case.base_selenium = @base_selenium
+    
     stub_wait_for(@test_case)
     stub.probe(SeleniumElement).new do |element|
       stub_wait_for element
@@ -304,6 +307,36 @@ describe SeleniumTestCase, "#assert_selected" do
   end  
 end
 
+describe SeleniumTestCase, "#assert_checked" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).is_checked
+      element
+    end
+  end
+
+  it "passes when attribute is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.is_checked(sample_locator) {true}
+    end
+    @test_case.assert_checked(sample_locator)
+  end
+
+  it "fails when attribute is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.is_checked(sample_locator) {false}
+    end
+    proc do
+      @test_case.assert_checked(sample_locator)
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
@@ -431,6 +464,14 @@ describe SeleniumTestCase, "#wait_for_and_click" do
     proc {
       @test_case.wait_for_and_click "id=foobar"
     }.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#page" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+  
+  it "returns page" do
+    @test_case.page.should == SeleniumPage.new(base_selenium)
   end
 end
 

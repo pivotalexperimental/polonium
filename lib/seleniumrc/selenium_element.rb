@@ -49,5 +49,12 @@ module Seleniumrc
         selenium.is_checked(locator)
       end
     end
+
+    def ==(other)
+      return false unless other.is_a?(SeleniumElement)
+      return false unless self.selenium == other.selenium
+      return false unless self.locator == other.locator
+      true
+    end
   end
 end

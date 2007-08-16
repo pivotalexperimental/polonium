@@ -14,5 +14,10 @@ module Seleniumrc
         expected_title == actual
       end
     end
+
+    def ==(other)
+      return false unless other.is_a?(SeleniumPage)
+      self.selenium == other.selenium
+    end
   end
 end

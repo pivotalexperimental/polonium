@@ -9,10 +9,7 @@ module SeleniumTestCaseSpec
   end
 
   def base_selenium
-    @base_selenium ||= begin
-      @base_selenium = "Base Selenium"
-      @test_case.base_selenium = @base_selenium
-    end
+    @base_selenium
   end
   
   class MySeleniumTestCase < Seleniumrc::SeleniumTestCase
