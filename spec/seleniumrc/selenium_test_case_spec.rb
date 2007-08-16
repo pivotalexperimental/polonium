@@ -148,19 +148,6 @@ describe SeleniumTestCase, "instance methods" do
       should raise_error(Test::Unit::AssertionFailedError)
   end
 
-   it "assert_selected should assert the element is present and its selected label is equal to that passed in" do
-    expected_selected = "selected"
-
-    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
-    stub(base_selenium).get_selected_label {expected_selected}
-
-    @test_case.assert_selected(sample_locator, expected_selected)
-    proc {@test_case.assert_selected('locator_fails', 'hello')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_selected(sample_locator, 'goodbye')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-  end
-
   it "assert_location_ends_in should assert that the url location ends with the passed in value" do
     mock(base_selenium).get_location.any_number_of_times.
       returns("http://home/location/1?thing=pa+ra+me+ter")
@@ -200,6 +187,30 @@ describe SeleniumTestCase, "instance methods" do
     stub(base_selenium).send {""}
 
     @test_case.open_home_page
+  end
+end
+
+describe SeleniumTestCase, "#assert_title" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).has_title("my page", {})
+      page
+    end
+  end
+
+  it "passes when title is expected" do
+    mock(base_selenium).get_title {"my page"}
+    @test_case.assert_title("my page")
+  end
+
+  it "fails when title is not expected" do
+    stub(base_selenium).get_title {"no page"}
+    proc do
+      @test_case.assert_title("my page")
+    end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end
 
@@ -263,28 +274,34 @@ describe SeleniumTestCase, "#assert_attribute" do
   end
 end
 
-describe SeleniumTestCase, "#assert_title" do
+describe SeleniumTestCase, "#assert_selected" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
-      mock.proxy(page).has_title("my page", {})
-      page
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_selected("passed_in_element")
+      element
     end
   end
 
-  it "passes when title is expected" do
-    mock(base_selenium).get_title {"my page"}
-    @test_case.assert_title("my page")
+  it "passes when attribute is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_selected_label(sample_locator) {"passed_in_element"}
+    end
+    @test_case.assert_selected(sample_locator, "passed_in_element")
   end
 
-  it "fails when title is not expected" do
-    stub(base_selenium).get_title {"no page"}
+  it "fails when attribute is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_selected_label(sample_locator) {"another_element"}
+    end
     proc do
-      @test_case.assert_title("my page")
+      @test_case.assert_selected(sample_locator, "passed_in_element")
     end.should raise_error(Test::Unit::AssertionFailedError)
-  end
+  end  
 end
 
 describe SeleniumTestCase, "#assert_visible" do

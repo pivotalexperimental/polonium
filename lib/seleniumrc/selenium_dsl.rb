@@ -91,6 +91,10 @@ module Seleniumrc
 
 
 #------ Assertions and Conditions
+    # Assert and wait for the page title.
+    def assert_title(title, params={})
+      SeleniumPage.new(@selenium).has_title(title, params)
+    end
 
     # Assert and wait for the locator element to have value.
     def assert_value(locator, value)
@@ -102,19 +106,9 @@ module Seleniumrc
       SeleniumElement.new(@selenium, locator).has_attribute(value)
     end
 
-    # Assert and wait for the page title.
-    def assert_title(title, params={})
-      SeleniumPage.new(@selenium).has_title(title, params)
-    end
-
     # Assert and wait for locator select element to have value option selected.
     def assert_selected(locator, value)
-      assert_element_present locator
-      wait_for do |context|
-        actual = selenium.get_selected_label(locator)
-        context.message = "Expected '#{locator}' to be selected with '#{value}' but was '#{actual}"
-        value == actual
-      end
+      SeleniumElement.new(@selenium, locator).has_selected(value)
     end
 
     # Assert and wait for locator check box to be checked.

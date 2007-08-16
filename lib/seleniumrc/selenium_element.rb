@@ -33,5 +33,14 @@ module Seleniumrc
         expected_value == actual
       end
     end
+
+    def has_selected(expected_value)
+      is_present
+      wait_for do |context|
+        actual = selenium.get_selected_label(locator)
+        context.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
+        expected_value == actual
+      end
+    end
   end
 end
