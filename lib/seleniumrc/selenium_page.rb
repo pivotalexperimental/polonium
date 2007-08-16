@@ -9,10 +9,13 @@ module Seleniumrc
 
     def has_title(expected_title, params = {})
       wait_for(params) do |context|
-        actual = selenium.get_title
-        context.message = "Expected title '#{expected_title}' but was '#{actual}'"
-        expected_title == actual
+        actual_title = selenium.get_title
+        context.message = "Expected title '#{expected_title}' but was '#{actual_title}'"
+        has_title? expected_title, actual_title
       end
+    end
+    def has_title?(expected_title, actual_title=selenium.get_title)
+      expected_title == actual_title
     end
 
     def is_text_present(pattern, options = {})

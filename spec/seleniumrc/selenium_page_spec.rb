@@ -38,6 +38,20 @@ describe SeleniumElement, "#has_title" do
   end
 end
 
+describe SeleniumElement, "#has_title?" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  it "returns true when passed in title is the page title" do
+    mock(@selenium).get_title {"my page"}
+    @page.has_title?("my page").should be_true
+  end
+
+  it "returns false when passed in title is not the page title" do
+    stub(@selenium).get_title {"no page"}
+    @page.has_title?("my page").should be_false
+  end
+end
+
 describe SeleniumElement, "#is_text_present" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
