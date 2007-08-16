@@ -101,6 +101,14 @@ describe SeleniumTestCase, "#wait_for_element_to_contain" do
   end
 end
 
+describe SeleniumTestCase, "#default_timeout" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  it "default_timeout should be 20 seconds" do
+    @test_case.default_timeout.should == 20000
+  end
+end
+
 describe SeleniumTestCase, "#open_home_page" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
@@ -114,14 +122,6 @@ describe SeleniumTestCase, "#open_home_page" do
     stub(base_selenium).send {""}
 
     @test_case.open_home_page
-  end
-end
-
-describe SeleniumTestCase, "#default_timeout" do
-  it_should_behave_like "Seleniumrc::SeleniumTestCase"
-
-  it "default_timeout should be 20 seconds" do
-    @test_case.default_timeout.should == 20000
   end
 end
 
