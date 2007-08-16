@@ -56,4 +56,23 @@ describe SeleniumElement, "#is_text_present" do
     end.should raise_error("Expected 'my page' to be present, but it wasn't (after 5 sec)")
   end
 end
+
+describe SeleniumElement, "#is_text_not_present" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  it "passes when title is expected" do
+    ticks = [true, true, true, false]
+    mock(@selenium).is_text_present("my page") do
+      ticks.shift
+    end.times(4)
+    @page.is_text_not_present("my page")
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_text_present("my page") {true}
+    proc do
+      @page.is_text_not_present("my page")
+    end.should raise_error("Expected 'my page' to be absent, but it wasn't (after 5 sec)")
+  end
+end
 end

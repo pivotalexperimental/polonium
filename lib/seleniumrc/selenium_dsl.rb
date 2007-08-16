@@ -101,6 +101,11 @@ module Seleniumrc
       page.is_text_present(pattern, options)
     end
 
+    # Assert and wait for page to not contain text.
+    def assert_text_not_present(pattern, options = {})
+      page.is_text_not_present(pattern, options)
+    end    
+
     # Assert and wait for the locator element to have value.
     def assert_value(locator, value)
       element(locator).has_value(value)
@@ -129,13 +134,6 @@ module Seleniumrc
     # Assert and wait for locator element to have text equal to passed in text.
     def assert_text(locator, text, options={})
       element(locator).has_text(text, options)      
-    end
-
-    # Assert and wait for page to not contain text.
-    def assert_text_not_present(pattern, message = "Expected '#{pattern}' to be absent, but it was present", options = {})
-      wait_for({:message => message}.merge(options)) do
-         !selenium.is_text_present(pattern)
-       end
     end
 
     # Assert and wait for locator element to not be present.

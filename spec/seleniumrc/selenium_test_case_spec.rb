@@ -215,15 +215,45 @@ describe SeleniumTestCase, "#assert_text_present" do
     end
   end
 
-  it "passes when text is expected" do
-    mock(base_selenium).is_text_present("my page") {"my page"}
+  it "passes when text is in page" do
+    ticks = [false, false, false, true]
+    mock(base_selenium).is_text_present("my page") do
+      ticks.shift
+    end.times(4)
     @test_case.assert_text_present("my page")
   end
 
-  it "fails when text is not expected" do
+  it "fails when text is not in page" do
     stub(base_selenium).is_text_present("my page") {false}
     proc do
       @test_case.assert_text_present("my page")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_text_not_present" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).is_text_not_present("my page", {})
+      page
+    end
+  end
+
+  it "passes when text is not in page" do
+    ticks = [true, true, true, false]
+    mock(base_selenium).is_text_present("my page") do
+      ticks.shift
+    end.times(4)
+    @test_case.assert_text_not_present("my page")
+  end
+
+  it "fails when text is in page" do
+    stub(base_selenium).is_text_present("my page") {true}
+    proc do
+      @test_case.assert_text_not_present("my page")
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end
