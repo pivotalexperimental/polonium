@@ -203,6 +203,36 @@ describe SeleniumTestCase, "instance methods" do
   end
 end
 
+describe SeleniumTestCase, "#assert_value" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_value("passed in value")
+      element
+    end
+  end
+
+  it "passes when value is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_value(sample_locator) {"passed in value"}
+    end
+    @test_case.assert_value(sample_locator, "passed in value")
+  end
+
+  it "fails when value is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_value(sample_locator) {"another value"}
+    end
+    proc do
+      @test_case.assert_value(sample_locator, "passed in value")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
@@ -255,23 +285,6 @@ describe SeleniumTestCase, "#assert_title" do
       @test_case.assert_title("my page")
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
-end
-
-describe SeleniumTestCase, "#assert_visible" do
-  it_should_behave_like "Seleniumrc::SeleniumTestCase"
-
-  it "assert_value should assert the element is present and its value is equal to that passed in" do
-    expected_value = "value"
-
-    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
-    stub(base_selenium).get_value {expected_value}
-
-    @test_case.assert_value(sample_locator, expected_value)
-    proc {@test_case.assert_value('locator_fails', 'hello')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_value(sample_locator, 'goodbye')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-  end  
 end
 
 describe SeleniumTestCase, "#assert_visible" do
