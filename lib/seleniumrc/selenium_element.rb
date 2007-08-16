@@ -103,27 +103,10 @@ module Seleniumrc
       wait_for do |context|
         success = false
 
-        fragments_not_found = []
-        fragments_out_of_order = []
-
         html = selenium.get_text(locator)
-        previous_index = -1
-        previous_fragment = ''
-        text_fragments.each do |current_fragment|
-          current_index = html.index(current_fragment)
-          if current_index
-            if current_index < previous_index
-              message = "Fragment #{current_fragment} out of order:\n" <<
-                      "\texpected '#{previous_fragment}'\n" <<
-                      "\tto come before '#{current_fragment}'\n"
-              fragments_out_of_order << message
-            end
-          else
-            fragments_not_found << "Fragment #{current_fragment} was not found\n"
-          end
-          previous_index = current_index
-          previous_fragment = current_fragment
-        end
+        results = find_text_order_error_fragments(html, text_fragments)
+        fragments_not_found = results[:fragments_not_found]
+        fragments_out_of_order = results[:fragments_out_of_order]
 
         if !fragments_not_found.empty?
           context.message = "Certain fragments weren't found:\n" <<
@@ -141,6 +124,33 @@ module Seleniumrc
       end
     end
 
+    def find_text_order_error_fragments(html, text_fragments)
+      fragments_not_found = []
+      fragments_out_of_order = []
+
+      previous_index = -1
+      previous_fragment = ''
+      text_fragments.each do |current_fragment|
+        current_index = html.index(current_fragment)
+        if current_index
+          if current_index < previous_index
+            message = "Fragment #{current_fragment} out of order:\n" <<
+                    "\texpected '#{previous_fragment}'\n" <<
+                    "\tto come before '#{current_fragment}'\n"
+            fragments_out_of_order << message
+          end
+        else
+          fragments_not_found << "Fragment #{current_fragment} was not found\n"
+        end
+        previous_index = current_index
+        previous_fragment = current_fragment
+      end
+      {
+        :fragments_not_found => fragments_not_found,
+        :fragments_out_of_order => fragments_out_of_order
+      }
+    end
+
     def inner_html
       selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
     end
@@ -151,5 +161,7 @@ module Seleniumrc
       return false unless self.locator == other.locator
       true
     end
+
+    protected
   end
 end
