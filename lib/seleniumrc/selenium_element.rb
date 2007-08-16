@@ -101,14 +101,11 @@ module Seleniumrc
     def has_text_in_order(*text_fragments)
       is_present
       wait_for do |context|
-        success = true
+        success = false
         container = selenium.get_text(locator)
 
-        everything_found = true
-        wasnt_found_message = "Certain fragments weren't found:\n"
-
-        everything_in_order = true
-        wasnt_in_order_message = "Certain fragments were out of order:\n"
+        fragments_not_found = []
+        fragments_out_of_order = []
 
         text_fragments.inject([-1, nil]) do |old_results, new_fragment|
           old_index = old_results[0]
@@ -116,31 +113,31 @@ module Seleniumrc
           new_index = container.index(new_fragment)
 
           unless new_index
-            everything_found = false
-            wasnt_found_message << "Fragment #{new_fragment} was not found\n"
+            fragments_not_found << "Fragment #{new_fragment} was not found\n"
           end
 
           if new_index && new_index < old_index
-            everything_in_order = false
-            wasnt_in_order_message << "Fragment #{new_fragment} out of order:\n"
-            wasnt_in_order_message << "\texpected '#{old_fragment}'\n"
-            wasnt_in_order_message << "\tto come before '#{new_fragment}'\n"
+            message = "Fragment #{new_fragment} out of order:\n" <<
+                      "\texpected '#{old_fragment}'\n" <<
+                      "\tto come before '#{new_fragment}'\n"
+            fragments_out_of_order << message
           end
 
           [new_index, new_fragment]
         end
 
-        wasnt_found_message << "\n\nhtml follows:\n #{container}\n"
-        wasnt_in_order_message << "\n\nhtml follows:\n #{container}\n"
-
-        unless everything_found && everything_in_order
-          success = false
-          if everything_found
-            context.message = wasnt_in_order_message
-          else
-            context.message = wasnt_found_message
-          end
+        if !fragments_not_found.empty?
+          context.message = "Certain fragments weren't found:\n" <<
+                            "#{fragments_not_found.join("\n")}\n" <<
+                            "\nhtml follows:\n #{container}\n"
+        elsif !fragments_out_of_order.empty?
+          context.message = "Certain fragments were out of order:\n" <<
+                            "#{fragments_out_of_order.join("\n")}\n" <<
+                            "\nhtml follows:\n #{container}\n"
+        else
+          success = true
         end
+
         success
       end
     end
