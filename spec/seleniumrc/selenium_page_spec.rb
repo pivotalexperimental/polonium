@@ -75,4 +75,32 @@ describe SeleniumElement, "#is_text_not_present" do
     end.should raise_error("Expected 'my page' to be absent, but it wasn't (after 5 sec)")
   end
 end
+
+describe SeleniumElement, "#url_ends_with" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  before do
+    @ends_with = "foobar.com?arg1=2"
+  end
+
+  it "passes when title is expected" do
+    ticks = [
+      "http://no.com",
+      "http://no.com",
+      "http://no.com",
+      "http://foobar.com?arg1=2"
+    ]
+    mock(@selenium).get_location do
+      ticks.shift
+    end.times(4)
+    @page.url_ends_with(@ends_with)
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).get_location {"http://no.com"}
+    proc do
+      @page.url_ends_with(@ends_with)
+    end.should raise_error("Expected 'http://no.com' to end with '#{@ends_with}' (after 5 sec)")
+  end
+end
 end

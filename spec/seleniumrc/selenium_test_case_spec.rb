@@ -124,28 +124,6 @@ describe SeleniumTestCase, "instance methods" do
     @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
 
-  it "assert_location_ends_in should assert that the url location ends with the passed in value" do
-    mock(base_selenium).get_location.any_number_of_times.
-      returns("http://home/location/1?thing=pa+ra+me+ter")
-
-    expected_url = '/home/location/1?thing=pa+ra+me+ter'
-    @test_case.assert_location_ends_in expected_url
-    @test_case.assert_location_ends_in( 'location/1?thing=pa+ra+me+ter')
-    @test_case.assert_location_ends_in( '1?thing=pa+ra+me+ter')
-    proc {@test_case.assert_location_ends_in('the wrong thing')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_location_ends_in('home/location')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-  end
-
-  it "assert_location_ends_in should not care about the order of the parameters" do
-    mock(base_selenium).get_location.any_number_of_times.
-      returns("http://home/location/1?thing=parameter&foo=bar")
-
-    @test_case.assert_location_ends_in '/home/location/1?thing=parameter&foo=bar'
-    @test_case.assert_location_ends_in '/home/location/1?foo=bar&thing=parameter'
-  end
-
   it "is_text_in_order should check if text is in order" do
     locator = "id=foo"
     mock(base_selenium).get_text.with(locator).any_number_of_times.returns("one\ntwo\nthree\n")
@@ -240,6 +218,39 @@ describe SeleniumTestCase, "#assert_text_not_present" do
     stub(base_selenium).is_text_present("my page") {true}
     proc do
       @test_case.assert_text_not_present("my page")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_location_ends_in" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    @ends_with = "foobar.com?arg1=2"
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).url_ends_with(@ends_with, {})
+      page
+    end
+  end
+
+  it "passes when the url ends with the passed in value" do
+    ticks = [
+      "http://no.com",
+      "http://no.com",
+      "http://no.com",
+      "http://foobar.com?arg1=2"
+    ]
+    mock(base_selenium).get_location do
+      ticks.shift
+    end.times(4)
+    @test_case.assert_location_ends_in(@ends_with)
+  end
+
+  it "fails when the url does not end with the passed in value" do
+    stub(base_selenium).get_location {"http://no.com"}
+    proc do
+      @test_case.assert_location_ends_in(@ends_with)
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

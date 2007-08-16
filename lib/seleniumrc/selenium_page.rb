@@ -29,6 +29,15 @@ module Seleniumrc
       end
     end
 
+    def url_ends_with(ends_with, options={})
+      options = {
+        :message => "Expected '#{selenium.get_location}' to end with '#{ends_with}'"
+      }.merge(options)
+      wait_for(options) do
+        selenium.get_location =~ Regexp.new("#{Regexp.escape(ends_with)}$")
+      end
+    end
+
     def ==(other)
       return false unless other.is_a?(SeleniumPage)
       self.selenium == other.selenium

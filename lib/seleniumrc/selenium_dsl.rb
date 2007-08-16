@@ -164,17 +164,8 @@ module Seleniumrc
     end
 
     # Assert browser url ends with passed in url.
-    def assert_location_ends_in(url)
-      expected_url_base, expected_url_parameters = url.split('?')
-      actual_url_base, actual_url_parameters = selenium.get_location.split('?')
-      assert_match /#{Regexp.escape(expected_url_base)}$/, actual_url_base
-      actual_parameters = actual_url_parameters.nil? ? nil : actual_url_parameters.split("&")
-      expected_parameters = expected_url_parameters.nil? ? nil : expected_url_parameters.split("&")
-      if actual_parameters.nil? || expected_parameters.nil?
-        assert_equal expected_parameters, actual_parameters
-      else
-        assert_equal expected_parameters.sort, actual_parameters.sort
-      end
+    def assert_location_ends_in(ends_with, options={})
+      page.url_ends_with(ends_with, options)
     end
 
     # Assert and wait for locator element has text fragments in a certain order.
