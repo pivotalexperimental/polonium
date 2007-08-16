@@ -47,10 +47,13 @@ describe SeleniumElement, "#has_value" do
   it_should_behave_like "Seleniumrc::SeleniumElement"
 
   it "passes when element is present and value is expected value" do
-    mock(@selenium).is_element_present(@element_locator) {true}
-    ticks = [nil, nil, nil, "joe"]
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    value_ticks = [nil, nil, nil, "joe"]
     mock(@selenium).get_value(@element_locator) do
-      ticks.shift
+      value_ticks.shift
     end.times(4)
     @element.has_value("joe")
   end
@@ -79,9 +82,14 @@ describe SeleniumElement, "#has_attribute" do
   end
 
   it "passes when element is present and value is expected value" do
-    ticks = [false, false, false, true]
-    mock(@selenium).is_element_present(@element_locator) {true}
-    mock(@selenium).get_attribute(@element_locator) {"joe"}
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    label_ticks = ["jane", "jane", "jane", "joe"]
+    mock(@selenium).get_attribute(@element_locator) do
+      label_ticks.shift
+    end.times(4)
     @element.has_attribute("joe")
   end
 
@@ -109,9 +117,14 @@ describe SeleniumElement, "#has_selected" do
   end
 
   it "passes when element is present and value is expected value" do
-    ticks = [false, false, false, true]
-    mock(@selenium).is_element_present(@element_locator) {true}
-    mock(@selenium).get_selected_label(@element_locator) {"joe"}
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    label_ticks = ["jane", "jane", "jane", "joe"]
+    mock(@selenium).get_selected_label(@element_locator) do
+      label_ticks.shift
+    end.times(4)
     @element.has_selected("joe")
   end
 
@@ -127,6 +140,41 @@ describe SeleniumElement, "#has_selected" do
     stub(@selenium).is_element_present(@element_locator) {false}
     proc do
       @element.has_selected("joe")
+    end.should raise_error
+  end
+end
+
+describe SeleniumElement, "#is_checked" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+  end
+
+  it "passes when element is present and value is expected value" do
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    checked_ticks = [false, false, false, true]
+    mock(@selenium).is_checked(@element_locator) do
+      checked_ticks.shift
+    end.times(4)
+    @element.is_checked
+  end
+
+  it "fails when element is present and value is not expected" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).is_checked(@element_locator) {false}
+    proc do
+      @element.is_checked
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.is_checked
     end.should raise_error
   end
 end

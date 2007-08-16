@@ -42,5 +42,12 @@ module Seleniumrc
         expected_value == actual
       end
     end
+
+    def is_checked
+      is_present
+      wait_for(:message => "Expected '#{locator}' to be checked") do
+        selenium.is_checked(locator)
+      end
+    end
   end
 end
