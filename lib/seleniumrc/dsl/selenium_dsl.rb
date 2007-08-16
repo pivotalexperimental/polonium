@@ -95,9 +95,8 @@ module Seleniumrc
     def wait_for_page_to_load(timeout=default_timeout)
       selenium.wait_for_page_to_load timeout
       if get_title.include?("Exception caught")
-        fail "We got a new page, but it was an application exception page.\n\n" + get_html_source
+        flunk "We got a new page, but it was an application exception page.\n\n" + get_html_source
       end
-      assert !(get_title.include?("Exception caught")), "We got a new page, but it was an application exception page."
     end
 
     def click_and_wait_for_page_to_load(locator)
