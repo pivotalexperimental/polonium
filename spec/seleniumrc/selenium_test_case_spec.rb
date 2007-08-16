@@ -204,6 +204,30 @@ describe SeleniumTestCase, "#assert_title" do
   end
 end
 
+describe SeleniumTestCase, "#assert_text_present" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).is_text_present("my page", {})
+      page
+    end
+  end
+
+  it "passes when text is expected" do
+    mock(base_selenium).is_text_present("my page") {"my page"}
+    @test_case.assert_text_present("my page")
+  end
+
+  it "fails when text is not expected" do
+    stub(base_selenium).is_text_present("my page") {false}
+    proc do
+      @test_case.assert_text_present("my page")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_value" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 

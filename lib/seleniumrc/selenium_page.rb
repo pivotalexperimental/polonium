@@ -15,6 +15,13 @@ module Seleniumrc
       end
     end
 
+    def is_text_present(pattern, options = {})
+      message = options[:message] || "Expected '#{pattern}' to be present, but it wasn't"
+      wait_for({:message => message}.merge(options)) do
+        selenium.is_text_present(pattern)
+      end
+    end
+
     def ==(other)
       return false unless other.is_a?(SeleniumPage)
       self.selenium == other.selenium
