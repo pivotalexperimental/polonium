@@ -587,18 +587,27 @@ end
 describe SeleniumTestCase, "#assert_not_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "passes when element is visible" do
-    ticks = [true, true, true, false]
-    stub(base_selenium).is_visible.returns {ticks.shift}
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).is_not_visible({})
+      element
+    end
+  end
 
-    @test_case.assert_not_visible("id=element")
+  it "passes when element is present and is not visible" do
+    mock(base_selenium).is_element_present(sample_locator) {true}
+    mock(base_selenium).is_visible(sample_locator) {false}
+
+    @test_case.assert_not_visible(sample_locator)
   end
   
   it "fails when element is visible" do
-    stub(base_selenium).is_visible.returns {true}
+    mock(base_selenium).is_element_present(sample_locator) {true}
+    stub(base_selenium).is_visible(sample_locator) {true}
 
     proc {
-      @test_case.assert_not_visible("id=element")
+      @test_case.assert_not_visible(sample_locator)
     }.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

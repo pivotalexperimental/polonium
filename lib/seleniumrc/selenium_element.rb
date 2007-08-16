@@ -59,6 +59,16 @@ module Seleniumrc
       end
     end
 
+    def is_not_visible(options={})
+      is_present
+      options = {
+        :message => "Expected '#{locator}' to be hidden, but it wasn't"
+      }.merge(options)
+      wait_for(options) do
+        !selenium.is_visible(locator)
+      end
+    end
+
     def is_checked
       is_present
       wait_for(:message => "Expected '#{locator}' to be checked") do

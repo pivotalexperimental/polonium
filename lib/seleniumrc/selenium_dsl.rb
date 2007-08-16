@@ -188,10 +188,8 @@ module Seleniumrc
       element(locator).is_visible(options)
     end
 
-    def assert_not_visible(pattern, message = "Expected '#{pattern}' to be not visible, but it was visible", options = {})
-      wait_for({:message => message}.merge(options)) do
-        !selenium.is_visible(pattern)
-      end
+    def assert_not_visible(locator, options = {})
+      element(locator).is_not_visible(options)
     end
 
     def click_and_wait_for_page_to_load(locator)
