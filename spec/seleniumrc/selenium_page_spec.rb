@@ -11,7 +11,7 @@ describe SeleniumPage, :shared => true do
   end
 end
 
-describe SeleniumElement, "#initialize" do
+describe SeleniumPage, "#initialize" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
   
   it "sets the selenium object" do
@@ -19,7 +19,31 @@ describe SeleniumElement, "#initialize" do
   end
 end
 
-describe SeleniumElement, "#has_title" do
+describe SeleniumPage, "#open_and_wait" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+
+  it "opens the url and waits for the page to load" do
+    mock(@selenium) do |o|
+      o.open("/users/list")
+      o.wait_for_page_to_load(@page.default_timeout)
+      o.get_title {"Users in the project"}
+    end
+    @page.open_and_wait("/users/list")
+  end
+
+  it "fails when titles contains Exception caught" do
+    mock(@selenium) do |o|
+      o.open("/users/list")
+      o.wait_for_page_to_load(@page.default_timeout)
+      o.get_title {"Exception caught"}
+    end
+    proc do
+      @page.open_and_wait("/users/list")
+    end.should raise_error
+  end
+end
+
+describe SeleniumPage, "#has_title" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "passes when title is expected" do
@@ -38,7 +62,7 @@ describe SeleniumElement, "#has_title" do
   end
 end
 
-describe SeleniumElement, "#has_title?" do
+describe SeleniumPage, "#has_title?" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "returns true when passed in title is the page title" do
@@ -52,7 +76,7 @@ describe SeleniumElement, "#has_title?" do
   end
 end
 
-describe SeleniumElement, "#is_text_present" do
+describe SeleniumPage, "#is_text_present" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "passes when title is expected" do
@@ -71,7 +95,7 @@ describe SeleniumElement, "#is_text_present" do
   end
 end
 
-describe SeleniumElement, "#is_text_present?" do
+describe SeleniumPage, "#is_text_present?" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "returns true when title is expected" do
@@ -85,7 +109,7 @@ describe SeleniumElement, "#is_text_present?" do
   end
 end
 
-describe SeleniumElement, "#is_text_not_present" do
+describe SeleniumPage, "#is_text_not_present" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "passes when text is not present" do
@@ -104,7 +128,7 @@ describe SeleniumElement, "#is_text_not_present" do
   end
 end
 
-describe SeleniumElement, "#is_text_not_present?" do
+describe SeleniumPage, "#is_text_not_present?" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   it "returns true when text is not present" do
@@ -118,7 +142,7 @@ describe SeleniumElement, "#is_text_not_present?" do
   end
 end
 
-describe SeleniumElement, "#url_ends_with" do
+describe SeleniumPage, "#url_ends_with" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   before do
@@ -146,7 +170,7 @@ describe SeleniumElement, "#url_ends_with" do
   end
 end
 
-describe SeleniumElement, "#url_ends_with?" do
+describe SeleniumPage, "#url_ends_with?" do
   it_should_behave_like "Seleniumrc::SeleniumPage"
 
   before do

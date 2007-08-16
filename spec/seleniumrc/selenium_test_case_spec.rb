@@ -122,6 +122,27 @@ describe SeleniumTestCase, "#open_home_page" do
   end
 end
 
+describe SeleniumTestCase, "#open_and_wait" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+      stub_wait_for page
+      mock.proxy(page).open_and_wait("/users/list")
+      page
+    end
+  end
+
+  it "opens the url and waits for the page to load" do
+    mock(base_selenium) do |o|
+      o.open("/users/list")
+      o.wait_for_page_to_load(@test_case.default_timeout)
+      o.get_title {"Users in the project"}
+    end
+    @test_case.open_and_wait("/users/list")
+  end
+end
+
 describe SeleniumTestCase, "#assert_title" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 

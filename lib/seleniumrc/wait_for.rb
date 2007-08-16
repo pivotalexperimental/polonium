@@ -27,6 +27,19 @@ module Seleniumrc
       Time
     end
 
+    def wait_for_page_to_load(timeout=default_timeout)
+      selenium.wait_for_page_to_load timeout
+      if selenium.get_title.include?("Exception caught")
+        flunk "We got a new page, but it was an application exception page.\n\n" + get_html_source
+      end
+    end
+
+    # The default Selenium Core client side timeout.
+    def default_timeout
+      @default_timeout ||= 20000
+    end
+    attr_writer :default_timeout
+
     def flunk(message)
       raise Test::Unit::AssertionFailedError, message
     end

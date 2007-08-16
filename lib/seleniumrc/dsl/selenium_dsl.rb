@@ -37,12 +37,6 @@ module Seleniumrc
       selenium.get_eval("selenium.browserbot.getCurrentWindow().location.reload()")
     end
 
-    # The default Selenium Core client side timeout.
-    def default_timeout
-      @default_timeout ||= 20000
-    end
-    attr_writer :default_timeout
-
     def method_missing(name, *args)
       return selenium.send(name, *args)
     end
@@ -51,9 +45,8 @@ module Seleniumrc
 #--------- Commands
 
     # Open a location and wait for the page to load.
-    def open_and_wait( location)
-      selenium.open(location)
-      wait_for_page_to_load
+    def open_and_wait(url)
+      page.open_and_wait url
     end
 
     # Click a link and wait for the page to load.

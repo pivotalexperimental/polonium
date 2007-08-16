@@ -7,6 +7,11 @@ module Seleniumrc
       @selenium = selenium
     end
 
+    def open_and_wait(url)
+      selenium.open(url)
+      wait_for_page_to_load
+    end
+
     def has_title(expected_title, params = {})
       wait_for(params) do |context|
         actual_title = selenium.get_title
