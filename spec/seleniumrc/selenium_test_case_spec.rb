@@ -374,9 +374,20 @@ describe SeleniumTestCase, "#assert_selected" do
   end
 
   it "passes when selected is expected" do
+    present_ticks = [false, false, false, true]
+    selected_ticks = [
+      "another_element",
+      "another_element",
+      "another_element",
+      "passed_in_element",
+    ]
     mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) {true}
-      o.get_selected_label(sample_locator) {"passed_in_element"}
+      o.is_element_present(sample_locator) do
+        present_ticks.shift
+      end.times(4)
+      o.get_selected_label(sample_locator) do
+        selected_ticks.shift
+      end.times(4)
     end
     @test_case.assert_selected(sample_locator, "passed_in_element")
   end
