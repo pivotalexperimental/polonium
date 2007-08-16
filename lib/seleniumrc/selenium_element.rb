@@ -71,6 +71,18 @@ module Seleniumrc
         expected_text == actual
       end
     end
+    
+    def contains_text(expected_text, options={})
+      is_present
+      message = options[:message] || "#{locator} should contain #{expected_text}"
+      wait_for(:message => message) do
+        inner_html.include?(expected_text)
+      end
+    end
+
+    def inner_html
+      selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
+    end
 
     def ==(other)
       return false unless other.is_a?(SeleniumElement)

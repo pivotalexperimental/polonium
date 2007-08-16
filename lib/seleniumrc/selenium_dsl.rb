@@ -75,7 +75,7 @@ module Seleniumrc
 
     # Get the inner html of the located element.
     def get_inner_html(locator)
-      selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
+      element(locator).inner_html
     end
 
     # Does the element at locator contain the text?
@@ -147,12 +147,8 @@ module Seleniumrc
     end
 
     # Assert and wait for locator element to contain text.
-    def assert_element_contains(locator, text, message=nil)
-      actual_message = "#{locator} should contain #{text}"
-      actual_message = message + ": " + actual_message unless message.nil?
-      wait_for(:message => actual_message) do
-        element_contains_text(locator, text)
-      end
+    def assert_element_contains(locator, text, options = {})
+      element(locator).contains_text(text, options)
     end
 
     # Assert and wait for locator element to not contain text.

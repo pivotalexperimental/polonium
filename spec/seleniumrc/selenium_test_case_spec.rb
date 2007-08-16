@@ -350,6 +350,39 @@ describe SeleniumTestCase, "#assert_value" do
   end
 end
 
+describe SeleniumTestCase, "#assert_element_contains" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).contains_text("passed in value", {})
+      element
+    end
+    @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
+  end
+
+  it "passes when value is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) do
+        "html passed in value html"
+      end
+    end
+    @test_case.assert_element_contains(sample_locator, "passed in value")
+  end
+
+  it "fails when value is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) {"another value"}
+    end
+    proc do
+      @test_case.assert_element_contains(sample_locator, "passed in value")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
