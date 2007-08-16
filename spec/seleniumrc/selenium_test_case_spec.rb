@@ -36,33 +36,37 @@ describe SeleniumTestCase, :shared => true do
   end
 end
 
-describe SeleniumTestCase, "instance methods" do
+describe SeleniumTestCase, "#setup" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "setup should not allow transactional fixtures" do
+  it "should not allow transactional fixtures" do
     stub(@test_case.class).use_transactional_fixtures.returns true
 
     expected_message = "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)."
     proc {@test_case.setup}.should raise_error(RuntimeError, expected_message)
   end
+end
 
-  it "default_timeout should be 20 seconds" do
-    @test_case.default_timeout.should == 20000
-  end
+describe SeleniumTestCase, "#wait_for" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "wait_for should pass when the block returns true within time limit" do
+  it "should pass when the block returns true within time limit" do
     @test_case.wait_for(:timeout => 2) do
       true
     end
   end
 
-  it "wait_for should raise a AssertionFailedError when block times out" do
+  it "should raise a AssertionFailedError when block times out" do
     proc do
       @test_case.wait_for(:timeout => 2) {false}
     end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
   end
+end
 
-  it "wait_for_element_to_contain should pass when finding text within time limit" do
+describe SeleniumTestCase, "#wait_for_element_to_contain" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  it "should pass when finding text within time limit" do
     is_element_present_results = [false, true]
 
     stub(base_selenium).is_element_present {is_element_present_results.shift}
@@ -73,7 +77,7 @@ describe SeleniumTestCase, "instance methods" do
     @test_case.wait_for_element_to_contain(sample_locator, sample_text)
   end
 
-  it "wait_for_element_to_contain should fail when element not found in time" do
+  it "should fail when element not found in time" do
     is_element_present_results = [false, false, false, false]
 
     stub(base_selenium).is_element_present {is_element_present_results.shift}
@@ -83,7 +87,7 @@ describe SeleniumTestCase, "instance methods" do
     end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 5 sec)")
   end
 
-  it "wait_for_element_to_contain should fail when text does not match in time" do
+  it "should fail when text does not match in time" do
     is_element_present_results = [false, true, true, true]
 
     stub(base_selenium).is_element_present {is_element_present_results.shift}
@@ -95,34 +99,10 @@ describe SeleniumTestCase, "instance methods" do
       @test_case.wait_for_element_to_contain(sample_locator, "wrong text", nil, 1)
     end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 1 sec)")
   end
+end
 
-  it "element_does_not_contain_text returns true when element is not on the page" do
-    locator = "id=element_id"
-    expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(false)
-
-    @test_case.element_does_not_contain_text(locator, expected_text).should == true
-  end
-
-  it "element_does_not_contain_text returns true when element is on page and inner_html does not contain text" do
-    locator = "id=element_id"
-    inner_html = "Some text that does not contain the expected_text"
-    expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(true)
-    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
-
-    @test_case.element_does_not_contain_text(locator, expected_text).should == true
-  end
-
-  it "element_does_not_contain_text returns false when element is on page and inner_html does contain text" do
-    locator = "id=element_id"
-    inner_html = "foobar foobar foobar"
-    expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(true)
-    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
-
-    @test_case.element_does_not_contain_text(locator, expected_text).should == false
-  end
+describe SeleniumTestCase, "#open_home_page" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should open home page" do
     configuration = create_sample_configuration
@@ -134,6 +114,14 @@ describe SeleniumTestCase, "instance methods" do
     stub(base_selenium).send {""}
 
     @test_case.open_home_page
+  end
+end
+
+describe SeleniumTestCase, "#default_timeout" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  it "default_timeout should be 20 seconds" do
+    @test_case.default_timeout.should == 20000
   end
 end
 
@@ -370,6 +358,38 @@ describe SeleniumTestCase, "#assert_element_contains" do
     proc do
       @test_case.assert_element_contains(sample_locator, "passed in value")
     end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#element_does_not_contain_text" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+  
+  it "returns true when element is not on the page" do
+    locator = "id=element_id"
+    expected_text = "foobar"
+    mock(base_selenium).is_element_present.with(locator).returns(false)
+
+    @test_case.element_does_not_contain_text(locator, expected_text).should == true
+  end
+
+  it "returns true when element is on page and inner_html does not contain text" do
+    locator = "id=element_id"
+    inner_html = "Some text that does not contain the expected_text"
+    expected_text = "foobar"
+    mock(base_selenium).is_element_present.with(locator).returns(true)
+    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
+
+    @test_case.element_does_not_contain_text(locator, expected_text).should == true
+  end
+
+  it "returns false when element is on page and inner_html does contain text" do
+    locator = "id=element_id"
+    inner_html = "foobar foobar foobar"
+    expected_text = "foobar"
+    mock(base_selenium).is_element_present.with(locator).returns(true)
+    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
+
+    @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
 end
 
