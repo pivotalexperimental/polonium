@@ -8,6 +8,7 @@ describe SeleniumTestCase, :shared => true do
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
     @base_selenium = "Base Selenium"
     @test_case.base_selenium = @base_selenium
+    @configuration = create_sample_configuration
     
     stub_wait_for(@test_case)
     stub.probe(SeleniumElement).new do |element|
@@ -112,11 +113,7 @@ end
 describe SeleniumTestCase, "#open_home_page" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "should open home page" do
-    configuration = create_sample_configuration
-
-    @test_case.base_selenium = base_selenium
-
+  it "opens home page" do
     mock(base_selenium).open("http://test.com:80")
     mock(base_selenium).wait_for_page_to_load(@test_case.default_timeout)
     stub(base_selenium).send {""}
