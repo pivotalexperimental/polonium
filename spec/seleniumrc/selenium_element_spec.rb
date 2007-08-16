@@ -182,11 +182,46 @@ describe SeleniumElement, "#is_visible" do
     @element.is_visible
   end
 
-  it "fails when element is present and value is not expected" do
+  it "fails when element is present and is not visible" do
     stub(@selenium).is_element_present(@element_locator) {true}
     stub(@selenium).is_visible(@element_locator) {false}
     proc do
       @element.is_visible
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.is_visible
+    end.should raise_error
+  end
+end
+
+describe SeleniumElement, "#is_not_visible" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+  end
+
+  it "passes when element exists and is not visible" do
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    visible_ticks = [true, true, true, false]
+    mock(@selenium).is_visible(@element_locator) do
+      visible_ticks.shift
+    end.times(4)
+    @element.is_not_visible
+  end
+
+  it "fails when element is present and is visible" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).is__visible(@element_locator) {true}
+    proc do
+      @element.is_not_visible
     end.should raise_error
   end
 
