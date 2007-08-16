@@ -1,4 +1,4 @@
-trequire File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
 describe SeleniumTestCase, :shared => true do
@@ -136,19 +136,6 @@ describe SeleniumTestCase, "instance methods" do
     proc do
       @test_case.assert_element_does_not_contain_text(sample_locator, expected_text, "Failure Message", 1)
     end.should raise_error(Test::Unit::AssertionFailedError, "Failure Message (after 1 sec)")
-  end
-
-  it "assert_text should assert the element is present and its text is equal to that passed in" do
-    expected_text = "text"
-
-    stub(base_selenium).is_element_present {|locator| locator == sample_locator}
-    stub(base_selenium).get_text {expected_text}
-
-    @test_case.assert_text(sample_locator, expected_text)
-    proc {@test_case.assert_text('locator_fails', 'hello')}.
-      should raise_error(Test::Unit::AssertionFailedError)
-    proc {@test_case.assert_text(sample_locator, 'goodbye')}.
-      should raise_error(Test::Unit::AssertionFailedError)
   end
 
   it "assert_location_ends_in should assert that the url location ends with the passed in value" do
@@ -363,6 +350,36 @@ describe SeleniumTestCase, "#assert_not_checked" do
     end
     proc do
       @test_case.assert_not_checked(sample_locator)
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_text" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_text("expected text", {})
+      element
+    end
+  end
+
+  it "passes when text is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_text(sample_locator) {"expected text"}
+    end
+    @test_case.assert_text(sample_locator, "expected text")
+  end
+
+  it "fails when text is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_text(sample_locator) {"unexpected text"}
+    end
+    proc do
+      @test_case.assert_text(sample_locator, "expected text")
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

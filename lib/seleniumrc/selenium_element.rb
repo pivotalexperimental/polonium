@@ -57,6 +57,15 @@ module Seleniumrc
       end
     end
 
+    def has_text(expected_text, options={})
+      is_present
+      wait_for(options) do |context|
+        actual = selenium.get_text(locator)
+        context.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
+        expected_text == actual
+      end
+    end
+
     def ==(other)
       return false unless other.is_a?(SeleniumElement)
       return false unless self.selenium == other.selenium

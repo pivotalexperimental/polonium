@@ -123,12 +123,7 @@ module Seleniumrc
 
     # Assert and wait for locator element to have text equal to passed in text.
     def assert_text(locator, text, options={})
-      assert_element_present locator
-      wait_for(options) do |context|
-        actual = selenium.get_text(locator)
-        context.message = "Expected text '#{text}' to be full contents of #{locator} but was '#{actual}')"
-        text == actual
-      end
+      element(locator).has_text(text, options)      
     end
 
     # Assert and wait for page to contain text.
