@@ -118,10 +118,7 @@ module Seleniumrc
 
     # Assert and wait for locator check box to not be checked.
     def assert_not_checked(locator)
-      assert_element_present locator
-      wait_for(:message => "Expected '#{locator}' not to be checked") do
-        !selenium.is_checked(locator)
-      end
+      element(locator).is_not_checked
     end
 
     # Assert and wait for locator element to have text equal to passed in text.

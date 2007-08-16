@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
+trequire File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
 describe SeleniumTestCase, :shared => true do
@@ -333,6 +333,36 @@ describe SeleniumTestCase, "#assert_checked" do
     end
     proc do
       @test_case.assert_checked(sample_locator)
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
+describe SeleniumTestCase, "#assert_not_checked" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).is_not_checked
+      element
+    end
+  end
+
+  it "passes when attribute is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.is_checked(sample_locator) {false}
+    end
+    @test_case.assert_not_checked(sample_locator)
+  end
+
+  it "fails when attribute is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.is_checked(sample_locator) {true}
+    end
+    proc do
+      @test_case.assert_not_checked(sample_locator)
     end.should raise_error(Test::Unit::AssertionFailedError)
   end
 end

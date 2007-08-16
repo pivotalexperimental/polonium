@@ -50,6 +50,13 @@ module Seleniumrc
       end
     end
 
+    def is_not_checked
+      is_present
+      wait_for(:message => "Expected '#{locator}' to be checked") do
+        !selenium.is_checked(locator)
+      end
+    end
+
     def ==(other)
       return false unless other.is_a?(SeleniumElement)
       return false unless self.selenium == other.selenium
