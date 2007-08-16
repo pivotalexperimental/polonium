@@ -145,11 +145,6 @@ module Seleniumrc
       end
     end
 
-    def do_is_text_in_order
-
-
-    end
-
     def inner_html
       selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
     end
