@@ -8,12 +8,12 @@ module Seleniumrc
     include WaitFor
 
     def type(locator,value)
-      assert_element_present locator
+      element(locator).is_present
       selenium.type(locator,value)
     end
 
     def click(locator)
-      assert_element_present locator
+      element(locator).is_present
       selenium.click(locator)
     end
 
@@ -27,7 +27,7 @@ module Seleniumrc
     end
 
     def select(select_locator,option_locator)
-      assert_element_present select_locator
+      element(select_locator).is_present
       selenium.select(select_locator,option_locator)
     end
 
