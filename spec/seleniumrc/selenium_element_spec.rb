@@ -52,7 +52,7 @@ describe SeleniumElement, "#is_present?" do
   end
 
   it "returns false when element is not present" do
-    stub(@selenium).is_element_present(@element_locator) {false}
+    mock(@selenium).is_element_present(@element_locator) {false}
     @element.is_present?.should be_false
   end
 end
@@ -73,6 +73,20 @@ describe SeleniumElement, "#is_not_present" do
     proc do
       @element.is_not_present
     end.should raise_error("Expected element 'id=foobar' to be absent, but it was not (after 5 sec)")
+  end
+end
+
+describe SeleniumElement, "#is_not_present?" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  it "returns true when element is not present" do
+    mock(@selenium).is_element_present(@element_locator) {false}
+    @element.is_not_present?.should be_true
+  end
+
+  it "returns false when element is present" do
+    mock(@selenium).is_element_present(@element_locator) {true}
+    @element.is_not_present?.should be_false
   end
 end
 
