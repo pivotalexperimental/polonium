@@ -383,6 +383,37 @@ describe SeleniumTestCase, "#assert_element_contains" do
   end
 end
 
+describe SeleniumTestCase, "#assert_next_sibling" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  before do
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+      stub_wait_for element
+      mock.proxy(element).has_next_sibling("next_sibling", {})
+      element
+    end
+    @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
+  end
+
+  it "passes when value is expected" do
+    mock(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) {"next_sibling"}
+    end
+    @test_case.assert_next_sibling(sample_locator, "next_sibling")
+  end
+
+  it "fails when value is not expected" do
+    stub(base_selenium) do |o|
+      o.is_element_present(sample_locator) {true}
+      o.get_eval(@evaled_js) {"wrong_sibling"}
+    end
+    proc do
+      @test_case.assert_next_sibling(sample_locator, "next_sibling")
+    end.should raise_error(Test::Unit::AssertionFailedError)
+  end
+end
+
 describe SeleniumTestCase, "#assert_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 

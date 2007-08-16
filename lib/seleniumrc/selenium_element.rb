@@ -71,12 +71,21 @@ module Seleniumrc
         expected_text == actual
       end
     end
-    
+
     def contains_text(expected_text, options={})
       is_present
       message = options[:message] || "#{locator} should contain #{expected_text}"
       wait_for(:message => message) do
         inner_html.include?(expected_text)
+      end
+    end
+
+    def has_next_sibling(expected_sibling_id, options = {})
+      is_present
+      eval_js = "this.page().findElement('#{locator}').nextSibling.id"
+      wait_for(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do
+        actual_sibling_id = selenium.get_eval(eval_js)
+        expected_sibling_id == actual_sibling_id
       end
     end
 

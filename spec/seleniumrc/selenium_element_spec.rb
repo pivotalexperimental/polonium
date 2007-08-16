@@ -304,4 +304,39 @@ describe SeleniumElement, "#contains_text" do
   end
 end
 
+describe SeleniumElement, "#has_next_sibling" do
+  it_should_behave_like "Seleniumrc::SeleniumElement"
+
+  prepend_before do
+    @element_locator = "id=foobar"
+    @evaled_js = "this.page().findElement('#{@element_locator}').nextSibling.id"
+  end
+
+  it "passes when element is present and value is expected value" do
+    element_ticks = [false, false, false, true]
+    mock(@selenium).is_element_present(@element_locator) do
+      element_ticks.shift
+    end.times(4)
+    inner_html_ticks = ["", "", "", "next_element"]
+    mock(@selenium).get_eval(@evaled_js) do
+      inner_html_ticks.shift
+    end.times(4)
+    @element.has_next_sibling("next_element")
+  end
+
+  it "fails when element is present and value is not expected" do
+    stub(@selenium).is_element_present(@element_locator) {true}
+    stub(@selenium).get_eval(@evaled_js) {""}
+    proc do
+      @element.has_next_sibling "next_element"
+    end.should raise_error
+  end
+
+  it "fails when element is not present" do
+    stub(@selenium).is_element_present(@element_locator) {false}
+    proc do
+      @element.has_next_sibling "match"
+    end.should raise_error
+  end
+end
 end

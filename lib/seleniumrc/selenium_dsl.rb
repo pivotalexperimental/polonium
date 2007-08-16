@@ -159,11 +159,8 @@ module Seleniumrc
     alias_method :wait_for_element_to_not_contain_text, :assert_element_does_not_contain_text
 
     # Assert and wait for the element with id next sibling is the element with id expected_sibling_id.
-    def assert_next_sibling(id, expected_sibling_id)
-      wait_for(:message => "id '#{id}' should be next to '#{expected_sibling_id}'") do
-        actual_sibling_id = get_eval("this.page().findElement('#{id}').nextSibling.id")
-        expected_sibling_id == actual_sibling_id
-      end
+    def assert_next_sibling(locator, expected_sibling_id, options = {})
+      element(locator).has_next_sibling(expected_sibling_id, options)
     end
 
     # Assert browser url ends with passed in url.
