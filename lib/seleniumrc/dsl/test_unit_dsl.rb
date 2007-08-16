@@ -83,5 +83,13 @@ module Seleniumrc
       element(locator).has_text_in_order(*text_fragments)
     end
     alias_method :wait_for_text_in_order, :assert_text_in_order
+
+    def assert_visible(locator, options = {})
+      element(locator).is_visible(options)
+    end
+
+    def assert_not_visible(locator, options = {})
+      element(locator).is_not_visible(options)
+    end    
   end
 end

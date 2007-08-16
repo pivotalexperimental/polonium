@@ -100,14 +100,6 @@ module Seleniumrc
       assert !(get_title.include?("Exception caught")), "We got a new page, but it was an application exception page."
     end
 
-    def assert_visible(locator, options = {})
-      element(locator).is_visible(options)
-    end
-
-    def assert_not_visible(locator, options = {})
-      element(locator).is_not_visible(options)
-    end
-
     def click_and_wait_for_page_to_load(locator)
        click locator
        wait_for_page_to_load
