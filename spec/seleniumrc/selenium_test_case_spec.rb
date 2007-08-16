@@ -472,6 +472,13 @@ end
 describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
+  it "passes when element is visible" do
+    ticks = [false, false, false, true]
+    stub(base_selenium).is_visible.returns {ticks.shift}
+
+    @test_case.assert_visible("id=element")
+  end
+  
   it "fails when element is not visible" do
     stub(base_selenium).is_visible.returns {false}
 
@@ -479,31 +486,24 @@ describe SeleniumTestCase, "#assert_visible" do
       @test_case.assert_visible("id=element")
     }.should raise_error(Test::Unit::AssertionFailedError)
   end
-
-  it "passes when element is visible" do
-    ticks = [false, false, false, true]
-    stub(base_selenium).is_visible.returns {ticks.shift}
-
-    @test_case.assert_visible("id=element")
-  end
 end
 
 describe SeleniumTestCase, "#assert_not_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
-
-  it "fails when element is visible" do
-    stub(base_selenium).is_visible.returns {true}
-
-    proc {
-      @test_case.assert_not_visible("id=element")
-    }.should raise_error(Test::Unit::AssertionFailedError)
-  end
 
   it "passes when element is visible" do
     ticks = [true, true, true, false]
     stub(base_selenium).is_visible.returns {ticks.shift}
 
     @test_case.assert_not_visible("id=element")
+  end
+  
+  it "fails when element is visible" do
+    stub(base_selenium).is_visible.returns {true}
+
+    proc {
+      @test_case.assert_not_visible("id=element")
+    }.should raise_error(Test::Unit::AssertionFailedError)
   end
 end
 
