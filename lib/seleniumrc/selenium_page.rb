@@ -30,13 +30,16 @@ module Seleniumrc
       selenium.is_text_present(expected_text)
     end
 
-    def is_text_not_present(pattern, options = {})
+    def is_text_not_present(unexpected_text, options = {})
       options = {
-        :message => "Expected '#{pattern}' to be absent, but it wasn't"
+        :message => "Expected '#{unexpected_text}' to be absent, but it wasn't"
       }.merge(options)
       wait_for(options) do
-        !selenium.is_text_present(pattern)
+        is_text_not_present? unexpected_text
       end
+    end
+    def is_text_not_present?(unexpected_text)
+      !selenium.is_text_present(unexpected_text)
     end
 
     def url_ends_with(ends_with, options={})
