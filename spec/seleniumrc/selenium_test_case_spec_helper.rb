@@ -1,7 +1,5 @@
 module SeleniumTestCaseSpec
-  def base_selenium
-    @base_selenium
-  end
+  attr_reader :base_selenium
   
   class MySeleniumTestCase < Seleniumrc::SeleniumTestCase
     def initialize(*args)
