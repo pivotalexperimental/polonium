@@ -1,5 +1,5 @@
 module Selenium
-  class SeleneseInterpreter
+  class SeleniumDriver
     attr_reader :server_host, :server_port
 
     def browser_start_command
