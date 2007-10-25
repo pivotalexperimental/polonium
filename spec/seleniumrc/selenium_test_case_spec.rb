@@ -425,6 +425,17 @@ describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
   end
 end
 
+describe SeleniumTestCase, "#element_does_not_contain_text" do
+  it_should_behave_like "Seleniumrc::SeleniumTestCase"
+
+  it "checks if text is in order" do
+    locator = "id=foo"
+    stub(@base_selenium).get_text(locator).returns("one\ntwo\nthree\n")
+
+    @test_case.is_text_in_order locator, "one", "two", "three"
+  end
+end
+
 describe SeleniumTestCase, "#assert_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
