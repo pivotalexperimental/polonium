@@ -145,6 +145,194 @@ describe SeleniumContext do
   end
 end
 
+context SeleniumConfiguration, "#establish_environment" do
+  before(:each) do
+    Seleniumrc::SeleniumConfiguration.instance_eval {@context = nil}
+    @configuration = Seleniumrc::SeleniumConfiguration.instance
+    @context = @configuration
+  end
+
+  it "establish_environment__webrick_host" do
+    should_establish_environment( 'internal_app_server_host', '192.168.10.1', :internal_app_server_host )
+  end
+
+  it "initializes webrick_port" do
+    should_establish_environment( 'internal_app_server_port', 1337, :internal_app_server_port )
+  end
+
+  it "initializes internal_app_server_port" do
+    should_establish_environment( 'external_app_server_port', 1337, :external_app_server_port )
+  end
+
+  it "initializes internal_app_server_host" do
+    should_establish_environment( 'external_app_server_host', 'sammich.com', :external_app_server_host)
+  end
+
+  it "initializes selenium_server_host" do
+    should_establish_environment( 'selenium_server_host', 'sammich.com')
+  end
+
+  it "initializes selenium_server_host" do
+    should_establish_environment( 'selenium_server_port', 1337)
+  end
+
+  it "initializes app_server_engine" do
+    should_establish_environment( 'app_server_engine', :webrick, :app_server_engine)
+  end
+
+  it "initializes browsers" do
+    @context.env = stub_env
+    env_var = "browsers"
+    expected_value = 'konqueror'
+    stub_env[env_var] = expected_value
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.browsers.should == [expected_value]
+  end
+
+  it "initializes keep_browser_open_on_failure" do
+    @context.env = stub_env
+    env_var = 'keep_browser_open_on_failure'
+    stub_env[env_var] = 'false'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == false
+    @configuration.send(env_var).should == false
+
+    stub_env[env_var] = 'true'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == true
+    @configuration.send(env_var).should == true
+
+    stub_env[env_var] = 'blah'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == true
+    @configuration.send(env_var).should == true
+  end
+
+  it "initializes verify_remote_app_server_is_running" do
+    @context.env = stub_env
+    env_var = 'verify_remote_app_server_is_running'
+    stub_env[env_var] = 'false'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == false
+    @configuration.send(env_var).should == false
+
+    stub_env[env_var] = 'true'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == true
+    @configuration.send(env_var).should == true
+
+    stub_env[env_var] = 'blah'
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    @configuration.send(env_var).should == true
+    @configuration.send(env_var).should == true
+  end
+
+  it "internal_app_server_host" do
+    should_lazily_load @configuration, :internal_app_server_host, "0.0.0.0"
+  end
+
+  it "internal_app_server_port" do
+    should_lazily_load @configuration, :internal_app_server_port, 4000
+  end
+
+  it "external_app_server_host" do
+    should_lazily_load @configuration, :external_app_server_host, "localhost"
+  end
+
+  it "external_app_server_port" do
+    should_lazily_load @configuration, :external_app_server_port, 4000
+  end
+
+  it "browsers__lazy_loaded" do
+    should_lazily_load @configuration, :browsers, [Seleniumrc::SeleniumConfiguration::FIREFOX]
+  end
+
+  it "keep_browser_open_on_failure" do
+    should_lazily_load @configuration, :keep_browser_open_on_failure, true
+  end
+
+  it "formatted_browser" do
+    @configuration.current_browser = Seleniumrc::SeleniumConfiguration::IEXPLORE
+    @configuration.formatted_browser.should == "*iexplore"
+  end
+
+  it "browser_url" do
+    @configuration.external_app_server_host = "test.com"
+    @configuration.external_app_server_port = 101
+    @configuration.browser_url.should == "http://test.com:101"
+  end
+
+  it "run_each_browser_within_the_browsers" do
+    expected_browsers = ["iexplore", "firefox", "custom"]
+    @configuration.browsers = expected_browsers
+
+    index = 0
+    @configuration.run_each_browser do
+      @configuration.current_browser.should == expected_browsers[index]
+      index += 1
+    end
+  end
+
+  it "selenese_interpreter__when_in_test_browser_mode__should_be_nil" do
+    @configuration.test_browser_mode!
+    @configuration.selenese_interpreter.should be_nil
+  end
+
+  protected
+  def should_establish_environment( env_var, expected_value, method_name=nil )
+    method_name = env_var unless method_name
+    @context.env = stub_env
+    stub_env[env_var] = expected_value
+    Seleniumrc::SeleniumConfiguration.send :establish_environment
+    Seleniumrc::SeleniumConfiguration.instance.send(method_name).should == expected_value
+  end
+
+  def stub_env
+    @stub_env ||= {}
+  end
+
+  def should_lazily_load(object, method_name, default_value)
+    object.send(method_name).should == default_value
+    test_object = Object.new
+    object.send(method_name.to_s + "=", test_object)
+    object.send(method_name).should == test_object
+  end
+
+end
+
+describe SeleniumContext, "#stop_interpreter_if_necessary" do
+  before(:each) do
+    @context = Seleniumrc::SeleniumContext.new
+  end
+  
+  it "when suite passes, should stop interpreter" do
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop.once
+    @context.interpreter = mock_interpreter
+
+    @context.stop_interpreter_if_necessary true
+  end
+
+  it "when suite fails and keep browser open on failure, should not stop interpreter" do
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop.never
+    @context.interpreter = mock_interpreter
+    @context.keep_browser_open_on_failure = true
+
+    @context.stop_interpreter_if_necessary false
+  end
+
+  it "when suite fails and not keep browser open on failure, should stop interpreter" do
+    mock_interpreter = "mock_interpreter"
+    mock(mock_interpreter).stop
+    @context.interpreter = mock_interpreter
+    @context.keep_browser_open_on_failure = false
+
+    @context.stop_interpreter_if_necessary false
+  end
+
+end
+
 describe SeleniumContext, "#create_server_runner where application server engine is mongrel" do
   it "creates a mongrel server runner" do
     context = Seleniumrc::SeleniumContext.new
