@@ -5,10 +5,10 @@ describe SeleniumTestCase, :shared => true do
   include SeleniumTestCaseSpec
 
   before(:each) do
+    stub_selenium_configuration
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
     @base_selenium = "Base Selenium"
     @test_case.base_selenium = @base_selenium
-    @configuration = create_sample_configuration
   end
 
   def sample_locator
@@ -19,11 +19,12 @@ describe SeleniumTestCase, :shared => true do
     "test text"
   end
 
-  def create_sample_configuration
-    configuration = Seleniumrc::SeleniumConfiguration.instance
-    configuration.external_app_server_host = "test.com"
-    configuration.external_app_server_port = 80
-    configuration
+  def stub_selenium_configuration
+    @context = SeleniumContext.new
+    @context.external_app_server_host = "test.com"
+    @context.external_app_server_port = 80
+
+    stub(SeleniumConfiguration.instance).returns(@context)
   end
 end
 
@@ -104,7 +105,7 @@ describe SeleniumTestCase, "#open_home_page" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "opens home page" do
-    mock(base_selenium).open("http://test.com:80")
+    mock(base_selenium).open("http://localhost:4000")
     mock(base_selenium).wait_for_page_to_load(@test_case.default_timeout)
     stub(base_selenium).send {""}
 
