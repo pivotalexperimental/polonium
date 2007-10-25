@@ -9,16 +9,6 @@ describe SeleniumTestCase, :shared => true do
     @base_selenium = "Base Selenium"
     @test_case.base_selenium = @base_selenium
     @configuration = create_sample_configuration
-    
-    stub_wait_for(@test_case)
-    stub.probe(SeleniumElement).new do |element|
-      stub_wait_for element
-      element
-    end
-    stub.probe(SeleniumPage).new do |page|
-      stub_wait_for page
-      page
-    end
   end
 
   def sample_locator
@@ -127,7 +117,6 @@ describe SeleniumTestCase, "#open_and_wait" do
 
   before do
     mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
       mock.proxy(page).open_and_wait("/users/list")
       page
     end
@@ -148,7 +137,6 @@ describe SeleniumTestCase, "#assert_title" do
 
   before do
     mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
       mock.proxy(page).has_title("my page", {})
       page
     end
@@ -172,7 +160,6 @@ describe SeleniumTestCase, "#assert_text_present" do
 
   before do
     mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
       mock.proxy(page).is_text_present("my page", {})
       page
     end
@@ -199,7 +186,6 @@ describe SeleniumTestCase, "#assert_text_not_present" do
 
   before do
     mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
       mock.proxy(page).is_text_not_present("my page", {})
       page
     end
@@ -227,7 +213,6 @@ describe SeleniumTestCase, "#assert_location_ends_in" do
   before do
     @ends_with = "foobar.com?arg1=2"
     mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      stub_wait_for page
       mock.proxy(page).url_ends_with(@ends_with, {})
       page
     end
@@ -259,7 +244,6 @@ describe SeleniumTestCase, "#assert_element_present" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_present({})
       element
     end
@@ -290,7 +274,6 @@ describe SeleniumTestCase, "#assert_element_not_present" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_not_present({})
       element
     end
@@ -321,7 +304,6 @@ describe SeleniumTestCase, "#assert_value" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).has_value("passed in value")
       element
     end
@@ -351,7 +333,6 @@ describe SeleniumTestCase, "#assert_element_contains" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).contains_text("passed in value", {})
       element
     end
@@ -416,7 +397,6 @@ describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).does_not_contain_text("passed in value", {})
       element
     end
@@ -449,7 +429,6 @@ describe SeleniumTestCase, "#assert_attribute" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).has_attribute("passed in value")
       element
     end
@@ -479,7 +458,6 @@ describe SeleniumTestCase, "#assert_selected" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).has_selected("passed_in_element")
       element
     end
@@ -509,7 +487,6 @@ describe SeleniumTestCase, "#assert_checked" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_checked
       element
     end
@@ -539,7 +516,6 @@ describe SeleniumTestCase, "#assert_not_checked" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_not_checked
       element
     end
@@ -569,7 +545,6 @@ describe SeleniumTestCase, "#assert_text" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).has_text("expected text", {})
       element
     end
@@ -599,7 +574,6 @@ describe SeleniumTestCase, "#assert_visible" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_visible({})
       element
     end
@@ -627,7 +601,6 @@ describe SeleniumTestCase, "#assert_not_visible" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).is_not_visible({})
       element
     end
@@ -655,7 +628,6 @@ describe SeleniumTestCase, "#assert_next_sibling" do
 
   before do
     mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
       mock.proxy(element).has_next_sibling("next_sibling", {})
       element
     end
@@ -685,11 +657,7 @@ describe SeleniumTestCase, "#assert_text_in_order" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
-      stub_wait_for element
-      mock.proxy(element).has_text_in_order("one", "two", "three")
-      element
-    end
+    mock.proxy(SeleniumElement).new(base_selenium, sample_locator)
     @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
   end
 

@@ -1,13 +1,4 @@
 module SeleniumTestCaseSpec
-  def stub_wait_for(subject)
-    time = Time.now
-    time_class = "Time Class"
-    stub(time_class).now.returns { time += 1 }
-    stub(subject).time_class.returns time_class
-    stub(subject).sleep.returns
-    subject
-  end
-
   def base_selenium
     @base_selenium
   end

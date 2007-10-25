@@ -8,7 +8,6 @@ describe SeleniumElement, :shared => true do
     @selenium = "Selenium"
     @element_locator ||= "id=foobar"
     @element = SeleniumElement.new(@selenium, @element_locator)
-    stub_wait_for @element
   end
 end
 

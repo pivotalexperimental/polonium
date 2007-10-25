@@ -7,7 +7,6 @@ describe SeleniumPage, :shared => true do
   before do
     @selenium = "Selenium"
     @page = SeleniumPage.new(@selenium)
-    stub_wait_for @page
   end
 end
 

@@ -36,3 +36,22 @@ end
 Spec::Runner.configure do |config|
   config.mock_with :rr
 end
+
+module Seleniumrc::WaitFor
+  def time_class
+    @time_class ||= FakeTimeClass.new
+  end
+
+  def sleep(time)
+  end  
+end
+
+class FakeTimeClass
+  def initialize
+    @now = Time.now
+  end
+
+  def now
+    @now += 1
+  end
+end
