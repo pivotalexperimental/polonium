@@ -9,6 +9,7 @@ require 'test/unit'
 require 'test/unit/testresult'
 
 require "selenium"
+require "seleniumrc/extensions/autorunner"
 require "seleniumrc/extensions/selenium_driver"
 require "seleniumrc/app_server_checker"
 require "seleniumrc/selenium_server_runner"
