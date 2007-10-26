@@ -127,7 +127,7 @@ describe SeleniumContext do
     @context.internal_app_server_host = "localhost"
     @context.internal_app_server_port = 4000
     @context.rails_env = "test"
-    @context.rails_root = File.dirname(__FILE__)
+    @context.rails_root = rails_root = File.dirname(__FILE__)
 
     configurator = @context.create_mongrel_configurator
     configurator.defaults[:host].should == "localhost"
@@ -136,7 +136,7 @@ describe SeleniumContext do
     configurator.defaults[:log_file].should == "#{@context.rails_root}/log/mongrel.log"
     configurator.defaults[:pid_file].should == "#{@context.rails_root}/log/mongrel.pid"
     configurator.defaults[:environment].should == "test"
-    configurator.defaults[:docroot].should == "public"
+    configurator.defaults[:docroot].should == "#{rails_root}/public"
     configurator.defaults[:mime_map].should be_nil
     configurator.defaults[:daemon].should == false
     configurator.defaults[:debug].should == false

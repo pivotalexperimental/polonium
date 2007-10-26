@@ -209,7 +209,7 @@ module Seleniumrc
         :log_file => "#{@rails_root}/log/mongrel.log",
         :pid_file => "#{@rails_root}/log/mongrel.pid",
         :environment => @rails_env,
-        :docroot => "public",
+        :docroot => "#{@rails_root}/public",
         :mime_map => nil,
         :daemon => false,
         :debug => false,
