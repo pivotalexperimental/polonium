@@ -9,6 +9,7 @@ describe SeleniumTestCase, :shared => true do
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
     @base_selenium = "Base Selenium"
     @test_case.base_selenium = @base_selenium
+    stub(@base_selenium).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"true"}
   end
 
   def sample_locator

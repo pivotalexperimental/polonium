@@ -2,6 +2,7 @@ module Seleniumrc
   class SeleniumPage
     include WaitFor
     attr_reader :selenium
+    PAGE_LOADED_COMMAND = "this.browserbot.getDocument().body ? true : false"
 
     def initialize(selenium)
       @selenium = selenium
@@ -32,7 +33,7 @@ module Seleniumrc
       end
     end
     def is_text_present?(expected_text)
-      selenium.is_text_present(expected_text)
+      page_loaded? && selenium.is_text_present(expected_text)
     end
 
     def is_text_not_present(unexpected_text, options = {})
@@ -44,7 +45,11 @@ module Seleniumrc
       end
     end
     def is_text_not_present?(unexpected_text)
-      !selenium.is_text_present(unexpected_text)
+      page_loaded? && !selenium.is_text_present(unexpected_text)
+    end
+
+    def page_loaded?
+      selenium.get_eval(PAGE_LOADED_COMMAND) == true.to_s
     end
 
     def url_ends_with(ends_with, options={})

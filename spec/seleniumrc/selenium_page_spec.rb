@@ -7,6 +7,15 @@ describe SeleniumPage, :shared => true do
   before do
     @selenium = "Selenium"
     @page = SeleniumPage.new(@selenium)
+    page_loaded
+  end
+
+  def page_loaded
+    stub(@selenium).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"true"}
+  end
+
+  def page_not_loaded
+    stub(@selenium).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"false"}
   end
 end
 
@@ -86,6 +95,13 @@ describe SeleniumPage, "#is_text_present" do
     @page.is_text_present("my page")
   end
 
+  it "fails when page is not loaded" do
+    page_not_loaded
+    proc do
+      @page.is_text_present("my page")
+    end.should raise_error("Expected 'my page' to be present, but it wasn't (after 5 sec)")
+  end
+
   it "fails when element is not present" do
     stub(@selenium).is_text_present("my page") {false}
     proc do
@@ -117,6 +133,13 @@ describe SeleniumPage, "#is_text_not_present" do
       ticks.shift
     end.times(4)
     @page.is_text_not_present("my page")
+  end
+
+  it "fails when page not loaded" do
+    page_not_loaded
+    proc do
+      @page.is_text_not_present("my page")
+    end.should raise_error("Expected 'my page' to be absent, but it wasn't (after 5 sec)")
   end
 
   it "fails when text is present" do
@@ -184,6 +207,20 @@ describe SeleniumPage, "#url_ends_with?" do
   it "fails when element is not present" do
     mock(@selenium).get_location {"http://no.com"}
     @page.url_ends_with?(@ends_with).should be_false
+  end
+end
+
+describe SeleniumPage, "#page_loaded?" do
+  it_should_behave_like "Seleniumrc::SeleniumPage"
+  
+  it "when page loaded command returns 'true', returns true" do
+    page_loaded
+    @page.should be_page_loaded
+  end
+
+  it "when page loaded command returns 'false', returns false" do
+    page_not_loaded
+    @page.should_not be_page_loaded
   end
 end
 end
