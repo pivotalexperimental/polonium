@@ -18,6 +18,7 @@ module Seleniumrc
     end
 
     def initialize_server(config)
+      context = @context
       config.listener do |*args|
         mongrel = (args.first || self)
         mongrel.log "Starting Rails in environment #{defaults[:environment]} ..."
@@ -26,6 +27,7 @@ module Seleniumrc
 
         mongrel.log "Loading any Rails specific GemPlugins"
         mongrel.load_plugins
+        context.app_server_initialization.call(mongrel)
       end
     end
 

@@ -55,6 +55,10 @@ describe SeleniumContext do
     @context.verify_remote_app_server_is_running.should ==  true
   end
 
+  it "defaults app_server_initialization to a Proc" do
+    @context.app_server_initialization.should be_instance_of(Proc)
+  end
+
   it "creates a Selenese interpreter and notify listeners" do
     @context.selenium_server_host = "selenium_server_host.com"
     @context.selenium_server_port = 80

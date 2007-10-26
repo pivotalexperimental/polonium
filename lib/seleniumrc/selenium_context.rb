@@ -19,12 +19,14 @@ module Seleniumrc
                   :external_app_server_port,
                   :server_engine,
                   :keep_browser_open_on_failure,
-                  :verify_remote_app_server_is_running
+                  :verify_remote_app_server_is_running,
+                  :app_server_initialization
 
     def initialize
       self.verify_remote_app_server_is_running = true
       @before_suite_listeners = []
       @after_selenese_interpreter_started_listeners = []
+      @app_server_initialization = proc {}
     end
 
     # A callback hook that gets run before the suite is run.
