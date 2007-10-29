@@ -10,7 +10,7 @@ require 'test/unit/testresult'
 
 require "selenium"
 require "seleniumrc/extensions/testrunnermediator"
-require "seleniumrc/extensions/selenium_driver"
+require "seleniumrc/selenium_driver"
 require "seleniumrc/app_server_checker"
 require "seleniumrc/selenium_server_runner"
 require "seleniumrc/mongrel_selenium_server_runner"

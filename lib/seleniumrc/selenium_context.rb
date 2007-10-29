@@ -148,7 +148,7 @@ module Seleniumrc
     end
 
     def create_interpreter # nodoc
-      return Selenium::SeleneseInterpreter.new(
+      return ::Seleniumrc::SeleniumDriver.new(
         selenium_server_host,
         selenium_server_port,
         formatted_browser,
