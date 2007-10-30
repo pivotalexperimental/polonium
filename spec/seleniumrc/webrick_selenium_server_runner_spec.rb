@@ -29,8 +29,8 @@ describe WebrickSeleniumServerRunner do
   it "start method should require the environment and dispatcher" do
     runner = create_runner_that_is_stubbed_so_start_method_works
 
-    mock(runner).require.with("foobar")
-    mock(runner).require.with("dispatcher")
+    mock(runner).require("foobar")
+    mock(runner).require("dispatcher")
 
     runner.environment_path = "foobar"
     runner.start

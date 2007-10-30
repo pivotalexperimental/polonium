@@ -108,8 +108,8 @@ module Seleniumrc
       configuration.internal_app_server_host = "localhost"
 
       mock_logger = "logger"
-      mock(configuration).new_logger.returns(mock_logger)
-      mock(WEBrick::HTTPServer).new.with({
+      mock(configuration).new_logger {mock_logger}
+      mock(WEBrick::HTTPServer).new({
         :Port => 4000,
         :BindAddress => "localhost",
         :ServerType  => WEBrick::SimpleServer,
