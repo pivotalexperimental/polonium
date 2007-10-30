@@ -144,8 +144,17 @@ module Seleniumrc
       wait_for(params) do
         is_element_present(locator)
       end
-    end  
-    
+    end
+
+    def wait_for_is_element_not_present(locator, params={})
+      params = {
+        :message => "Expected element '#{locator}' to be absent, but it was not"
+      }.merge(params)
+      wait_for(:message => params[:message]) do
+        !is_element_present(locator)
+      end
+    end
+
     def wait_for_page_to_load(timeout=default_timeout)
       super
       if get_title.include?("Exception caught")
