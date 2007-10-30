@@ -67,11 +67,11 @@ module Seleniumrc
           InstanceMethods.const_set("ALREADY_SETUP_ONCE", true)
         end
       end
-      @selenium_driver = configuration.selenese_interpreter
+      @selenium_driver = configuration.driver
     end
 
     def teardown
-      selenium_driver.stop if should_stop_selenese_interpreter?
+      selenium_driver.stop if should_stop_driver?
       super
       if @beginning
         duration = (time_class.now - @beginning).to_f

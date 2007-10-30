@@ -43,7 +43,7 @@ module Seleniumrc
              :get_html_source,
              :to => :selenium_driver
 
-    def should_stop_selenese_interpreter?
+    def should_stop_driver?
       return false unless configuration.test_browser_mode?
       configuration.stop_driver?(passed?)
     end
