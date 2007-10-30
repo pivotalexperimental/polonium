@@ -32,7 +32,6 @@ module Seleniumrc
 
         # TODO: BT - We need to only run one browser per run. Having an array makes the architecture wack.
         @instance.browsers = [FIREFOX] # Crack is wack
-        @instance.failure_has_not_occurred!
         @instance.selenium_server_host = "localhost"     # address of selenium RC server (java)
         @instance.selenium_server_port = 4444
         @instance.app_server_engine = :webrick
@@ -95,6 +94,7 @@ module Seleniumrc
       self.verify_remote_app_server_is_running = true
       @after_driver_started_listeners = []
       @app_server_initialization = proc {}
+      @failure_has_occurred = false
     end
 
     # A callback hook that gets run after the Selenese Interpreter is started.
@@ -117,16 +117,6 @@ module Seleniumrc
     # Has a failure occurred in the tests?
     def failure_has_occurred?
       @failure_has_occurred = true
-    end
-
-    # Sets the failure state to true
-    def failure_has_occurred!
-      @failure_has_occurred = true
-    end
-
-    # Sets the failure state to false
-    def failure_has_not_occurred!
-      @failure_has_occurred = false
     end
 
     # The http host name and port to be entered into the browser address bar
@@ -177,7 +167,7 @@ module Seleniumrc
     end
 
     def stop_driver_if_necessary(suite_passed) # nodoc
-      failure_has_occurred! unless suite_passed
+      failure_has_occurred unless suite_passed
       if @driver && stop_driver?(suite_passed)
         @driver.stop
         @driver = nil
@@ -272,6 +262,12 @@ module Seleniumrc
         log "Starting Mongrel in #{defaults[:environment]} mode at #{defaults[:host]}:#{defaults[:port]}"
       end
       configurator
+    end
+
+    protected
+    # Sets the failure state to true
+    def failure_has_occurred
+      @failure_has_occurred = true
     end
   end
 end
