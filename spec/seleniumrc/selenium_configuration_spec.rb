@@ -85,7 +85,7 @@ module Seleniumrc
       configuration.external_app_server_host = "browser_host.com"
       configuration.external_app_server_port = 80
 
-      interpreter = configuration.create_interpreter
+      interpreter = configuration.create_driver
       interpreter.server_host.should == "selenium_server_host.com"
       interpreter.server_port.should == 80
       interpreter.browser_start_command.should == "*iexplore"
@@ -99,7 +99,7 @@ module Seleniumrc
       stub_interpreter = Object.new
       start_called = false
       stub(stub_interpreter).start.returns {start_called = true}
-      stub(configuration).create_interpreter.returns {stub_interpreter}
+      stub(configuration).create_driver.returns {stub_interpreter}
       interpreter = configuration.create_and_initialize_interpreter
       interpreter.should == stub_interpreter
       passed_interpreter.should == interpreter

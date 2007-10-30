@@ -210,13 +210,13 @@ module Seleniumrc
     end
 
     def create_and_initialize_interpreter # nodoc
-      interpreter = create_interpreter
+      interpreter = create_driver
       interpreter.start
       notify_after_selenese_interpreter_started(interpreter)
       interpreter
     end
 
-    def create_interpreter # nodoc
+    def create_driver # nodoc
       return ::Seleniumrc::SeleniumDriver.new(
         selenium_server_host,
         selenium_server_port,
