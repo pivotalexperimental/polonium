@@ -52,12 +52,26 @@ module Seleniumrc
       def establish_environment
         @instance.rails_env = env['RAILS_ENV'] if env.include?('RAILS_ENV')
         @instance.rails_root = Object.const_get(:RAILS_ROOT) if Object.const_defined?(:RAILS_ROOT)
-        ['selenium_server_host', 'selenium_server_port', 'internal_app_server_port', 'internal_app_server_host',
-          'app_server_engine', 'external_app_server_host', 'external_app_server_port'].each do |env_key|
-          @instance.send(env_key + "=", env[env_key]) if env.include?(env_key)
+        [
+          'selenium_server_host',
+          'selenium_server_port',
+          'internal_app_server_port',
+          'internal_app_server_host',
+          'app_server_engine',
+          'external_app_server_host',
+          'external_app_server_port'
+        ].each do |env_key|
+          if env.include?(env_key)
+            @instance.send("#{env_key}=", env[env_key])
+          end
         end
-        ['keep_browser_open_on_failure', 'verify_remote_app_server_is_running'].each do |env_key|
-          @instance.send(env_key + "=", env[env_key].to_s != false.to_s) if env.include?(env_key)
+        [
+          'keep_browser_open_on_failure',
+          'verify_remote_app_server_is_running'
+        ].each do |env_key|
+          if env.include?(env_key)
+            @instance.send("#{env_key}=", env[env_key].to_s != false.to_s)
+          end
         end
         @instance.browser = env['browser'] if env.include?('browser')
       end
