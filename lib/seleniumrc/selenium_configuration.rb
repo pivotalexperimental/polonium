@@ -160,10 +160,7 @@ module Seleniumrc
     # The SeleniumDriver object, which sublcasses the SeleniumDriver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
     def driver
       return nil unless suite_browser_mode?
-      unless @driver
-        @driver = create_and_initialize_driver
-      end
-      @driver
+      @driver ||= create_and_initialize_driver
     end
 
     def stop_driver_if_necessary(suite_passed) # nodoc
