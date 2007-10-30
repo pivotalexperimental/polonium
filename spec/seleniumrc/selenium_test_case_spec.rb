@@ -767,7 +767,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(false)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(false)
+    mock(@test_case.configuration).stop_driver?.with(false).returns(false)
 
     @test_case.selenium_driver = driver
 
@@ -783,7 +783,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
+    mock(@test_case.configuration).stop_driver?.with(true).returns(true)
 
     mock(driver).stop.once
     @test_case.selenium_driver = driver
@@ -796,7 +796,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
+    mock(@test_case.configuration).stop_driver?.with(true).returns(false)
 
     @test_case.selenium_driver = driver
 
@@ -838,7 +838,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
+    mock(@test_case.configuration).stop_driver?.with(true).returns(true)
 
     mock(driver).stop.once
     @test_case.selenium_driver = driver
@@ -851,7 +851,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
+    mock(@test_case.configuration).stop_driver?.with(true).returns(false)
 
     @test_case.selenium_driver = driver
 

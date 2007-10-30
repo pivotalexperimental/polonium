@@ -45,7 +45,7 @@ module Seleniumrc
 
     def should_stop_selenese_interpreter?
       return false unless configuration.test_browser_mode?
-      configuration.stop_selenese_interpreter?(passed?)
+      configuration.stop_driver?(passed?)
     end
   end
 end

@@ -304,7 +304,7 @@ module Seleniumrc
 
     it "selenese_interpreter__when_in_test_browser_mode__should_be_nil" do
       configuration.test_browser_mode!
-      configuration.selenese_interpreter.should be_nil
+      configuration.driver.should be_nil
     end
 
     protected
