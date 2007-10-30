@@ -8,12 +8,12 @@ class Test::Unit::UI::TestRunnerMediator
   alias_method :initialize, :initialize_with_seleniumrc
 
   protected
-  def start_app_server
+  def start_app_server(*args)
     @app_runner = Seleniumrc::SeleniumConfiguration.instance.create_server_runner
     @app_runner.start
   end
 
-  def stop_app_server
+  def stop_app_server(*args)
     @app_runner.stop
   end
 end
