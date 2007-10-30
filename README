@@ -1,20 +1,20 @@
 == Introduction
 
-Welcome to Selenium RC Fu!
+Welcome to Selenium RC!
 
 This plugin is designed to let you use Selenium RC to write Selenium tests in Ruby, using a simple series of
 Rake tasks.
 
 == Installation
 
-The current version of this plugin can be found at: http://rubyforge.org/var/svn/pivotalrb/seleniumrc_fu/trunk
+The current version of this plugin can be found at: http://rubyforge.org/var/svn/pivotalrb/seleniumrc/trunk
 
 You may install the plugin with the following command:
 
-  script/plugin install svn://rubyforge.org/var/svn/pivotalrb/seleniumrc_fu/trunk
+  script/plugin install svn://rubyforge.org/var/svn/pivotalrb/seleniumrc/trunk
 
 == Usage
-The seleniumrc_fu plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
+The seleniumrc plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
 it.  A sample selenium_suite.rb and selenium_helper.rb can be copied into your test/selenium directory.
 
 You'll get the following tasks:
