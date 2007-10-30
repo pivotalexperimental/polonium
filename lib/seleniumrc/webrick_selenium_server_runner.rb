@@ -27,7 +27,7 @@ module Seleniumrc
     end
 
     def stop_server
-      @server.shutdown
+      server.shutdown
     end
   end
 end
