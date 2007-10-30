@@ -754,7 +754,7 @@ module Seleniumrc
 
     it "should stop driver when configuration says to stop test" do
       test_case.configuration = configuration = Seleniumrc::SeleniumConfiguration.new
-      configuration.test_browser_mode!
+      configuration.test_browser_mode
 
       stub(test_case).passed? {false}
       configuration.keep_browser_open_on_failure = false

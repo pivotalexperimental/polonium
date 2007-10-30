@@ -139,7 +139,7 @@ module Seleniumrc
     end
 
     # Sets the Test Suite to open a new browser instance for each TestCase
-    def test_browser_mode!
+    def test_browser_mode
       @browser_mode = SeleniumConfiguration::BrowserMode::Test
     end
 
@@ -149,7 +149,7 @@ module Seleniumrc
     end
 
     # Sets the Test Suite to use one browser instance
-    def suite_browser_mode!
+    def suite_browser_mode
       @browser_mode = SeleniumConfiguration::BrowserMode::Suite
     end
 
