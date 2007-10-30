@@ -29,7 +29,7 @@ module Seleniumrc
       configuration.external_app_server_host = "test.com"
       configuration.external_app_server_port = 80
 
-      stub(SeleniumConfiguration.instance).returns(configuration)
+      stub(SeleniumConfiguration.instance) {configuration}
     end
   end
 

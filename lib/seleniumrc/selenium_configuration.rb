@@ -20,7 +20,6 @@ module Seleniumrc
       # * webrick_host - The host name that the application server will start under (default: localhost)
       # * webrick_port - The port that the application server will start under (default: 4000)
       # * app_server_engine - The type of server the application will be run with (webrick or mongrel)
-      # * browsers - A comma-delimited list of browsers that will be tested (e.g. firebox,iexplore)
       # * internal_app_server_host - The host name for the Application server that the Browser will access (default: localhost)
       # * internal_app_server_host - The port for the Application server that the Browser will access (default: 4000)
       # * keep_browser_open_on_failure - If there is a failure in the test suite, keep the browser window open (default: true)
@@ -31,7 +30,7 @@ module Seleniumrc
         @instance.env = ENV
 
         # TODO: BT - We need to only run one browser per run. Having an array makes the architecture wack.
-        @instance.browsers = [FIREFOX] # Crack is wack
+        @instance.browser = FIREFOX
         @instance.selenium_server_host = "localhost"     # address of selenium RC server (java)
         @instance.selenium_server_port = 4444
         @instance.app_server_engine = :webrick
@@ -60,9 +59,7 @@ module Seleniumrc
         ['keep_browser_open_on_failure', 'verify_remote_app_server_is_running'].each do |env_key|
           @instance.send(env_key + "=", env[env_key].to_s != false.to_s) if env.include?(env_key)
         end
-        ['browsers'].each do |env_key|
-          @instance.send(env_key + "=", env[env_key].split(",")) if env.include?(env_key)
-        end
+        @instance.browser = env['browser'] if env.include?('browser')
       end
 
       def env
@@ -74,8 +71,7 @@ module Seleniumrc
                   :env,
                   :rails_env,
                   :rails_root,
-                  :browsers,
-                  :current_browser,
+                  :browser,
                   :driver,
                   :browser_mode,
                   :selenium_server_host,
@@ -111,7 +107,7 @@ module Seleniumrc
 
     # The browser formatted for the Selenese driver.
     def formatted_browser
-      return "*#{@current_browser}"
+      return "*#{@browser}"
     end
 
     # Has a failure occurred in the tests?

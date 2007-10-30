@@ -62,7 +62,7 @@ module Seleniumrc
     it "creates a Selenese driver and notify listeners" do
       configuration.selenium_server_host = "selenium_server_host.com"
       configuration.selenium_server_port = 80
-      configuration.current_browser = "iexplore"
+      configuration.browser = "iexplore"
       configuration.external_app_server_host = "browser_host.com"
       configuration.external_app_server_port = 80
 
@@ -190,13 +190,11 @@ module Seleniumrc
       should_establish_environment('app_server_engine', :webrick, :app_server_engine)
     end
 
-    it "initializes browsers" do
+    it "initializes browser" do
       configuration.env = stub_env
-      env_var = "browsers"
-      expected_value = 'konqueror'
-      stub_env[env_var] = expected_value
-      SeleniumConfiguration.send :establish_environment
-      configuration.browsers.should == [expected_value]
+      stub_env['browser'] = 'konqueror'
+      SeleniumConfiguration.__send__(:establish_environment)
+      configuration.browser.should == 'konqueror'
     end
 
     it "initializes keep_browser_open_on_failure" do
@@ -254,7 +252,7 @@ module Seleniumrc
     end
 
     it "browsers__lazy_loaded" do
-      should_lazily_load configuration, :browsers, [SeleniumConfiguration::FIREFOX]
+      should_lazily_load configuration, :browser, SeleniumConfiguration::FIREFOX
     end
 
     it "keep_browser_open_on_failure" do
@@ -262,7 +260,7 @@ module Seleniumrc
     end
 
     it "formatted_browser" do
-      configuration.current_browser = SeleniumConfiguration::IEXPLORE
+      configuration.browser = SeleniumConfiguration::IEXPLORE
       configuration.formatted_browser.should == "*iexplore"
     end
 
