@@ -42,7 +42,7 @@ module Seleniumrc
 
     # Type text into a page element
     def type(locator, value)
-      element(locator).is_present
+      wait_for_is_element_present(locator)
       super
     end
 
@@ -52,7 +52,7 @@ module Seleniumrc
     end
 
     def click(locator)
-      element(locator).is_present
+      wait_for_is_element_present(locator)
       super
     end
     alias_method :wait_for_and_click, :click
@@ -137,6 +137,15 @@ module Seleniumrc
     end
 
     #----- Waiting for conditions
+    def wait_for_is_element_present(locator, params={})
+      params = {
+        :message => "Expected element '#{locator}' to be present, but it was not"
+      }.merge(params)
+      wait_for(params) do
+        is_element_present(locator)
+      end
+    end  
+    
     def wait_for_page_to_load(timeout=default_timeout)
       super
       if get_title.include?("Exception caught")
