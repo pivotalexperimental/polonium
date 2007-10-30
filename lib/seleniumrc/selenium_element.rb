@@ -151,6 +151,15 @@ module Seleniumrc
       driver.get_inner_html(locator)
     end
 
+    def method_missing(method_name, *args, &blk)
+      if driver.respond_to?(method_name)
+        driver_args = [locator] + args
+        driver.__send__(method_name, *driver_args, &blk)
+      else
+        super
+      end
+    end    
+
     def ==(other)
       return false unless other.is_a?(SeleniumElement)
       return false unless self.driver == other.driver

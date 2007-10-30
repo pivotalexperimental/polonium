@@ -52,7 +52,7 @@ module Seleniumrc
       driver.get_eval(PAGE_LOADED_COMMAND) == true.to_s
     end
 
-    def url_ends_with(ends_with, options={})
+    def url_ends_with(ends_with, options  ={})
       options = {
         :message => "Expected '#{driver.get_location}' to end with '#{ends_with}'"
       }.merge(options)
@@ -71,6 +71,14 @@ module Seleniumrc
     def ==(other)
       return false unless other.is_a?(SeleniumPage)
       self.driver == other.driver
+    end
+
+    def method_missing(method_name, *args, &blk)
+      if driver.respond_to?(method_name)
+        driver.__send__(method_name, *args, &blk)
+      else
+        super
+      end
     end
   end
 end
