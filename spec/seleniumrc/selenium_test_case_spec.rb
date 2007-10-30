@@ -302,7 +302,7 @@ describe SeleniumTestCase, "#element_does_not_contain_text" do
   it "when element is not on the page, returns true" do
     locator = "id=element_id"
     expected_text = "foobar"
-    mock(driver).is_element_present.with(locator).returns(false)
+    mock(driver).is_element_present(locator) {false}
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == true
   end
@@ -728,8 +728,9 @@ describe SeleniumTestCase, "#wait_for_and_click" do
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    mock(driver).is_element_present.with("id=foobar").times(4).
-      returns {is_element_present_results.shift}
+    mock(driver).is_element_present("id=foobar").times(4) do
+      is_element_present_results.shift
+    end
     dont_allow(driver).click
 
     proc {
@@ -753,7 +754,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     @test_case.configuration = configuration = Seleniumrc::SeleniumConfiguration.new
     configuration.test_browser_mode!
 
-    stub(@test_case).passed?.returns(false)
+    stub(@test_case).passed? {false}
     configuration.keep_browser_open_on_failure = false
 
     mock(driver).stop.once
@@ -766,8 +767,8 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
-    stub(@test_case).passed?.returns(false)
-    mock(@test_case.configuration).stop_driver?.with(false).returns(false)
+    stub(@test_case).passed? {false}
+    mock(@test_case.configuration).stop_driver?(false) {false}
 
     @test_case.selenium_driver = driver
 
@@ -783,7 +784,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_driver?.with(true).returns(true)
+    mock(@test_case.configuration).stop_driver?(true) {true}
 
     mock(driver).stop.once
     @test_case.selenium_driver = driver
@@ -796,7 +797,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_driver?.with(true).returns(false)
+    mock(@test_case.configuration).stop_driver?(true) {false}
 
     @test_case.selenium_driver = driver
 
@@ -809,7 +810,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
   it "should not stop interpreter when tests fail" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
-    mock(@test_case.configuration).test_browser_mode?.returns(false)
+    mock(@test_case.configuration).test_browser_mode? {false}
 
     def @test_case.passed?; false; end
 
@@ -820,7 +821,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
    it "should stop interpreter when tests pass" do
      @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
-     mock(@test_case.configuration).test_browser_mode?.returns(false)
+     mock(@test_case.configuration).test_browser_mode? {false}
 
      stub(@test_case).passed?.returns(true)
 
@@ -838,7 +839,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_driver?.with(true).returns(true)
+    mock(@test_case.configuration).stop_driver?(true) {true}
 
     mock(driver).stop.once
     @test_case.selenium_driver = driver
@@ -848,10 +849,10 @@ describe "SeleniumTestCase in test browser mode and test pass" do
 
   it "should not stop interpreter when configuration says not to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
-    mock(@test_case.configuration).test_browser_mode?.returns(true)
+    mock(@test_case.configuration).test_browser_mode? {true}
 
     stub(@test_case).passed?.returns(true)
-    mock(@test_case.configuration).stop_driver?.with(true).returns(false)
+    mock(@test_case.configuration).stop_driver?(true) {false}
 
     @test_case.selenium_driver = driver
 
