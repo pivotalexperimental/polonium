@@ -272,17 +272,6 @@ module Seleniumrc
       configuration.browser_url.should == "http://test.com:101"
     end
 
-    it "run_each_browser_within_the_browsers" do
-      expected_browsers = ["iexplore", "firefox", "custom"]
-      configuration.browsers = expected_browsers
-
-      index = 0
-      configuration.run_each_browser do
-        configuration.current_browser.should == expected_browsers[index]
-        index += 1
-      end
-    end
-
     it "driver__when_in_test_browser_mode__should_be_nil" do
       configuration.test_browser_mode!
       configuration.driver.should be_nil

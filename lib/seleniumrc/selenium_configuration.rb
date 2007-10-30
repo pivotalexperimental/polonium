@@ -149,14 +149,6 @@ module Seleniumrc
       @browser_mode == SeleniumConfiguration::BrowserMode::Suite
     end
 
-    def run_each_browser # nodoc
-      browsers.each do |browser|
-        self.current_browser = browser
-        yield
-        break if @failure_has_occurred
-      end
-    end
-
     # The SeleniumDriver object, which sublcasses the SeleniumDriver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
     def driver
       return nil unless suite_browser_mode?
