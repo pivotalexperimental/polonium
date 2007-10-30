@@ -1,10 +1,10 @@
 module Seleniumrc
   class WebrickSeleniumServerRunner < SeleniumServerRunner
-    attr_accessor :socket, :dispatch_servlet, :environment_path
+    attr_accessor :socket, :dispatch_servlet, :environment_path, :server
 
     protected
     def start_server
-      @socket.do_not_reverse_lookup = true # patch for OS X
+      socket.do_not_reverse_lookup = true # patch for OS X
 
       @server = configuration.create_webrick_server
       mount_parameters = {
@@ -17,13 +17,13 @@ module Seleniumrc
         :mime_types      => WEBrick::HTTPUtils::DefaultMimeTypes,
         :working_directory => File.expand_path(configuration.rails_root.to_s)
       }
-      @server.mount('/', @dispatch_servlet, mount_parameters)
+      server.mount('/', dispatch_servlet, mount_parameters)
 
       trap("INT") { stop_server }
 
       require @environment_path
       require "dispatcher"
-      @server.start
+      server.start
     end
 
     def stop_server
