@@ -22,7 +22,7 @@ module Seleniumrc
       # * app_server_engine - The type of server the application will be run with (webrick or mongrel)
       # * internal_app_server_host - The host name for the Application server that the Browser will access (default: localhost)
       # * internal_app_server_host - The port for the Application server that the Browser will access (default: 4000)
-      # * keep_browser_open_on_failure - If there is a failure in the test suite, keep the browser window open (default: true)
+      # * keep_browser_open_on_failure - If there is a failure in the test suite, keep the browser window open (default: false)
       # * verify_remote_app_server_is_running - Raise an exception if the Application Server is not running (default: true)
       def instance
         return @instance if @instance
@@ -38,7 +38,7 @@ module Seleniumrc
         @instance.external_app_server_host = "localhost"             # external address of app server (webrick or mongrel)
         @instance.external_app_server_port = 4000
         @instance.server_engine = :webrick
-        @instance.keep_browser_open_on_failure = true
+        @instance.keep_browser_open_on_failure = false
         @instance.browser_mode = BrowserMode::Suite
         @instance.verify_remote_app_server_is_running = true
 

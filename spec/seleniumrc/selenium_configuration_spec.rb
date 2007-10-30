@@ -256,7 +256,7 @@ module Seleniumrc
     end
 
     it "keep_browser_open_on_failure" do
-      should_lazily_load configuration, :keep_browser_open_on_failure, true
+      should_lazily_load configuration, :keep_browser_open_on_failure, false
     end
 
     it "formatted_browser" do
