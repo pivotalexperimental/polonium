@@ -204,7 +204,7 @@ module Seleniumrc
 
     def create_app_server_checker # nodoc
       app_server_checker = AppServerChecker.new()
-      app_server_checker.context = self
+      app_server_checker.configuration = self
       app_server_checker.tcp_socket_class = TCPSocket
       return app_server_checker
     end
@@ -233,14 +233,14 @@ module Seleniumrc
       when :webrick
         create_webrick_runner
       else
-        raise "Invalid server type: #{selenium_context.app_server_type}"
+        raise "Invalid server type: #{selenium_configuration.app_server_type}"
       end
     end
 
     def create_webrick_runner # nodoc
       require 'webrick_server'
       runner = WebrickSeleniumServerRunner.new
-      runner.context = self
+      runner.configuration = self
       runner.thread_class = Thread
       runner.socket = Socket
       runner.dispatch_servlet = DispatchServlet
@@ -265,7 +265,7 @@ module Seleniumrc
 
     def create_mongrel_runner # nodoc
       runner = MongrelSeleniumServerRunner.new
-      runner.context = self
+      runner.configuration = self
       runner.thread_class = Thread
       runner
     end

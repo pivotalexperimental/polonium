@@ -2,11 +2,11 @@ module Seleniumrc
   class AppServerChecker
 
     attr_accessor :tcp_socket_class
-    attr_accessor :context
+    attr_accessor :configuration
 
     def is_server_started?
-      @host = @context.internal_app_server_host
-      @port = @context.internal_app_server_port
+      @host = @configuration.internal_app_server_host
+      @port = @configuration.internal_app_server_port
       if (@host == '0.0.0.0')
         @host = '127.0.0.1'
       end
@@ -15,7 +15,7 @@ module Seleniumrc
       end
 
       # must be remote
-      return true if @context.verify_remote_app_server_is_running == false
+      return true if @configuration.verify_remote_app_server_is_running == false
 
       # should be verified
       return true if is_started?

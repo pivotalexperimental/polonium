@@ -24,9 +24,9 @@ module Seleniumrc
 
     def has_value(expected_value)
       is_present
-      wait_for do |context|
+      wait_for do |configuration|
         actual_value = driver.get_value(locator)
-        context.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
+        configuration.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
         has_value? expected_value, actual_value
       end
     end
@@ -36,18 +36,18 @@ module Seleniumrc
 
     def has_attribute(expected_value)
       is_present
-      wait_for do |context|
+      wait_for do |configuration|
         actual = driver.get_attribute(locator)  #todo: actual value
-        context.message = "Expected attribute '#{locator}' to be '#{expected_value}' but was '#{actual}'"
+        configuration.message = "Expected attribute '#{locator}' to be '#{expected_value}' but was '#{actual}'"
         expected_value == actual
       end
     end
 
     def has_selected(expected_value)
       is_present
-      wait_for do |context|
+      wait_for do |configuration|
         actual = driver.get_selected_label(locator)
-        context.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
+        configuration.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
         expected_value == actual
       end
     end
@@ -88,9 +88,9 @@ module Seleniumrc
 
     def has_text(expected_text, options={})
       is_present
-      wait_for(options) do |context|
+      wait_for(options) do |configuration|
         actual = driver.get_text(locator)
-        context.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
+        configuration.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
         expected_text == actual
       end
     end
@@ -123,7 +123,7 @@ module Seleniumrc
 
     def has_text_in_order(*text_fragments)
       is_present
-      wait_for do |context|
+      wait_for do |configuration|
         success = false
 
         html = driver.get_text(locator)
@@ -132,11 +132,11 @@ module Seleniumrc
         fragments_out_of_order = results[:fragments_out_of_order]
 
         if !fragments_not_found.empty?
-          context.message = "Certain fragments weren't found:\n" <<
+          configuration.message = "Certain fragments weren't found:\n" <<
                             "#{fragments_not_found.join("\n")}\n" <<
                             "\nhtml follows:\n #{html}\n"
         elsif !fragments_out_of_order.empty?
-          context.message = "Certain fragments were out of order:\n" <<
+          configuration.message = "Certain fragments were out of order:\n" <<
                             "#{fragments_out_of_order.join("\n")}\n" <<
                             "\nhtml follows:\n #{html}\n"
         else

@@ -9,13 +9,13 @@ module Seleniumrc
     def wait_for(params={})
       timeout = params[:timeout] || default_wait_for_time
       message = params[:message] || "Timeout exceeded"
-      context = Context.new(message)
+      configuration = Context.new(message)
       begin_time = time_class.now
       while (time_class.now - begin_time) < timeout
-        return if yield(context)
+        return if yield(configuration)
         sleep 0.25
       end
-      flunk(context.message + " (after #{timeout} sec)")
+      flunk(configuration.message + " (after #{timeout} sec)")
       true
     end
 

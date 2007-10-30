@@ -66,7 +66,7 @@ module Seleniumrc
 
     it "creates app server checker" do
       app_server_checker = configuration.create_app_server_checker
-      app_server_checker.context.should == configuration
+      app_server_checker.configuration.should == configuration
       app_server_checker.tcp_socket_class.should == TCPSocket
     end
 
@@ -115,7 +115,7 @@ module Seleniumrc
 
       runner = configuration.create_webrick_runner
       runner.should be_an_instance_of(WebrickSeleniumServerRunner)
-      runner.context.should == configuration
+      runner.configuration.should == configuration
       runner.thread_class.should == Thread
       runner.socket.should == Socket
       runner.dispatch_servlet.should == DispatchServlet
@@ -142,7 +142,7 @@ module Seleniumrc
     it "creates Mongrel Server Runner" do
       server = configuration.create_mongrel_runner
       server.should be_instance_of(MongrelSeleniumServerRunner)
-      server.context.should == configuration
+      server.configuration.should == configuration
       server.thread_class.should == Thread
     end
 
@@ -364,14 +364,14 @@ module Seleniumrc
 
   describe SeleniumConfiguration, "#create_server_runner where application server engine is mongrel" do
     it "creates a mongrel server runner" do
-      context = SeleniumConfiguration.new
-      context.app_server_engine = :mongrel
-      runner = context.create_server_runner
+      configuration = SeleniumConfiguration.new
+      configuration.app_server_engine = :mongrel
+      runner = configuration.create_server_runner
       runner.should be_instance_of(MongrelSeleniumServerRunner)
     end
   end
 
-  context SeleniumConfiguration, "#create_server_runner where application server engine is webrick" do
+  describe SeleniumConfiguration, "#create_server_runner where application server engine is webrick" do
     before do
       Object.const_set :RAILS_ROOT, "foobar"
       require 'webrick_server'
@@ -382,9 +382,9 @@ module Seleniumrc
     end
 
     it "creates a webrick server runner" do
-      context = SeleniumConfiguration.new
-      context.app_server_engine = :webrick
-      runner = context.create_server_runner
+      configuration = SeleniumConfiguration.new
+      configuration.app_server_engine = :webrick
+      runner = configuration.create_server_runner
       runner.should be_instance_of(WebrickSeleniumServerRunner)
     end
   end

@@ -1,6 +1,6 @@
 module Seleniumrc
   class SeleniumServerRunner
-    attr_accessor :context, :thread_class
+    attr_accessor :configuration, :thread_class
     def initialize
       @started = false
     end

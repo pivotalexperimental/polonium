@@ -14,9 +14,9 @@ module Seleniumrc
     alias_method :open_and_wait, :open
 
     def has_title(expected_title, params = {})
-      wait_for(params) do |context|
+      wait_for(params) do |configuration|
         actual_title = driver.get_title
-        context.message = "Expected title '#{expected_title}' but was '#{actual_title}'"
+        configuration.message = "Expected title '#{expected_title}' but was '#{actual_title}'"
         has_title? expected_title, actual_title
       end
     end

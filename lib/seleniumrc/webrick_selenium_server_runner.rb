@@ -6,16 +6,16 @@ module Seleniumrc
     def start_server
       @socket.do_not_reverse_lookup = true # patch for OS X
 
-      @server = @context.create_webrick_server
+      @server = @configuration.create_webrick_server
       mount_parameters = {
-        :port            => @context.internal_app_server_port,
-        :ip              => @context.internal_app_server_host,
-        :environment     => @context.rails_env.dup,
-        :server_root     => @context.server_root,
+        :port            => @configuration.internal_app_server_port,
+        :ip              => @configuration.internal_app_server_host,
+        :environment     => @configuration.rails_env.dup,
+        :server_root     => @configuration.server_root,
         :server_type     => WEBrick::SimpleServer,
         :charset         => "UTF-8",
         :mime_types      => WEBrick::HTTPUtils::DefaultMimeTypes,
-        :working_directory => File.expand_path(@context.rails_root.to_s)
+        :working_directory => File.expand_path(@configuration.rails_root.to_s)
       }
       @server.mount('/', @dispatch_servlet, mount_parameters)
 
