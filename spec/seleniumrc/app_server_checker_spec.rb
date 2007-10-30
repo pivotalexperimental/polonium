@@ -2,13 +2,14 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
 describe AppServerChecker, "on local host" do
+  attr_reader :configuration
   before(:each) do
-    @context = Seleniumrc::SeleniumConfiguration.new
+    @configuration = Seleniumrc::SeleniumConfiguration.new
     @host = "0.0.0.0"
-    @context.internal_app_server_host = @host
+    configuration.internal_app_server_host = @host
     @port = 4000
-    @context.internal_app_server_port = @port
-    @app_server_checker = @context.create_app_server_checker
+    configuration.internal_app_server_port = @port
+    @app_server_checker = configuration.create_app_server_checker
     @mock_tcp_socket_class = 'mock_tcp_socket_class'
     @app_server_checker.tcp_socket_class = @mock_tcp_socket_class
     @expected_translated_local_host_address = "127.0.0.1"
@@ -26,19 +27,20 @@ describe AppServerChecker, "on local host" do
 end
 
 describe AppServerChecker, "on remote host" do
+  attr_reader :configuration
   before(:each) do
-    @context = Seleniumrc::SeleniumConfiguration.new
+    @configuration = Seleniumrc::SeleniumConfiguration.new
     @host = "some-remote-host"
-    @context.internal_app_server_host = @host
+    configuration.internal_app_server_host = @host
     @port = 4000
-    @context.internal_app_server_port = @port
-    @app_server_checker = @context.create_app_server_checker
+    configuration.internal_app_server_port = @port
+    @app_server_checker = configuration.create_app_server_checker
     @mock_tcp_socket_class = 'mock_tcp_socket_class'
     @app_server_checker.tcp_socket_class = @mock_tcp_socket_class
   end
 
   it "returns true for is_server_started? if verify_remote_app_server_is_running_flag is false" do
-    @context.verify_remote_app_server_is_running = false
+    configuration.verify_remote_app_server_is_running = false
     @app_server_checker.is_server_started?.should == (true)
   end
 
@@ -48,7 +50,7 @@ describe AppServerChecker, "on remote host" do
   end
 
   it "raises exception if server is NOT running and verify_remote_app_server_is_running_flag is true" do
-    @context.verify_remote_app_server_is_running = true
+    configuration.verify_remote_app_server_is_running = true
     mock(@mock_tcp_socket_class).new.with(@host, @port) {raise SocketError}
     lambda {@app_server_checker.is_server_started?}.should raise_error(RuntimeError)
   end
