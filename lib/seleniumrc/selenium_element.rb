@@ -1,10 +1,10 @@
 module Seleniumrc
   class SeleniumElement
     include WaitFor
-    attr_reader :selenium, :locator
+    attr_reader :driver, :locator
 
-    def initialize(selenium, locator)
-      @selenium = selenium
+    def initialize(driver, locator)
+      @driver = driver
       @locator = locator
     end
 
@@ -15,7 +15,7 @@ module Seleniumrc
       end
     end
     def is_present?
-      selenium.is_element_present(locator)
+      driver.is_element_present(locator)
     end
 
     def is_not_present(params={})
@@ -25,25 +25,25 @@ module Seleniumrc
       end
     end
     def is_not_present?
-      !selenium.is_element_present(locator)
+      !driver.is_element_present(locator)
     end
 
     def has_value(expected_value)
       is_present
       wait_for do |context|
-        actual_value = selenium.get_value(locator)
+        actual_value = driver.get_value(locator)
         context.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
         has_value? expected_value, actual_value
       end
     end
-    def has_value?(expected_value, actual_value=selenium.get_value(locator))
+    def has_value?(expected_value, actual_value=driver.get_value(locator))
       expected_value == actual_value
     end
 
     def has_attribute(expected_value)
       is_present
       wait_for do |context|
-        actual = selenium.get_attribute(locator)  #todo: actual value
+        actual = driver.get_attribute(locator)  #todo: actual value
         context.message = "Expected attribute '#{locator}' to be '#{expected_value}' but was '#{actual}'"
         expected_value == actual
       end
@@ -52,7 +52,7 @@ module Seleniumrc
     def has_selected(expected_value)
       is_present
       wait_for do |context|
-        actual = selenium.get_selected_label(locator)
+        actual = driver.get_selected_label(locator)
         context.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
         expected_value == actual
       end
@@ -64,7 +64,7 @@ module Seleniumrc
         :message => "Expected '#{locator}' to be visible, but it wasn't"
       }.merge(options)
       wait_for(options) do
-        selenium.is_visible(locator)
+        driver.is_visible(locator)
       end
     end
 
@@ -74,28 +74,28 @@ module Seleniumrc
         :message => "Expected '#{locator}' to be hidden, but it wasn't"
       }.merge(options)
       wait_for(options) do
-        !selenium.is_visible(locator)
+        !driver.is_visible(locator)
       end
     end
 
     def is_checked
       is_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
-        selenium.is_checked(locator)
+        driver.is_checked(locator)
       end
     end
 
     def is_not_checked
       is_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
-        !selenium.is_checked(locator)
+        !driver.is_checked(locator)
       end
     end
 
     def has_text(expected_text, options={})
       is_present
       wait_for(options) do |context|
-        actual = selenium.get_text(locator)
+        actual = driver.get_text(locator)
         context.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
         expected_text == actual
       end
@@ -122,7 +122,7 @@ module Seleniumrc
       is_present
       eval_js = "this.page().findElement('#{locator}').nextSibling.id"
       wait_for(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do
-        actual_sibling_id = selenium.get_eval(eval_js)
+        actual_sibling_id = driver.get_eval(eval_js)
         expected_sibling_id == actual_sibling_id
       end
     end
@@ -132,7 +132,7 @@ module Seleniumrc
       wait_for do |context|
         success = false
 
-        html = selenium.get_text(locator)
+        html = driver.get_text(locator)
         results = find_text_order_error_fragments(html, text_fragments)
         fragments_not_found = results[:fragments_not_found]
         fragments_out_of_order = results[:fragments_out_of_order]
@@ -154,12 +154,12 @@ module Seleniumrc
     end
 
     def inner_html
-      selenium.get_eval("this.page().findElement(\"#{locator}\").innerHTML")
+      driver.get_inner_html(locator)
     end
 
     def ==(other)
       return false unless other.is_a?(SeleniumElement)
-      return false unless self.selenium == other.selenium
+      return false unless self.driver == other.driver
       return false unless self.locator == other.locator
       true
     end

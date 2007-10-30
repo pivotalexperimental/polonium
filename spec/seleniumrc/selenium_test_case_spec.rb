@@ -2,14 +2,18 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
 describe SeleniumTestCase, :shared => true do
+  it_should_behave_like "Selenium"
   include SeleniumTestCaseSpec
+  attr_reader :driver, :test_case
 
   before(:each) do
     stub_selenium_configuration
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
-    @base_selenium = "Base Selenium"
-    @test_case.base_selenium = @base_selenium
-    stub(@base_selenium).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"true"}
+    @driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+    test_case.base_selenium = driver
+    stub(driver).do_command("getEval", [SeleniumPage::PAGE_LOADED_COMMAND]) do
+      result(true)
+    end
   end
 
   def sample_locator
@@ -56,44 +60,6 @@ describe SeleniumTestCase, "#wait_for" do
   end
 end
 
-describe SeleniumTestCase, "#wait_for_element_to_contain" do
-  it_should_behave_like "Seleniumrc::SeleniumTestCase"
-
-  it "should pass when finding text within time limit" do
-    is_element_present_results = [false, true]
-
-    stub(base_selenium).is_element_present {is_element_present_results.shift}
-    stub(base_selenium).get_eval("this.page().findElement(\"#{sample_locator}\").innerHTML") do
-      sample_text
-    end
-
-    @test_case.wait_for_element_to_contain(sample_locator, sample_text)
-  end
-
-  it "should fail when element not found in time" do
-    is_element_present_results = [false, false, false, false]
-
-    stub(base_selenium).is_element_present {is_element_present_results.shift}
-
-    proc do
-      @test_case.wait_for_element_to_contain(sample_locator, "")
-    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 5 sec)")
-  end
-
-  it "should fail when text does not match in time" do
-    is_element_present_results = [false, true, true, true]
-
-    stub(base_selenium).is_element_present {is_element_present_results.shift}
-    stub(base_selenium).get_eval.
-      with("this.page().findElement(\"#{sample_locator}\").innerHTML").
-      returns(sample_text)
-
-    proc do
-      @test_case.wait_for_element_to_contain(sample_locator, "wrong text", nil, 1)
-    end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 1 sec)")
-  end
-end
-
 describe SeleniumTestCase, "#default_timeout" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
@@ -106,51 +72,21 @@ describe SeleniumTestCase, "#open_home_page" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "opens home page" do
-    mock(base_selenium).open("http://localhost:4000")
-    mock(base_selenium).wait_for_page_to_load(@test_case.default_timeout)
-    stub(base_selenium).send {""}
-
+    mock(driver).open("http://localhost:4000")
     @test_case.open_home_page
-  end
-end
-
-describe SeleniumTestCase, "#open_and_wait" do
-  it_should_behave_like "Seleniumrc::SeleniumTestCase"
-
-  before do
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      mock.proxy(page).open_and_wait("/users/list")
-      page
-    end
-  end
-
-  it "opens the url and waits for the page to load" do
-    mock(base_selenium) do |o|
-      o.open("/users/list")
-      o.wait_for_page_to_load(@test_case.default_timeout)
-      o.get_title {"Users in the project"}
-    end
-    @test_case.open_and_wait("/users/list")
   end
 end
 
 describe SeleniumTestCase, "#assert_title" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  before do
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
-      mock.proxy(page).has_title("my page", {})
-      page
-    end
-  end
-
-  it "passes when title is expected" do
-    mock(base_selenium).get_title {"my page"}
+  it "when title is expected, passes" do
+    mock(driver).do_command("getTitle", []) {result("my page")}
     @test_case.assert_title("my page")
   end
 
-  it "fails when title is not expected" do
-    stub(base_selenium).get_title {"no page"}
+  it "when title is not expected, fails" do
+    stub(driver).do_command("getTitle", []) {result("no page")}
     proc do
       @test_case.assert_title("my page")
     end.should raise_error(Test::Unit::AssertionFailedError)
@@ -161,7 +97,7 @@ describe SeleniumTestCase, "#assert_text_present" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+    mock.proxy(SeleniumPage).new(driver) do |page|
       mock.proxy(page).is_text_present("my page", {})
       page
     end
@@ -169,14 +105,14 @@ describe SeleniumTestCase, "#assert_text_present" do
 
   it "passes when text is in page" do
     ticks = [false, false, false, true]
-    mock(base_selenium).is_text_present("my page") do
+    mock(driver).is_text_present("my page") do
       ticks.shift
     end.times(4)
     @test_case.assert_text_present("my page")
   end
 
   it "fails when text is not in page" do
-    stub(base_selenium).is_text_present("my page") {false}
+    stub(driver).is_text_present("my page") {false}
     proc do
       @test_case.assert_text_present("my page")
     end.should raise_error(Test::Unit::AssertionFailedError)
@@ -187,7 +123,7 @@ describe SeleniumTestCase, "#assert_text_not_present" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+    mock.proxy(SeleniumPage).new(driver) do |page|
       mock.proxy(page).is_text_not_present("my page", {})
       page
     end
@@ -195,14 +131,14 @@ describe SeleniumTestCase, "#assert_text_not_present" do
 
   it "passes when text is not in page" do
     ticks = [true, true, true, false]
-    mock(base_selenium).is_text_present("my page") do
+    mock(driver).is_text_present("my page") do
       ticks.shift
     end.times(4)
     @test_case.assert_text_not_present("my page")
   end
 
   it "fails when text is in page" do
-    stub(base_selenium).is_text_present("my page") {true}
+    stub(driver).is_text_present("my page") {true}
     proc do
       @test_case.assert_text_not_present("my page")
     end.should raise_error(Test::Unit::AssertionFailedError)
@@ -214,7 +150,7 @@ describe SeleniumTestCase, "#assert_location_ends_in" do
 
   before do
     @ends_with = "foobar.com?arg1=2"
-    mock.proxy(SeleniumPage).new(base_selenium) do |page|
+    mock.proxy(SeleniumPage).new(driver) do |page|
       mock.proxy(page).url_ends_with(@ends_with, {})
       page
     end
@@ -227,14 +163,14 @@ describe SeleniumTestCase, "#assert_location_ends_in" do
       "http://no.com",
       "http://foobar.com?arg1=2"
     ]
-    mock(base_selenium).get_location do
+    mock(driver).get_location do
       ticks.shift
     end.times(4)
     @test_case.assert_location_ends_in(@ends_with)
   end
 
   it "fails when the url does not end with the passed in value" do
-    stub(base_selenium).get_location {"http://no.com"}
+    stub(driver).get_location {"http://no.com"}
     proc do
       @test_case.assert_location_ends_in(@ends_with)
     end.should raise_error(Test::Unit::AssertionFailedError)
@@ -245,7 +181,7 @@ describe SeleniumTestCase, "#assert_element_present" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_present({})
       element
     end
@@ -253,17 +189,15 @@ describe SeleniumTestCase, "#assert_element_present" do
 
   it "passes when element is present" do
     ticks = [false, false, false, true]
-    mock(base_selenium) do |o|
-      o.is_element_present(sample_locator) do
-        ticks.shift
-      end.times(4)
+    mock(driver).do_command("isElementPresent", [sample_locator]).times(4) do
+      result(ticks.shift)
     end
     @test_case.assert_element_present(sample_locator)
   end
 
   it "fails when element is not present" do
-    stub(base_selenium) do |o|
-      o.is_element_present(sample_locator) {false}
+    stub(driver).do_command("isElementPresent", [sample_locator]) do
+      result(false)
     end
     proc do
       @test_case.assert_element_present(sample_locator)
@@ -275,7 +209,7 @@ describe SeleniumTestCase, "#assert_element_not_present" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_not_present({})
       element
     end
@@ -283,7 +217,7 @@ describe SeleniumTestCase, "#assert_element_not_present" do
 
   it "passes when element is not present" do
     ticks = [true, true, true, false]
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) do
         ticks.shift
       end.times(4)
@@ -292,7 +226,7 @@ describe SeleniumTestCase, "#assert_element_not_present" do
   end
 
   it "fails when element is present" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
     end
     proc do
@@ -305,14 +239,14 @@ describe SeleniumTestCase, "#assert_value" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).has_value("passed in value")
       element
     end
   end
 
   it "passes when value is expected" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_value(sample_locator) {"passed in value"}
     end
@@ -320,7 +254,7 @@ describe SeleniumTestCase, "#assert_value" do
   end
 
   it "fails when value is not expected" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_value(sample_locator) {"another value"}
     end
@@ -334,7 +268,7 @@ describe SeleniumTestCase, "#assert_element_contains" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).contains_text("passed in value", {})
       element
     end
@@ -342,7 +276,7 @@ describe SeleniumTestCase, "#assert_element_contains" do
   end
 
   it "passes when text is in the element's inner_html" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) do
         "html passed in value html"
@@ -352,7 +286,7 @@ describe SeleniumTestCase, "#assert_element_contains" do
   end
 
   it "fails when text is not in the element's inner_html" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"another value"}
     end
@@ -365,30 +299,38 @@ end
 describe SeleniumTestCase, "#element_does_not_contain_text" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
   
-  it "returns true when element is not on the page" do
+  it "when element is not on the page, returns true" do
     locator = "id=element_id"
     expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(false)
+    mock(driver).is_element_present.with(locator).returns(false)
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == true
   end
 
-  it "returns true when element is on page and inner_html does not contain text" do
+  it "when element is on page and inner_html does not contain text, returns true" do
     locator = "id=element_id"
     inner_html = "Some text that does not contain the expected_text"
     expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(true)
-    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
+    mock(driver).do_command("isElementPresent", [locator]) do
+      result(true)
+    end
+    mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
+      inner_html
+    end
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == true
   end
 
-  it "returns false when element is on page and inner_html does contain text" do
+  it "when element is on page and inner_html does contain text, returns false" do
     locator = "id=element_id"
     inner_html = "foobar foobar foobar"
     expected_text = "foobar"
-    mock(base_selenium).is_element_present.with(locator).returns(true)
-    mock(@test_case).get_inner_html.with(locator).returns(inner_html)
+    mock(driver).do_command("isElementPresent", [locator]) do
+      result(true)
+    end
+    mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
+      inner_html
+    end
 
     @test_case.element_does_not_contain_text(locator, expected_text).should == false
   end
@@ -398,7 +340,7 @@ describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).does_not_contain_text("passed in value", {})
       element
     end
@@ -406,7 +348,7 @@ describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
   end
 
   it "passes when text is not in the element's inner_html" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) do
         "another value"
@@ -416,7 +358,7 @@ describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
   end
 
   it "fails when text is in the element's inner_html" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"html passed in value html"}
     end
@@ -431,7 +373,7 @@ describe SeleniumTestCase, "#element_does_not_contain_text" do
 
   it "checks if text is in order" do
     locator = "id=foo"
-    stub(@base_selenium).get_text(locator).returns("one\ntwo\nthree\n")
+    stub(@driver).get_text(locator).returns("one\ntwo\nthree\n")
 
     @test_case.is_text_in_order locator, "one", "two", "three"
   end
@@ -441,14 +383,14 @@ describe SeleniumTestCase, "#assert_attribute" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).has_attribute("passed in value")
       element
     end
   end
 
   it "passes when attribute is expected" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_attribute(sample_locator) {"passed in value"}
     end
@@ -456,7 +398,7 @@ describe SeleniumTestCase, "#assert_attribute" do
   end
   
   it "fails when attribute is not expected" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_attribute(sample_locator) {"another value"}
     end
@@ -470,14 +412,14 @@ describe SeleniumTestCase, "#assert_selected" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).has_selected("passed_in_element")
       element
     end
   end
 
   it "passes when selected is expected" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_selected_label(sample_locator) {"passed_in_element"}
     end
@@ -485,7 +427,7 @@ describe SeleniumTestCase, "#assert_selected" do
   end
 
   it "fails when selected is not expected" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_selected_label(sample_locator) {"another_element"}
     end
@@ -499,14 +441,14 @@ describe SeleniumTestCase, "#assert_checked" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_checked
       element
     end
   end
 
   it "passes when checked" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {true}
     end
@@ -514,7 +456,7 @@ describe SeleniumTestCase, "#assert_checked" do
   end
 
   it "fails when not checked" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {false}
     end
@@ -528,14 +470,14 @@ describe SeleniumTestCase, "#assert_not_checked" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_not_checked
       element
     end
   end
 
   it "passes when not checked" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {false}
     end
@@ -543,7 +485,7 @@ describe SeleniumTestCase, "#assert_not_checked" do
   end
 
   it "fails when checked" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.is_checked(sample_locator) {true}
     end
@@ -557,14 +499,14 @@ describe SeleniumTestCase, "#assert_text" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).has_text("expected text", {})
       element
     end
   end
 
   it "passes when text is expected" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_text(sample_locator) {"expected text"}
     end
@@ -572,7 +514,7 @@ describe SeleniumTestCase, "#assert_text" do
   end
 
   it "fails when text is not expected" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_text(sample_locator) {"unexpected text"}
     end
@@ -586,22 +528,22 @@ describe SeleniumTestCase, "#assert_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_visible({})
       element
     end
   end
 
   it "passes when element is visible" do
-    mock(base_selenium).is_element_present(sample_locator) {true}
-    mock(base_selenium).is_visible(sample_locator) {true}
+    mock(driver).is_element_present(sample_locator) {true}
+    mock(driver).is_visible(sample_locator) {true}
 
     @test_case.assert_visible(sample_locator)
   end
   
   it "fails when element is not visible" do
-    mock(base_selenium).is_element_present(sample_locator) {true}
-    stub(base_selenium).is_visible.returns {false}
+    mock(driver).is_element_present(sample_locator) {true}
+    stub(driver).is_visible.returns {false}
 
     proc {
       @test_case.assert_visible(sample_locator)
@@ -613,22 +555,22 @@ describe SeleniumTestCase, "#assert_not_visible" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).is_not_visible({})
       element
     end
   end
 
   it "passes when element is present and is not visible" do
-    mock(base_selenium).is_element_present(sample_locator) {true}
-    mock(base_selenium).is_visible(sample_locator) {false}
+    mock(driver).is_element_present(sample_locator) {true}
+    mock(driver).is_visible(sample_locator) {false}
 
     @test_case.assert_not_visible(sample_locator)
   end
   
   it "fails when element is visible" do
-    mock(base_selenium).is_element_present(sample_locator) {true}
-    stub(base_selenium).is_visible(sample_locator) {true}
+    mock(driver).is_element_present(sample_locator) {true}
+    stub(driver).is_visible(sample_locator) {true}
 
     proc {
       @test_case.assert_not_visible(sample_locator)
@@ -640,7 +582,7 @@ describe SeleniumTestCase, "#assert_next_sibling" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator) do |element|
+    mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
       mock.proxy(element).has_next_sibling("next_sibling", {})
       element
     end
@@ -648,7 +590,7 @@ describe SeleniumTestCase, "#assert_next_sibling" do
   end
 
   it "passes when passed next sibling id" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"next_sibling"}
     end
@@ -656,7 +598,7 @@ describe SeleniumTestCase, "#assert_next_sibling" do
   end
 
   it "fails when not passed next sibling id" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_eval(@evaled_js) {"wrong_sibling"}
     end
@@ -670,12 +612,12 @@ describe SeleniumTestCase, "#assert_text_in_order" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   before do
-    mock.proxy(SeleniumElement).new(base_selenium, sample_locator)
+    mock.proxy(SeleniumElement).new(driver, sample_locator)
     @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
   end
 
   it "passes when text is in order" do
-    mock(base_selenium) do |o|
+    mock(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_text(sample_locator) {"one\ntwo\nthree\n"}
     end
@@ -683,7 +625,7 @@ describe SeleniumTestCase, "#assert_text_in_order" do
   end
 
   it "fails when element is present and text is not in order" do
-    stub(base_selenium) do |o|
+    stub(driver) do |o|
       o.is_element_present(sample_locator) {true}
       o.get_text(sample_locator) {"<html>one\ntext not in order\n</html>"}
     end
@@ -698,17 +640,21 @@ describe SeleniumTestCase, "#type" do
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
-    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
-    mock(base_selenium).type.with("id=foobar", "The Text")
+    mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+      result(is_element_present_results.shift)
+    end
+    mock(driver).do_command("type", ["id=foobar", "The Text"]) do
+      result()
+    end
 
     @test_case.type "id=foobar", "The Text"
   end
 
   it "fails when element is not present" do
-    is_element_present_results = [false, false, false, false]
-    mock(base_selenium).is_element_present.with("id=foobar").times(4).
-      returns {is_element_present_results.shift}
-    dont_allow(base_selenium).type
+    mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
+      result(false)
+    end
+    dont_allow(driver).do_command("type", ["id=foobar", "The Text"])
 
     proc {
       @test_case.type "id=foobar", "The Text"
@@ -721,17 +667,20 @@ describe SeleniumTestCase, "#click" do
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
-    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
-    mock(base_selenium).click.with("id=foobar")
+    mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+      result(is_element_present_results.shift)
+    end
+    mock(driver).do_command("click", ["id=foobar"]) {result}
 
     @test_case.click "id=foobar"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    mock(base_selenium).is_element_present.with("id=foobar").times(4).
-      returns {is_element_present_results.shift}
-    dont_allow(base_selenium).click
+    mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
+      result(is_element_present_results.shift)
+    end
+    dont_allow(driver).do_command("click", [])
 
     proc {
       @test_case.click "id=foobar"
@@ -744,17 +693,19 @@ describe SeleniumTestCase, "#select" do
 
   it "types when element is present and types" do
     is_element_present_results = [false, true]
-    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
-    mock(base_selenium).select.with("id=foobar", "value=3")
+    mock(driver).do_command("isElementPresent",["id=foobar"]).twice do
+      result is_element_present_results.shift
+    end
+    mock(driver).do_command("select", ["id=foobar", "value=3"]) {result}
 
     @test_case.select "id=foobar", "value=3"
   end
 
   it "fails when element is not present" do
-    is_element_present_results = [false, false, false, false]
-    mock(base_selenium).is_element_present.with("id=foobar").times(4).
-      returns {is_element_present_results.shift}
-    dont_allow(base_selenium).select
+    mock(driver).do_command("isElementPresent",["id=foobar"]).times(4) do
+      result false
+    end
+    dont_allow(driver).do_command("select", ["id=foobar", "value=3"])
 
     proc {
       @test_case.select "id=foobar", "value=3"
@@ -767,17 +718,19 @@ describe SeleniumTestCase, "#wait_for_and_click" do
 
   it "click when element is present and types" do
     is_element_present_results = [false, true]
-    mock(base_selenium).is_element_present.with("id=foobar").twice.returns {is_element_present_results.shift}
-    mock(base_selenium).click.with("id=foobar")
+    mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+      result is_element_present_results.shift
+    end
+    mock(driver).do_command("click", ["id=foobar"]) {result}
 
     @test_case.wait_for_and_click "id=foobar"
   end
 
   it "fails when element is not present" do
     is_element_present_results = [false, false, false, false]
-    mock(base_selenium).is_element_present.with("id=foobar").times(4).
+    mock(driver).is_element_present.with("id=foobar").times(4).
       returns {is_element_present_results.shift}
-    dont_allow(base_selenium).click
+    dont_allow(driver).click
 
     proc {
       @test_case.wait_for_and_click "id=foobar"
@@ -789,7 +742,7 @@ describe SeleniumTestCase, "#page" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
   
   it "returns page" do
-    @test_case.page.should == SeleniumPage.new(base_selenium)
+    @test_case.page.should == SeleniumPage.new(driver)
   end
 end
 
@@ -797,14 +750,14 @@ describe "SeleniumTestCase in test browser mode and test fails" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should stop interpreter when configuration says to stop test" do
-    @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
-    mock(@test_case.configuration).test_browser_mode?.returns(true)
+    @test_case.configuration = configuration = Seleniumrc::SeleniumContext.new
+    configuration.test_browser_mode!
 
     stub(@test_case).passed?.returns(false)
-    mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(true)
+    configuration.keep_browser_open_on_failure = false
 
-    mock(base_selenium).stop.once
-    @test_case.base_selenium = base_selenium
+    mock(driver).stop.once
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -816,7 +769,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     stub(@test_case).passed?.returns(false)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(false)
 
-    @test_case.base_selenium = base_selenium
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -832,8 +785,8 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
-    mock(base_selenium).stop.once
-    @test_case.base_selenium = base_selenium
+    mock(driver).stop.once
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -845,7 +798,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
-    @test_case.base_selenium = base_selenium
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -860,7 +813,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
     def @test_case.passed?; false; end
 
-    @test_case.base_selenium = base_selenium
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -871,7 +824,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
      stub(@test_case).passed?.returns(true)
 
-     @test_case.base_selenium = base_selenium
+     @test_case.base_selenium = driver
 
      @test_case.teardown
    end
@@ -887,8 +840,8 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
-    mock(base_selenium).stop.once
-    @test_case.base_selenium = base_selenium
+    mock(driver).stop.once
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end
@@ -900,7 +853,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
-    @test_case.base_selenium = base_selenium
+    @test_case.base_selenium = driver
 
     @test_case.teardown
   end

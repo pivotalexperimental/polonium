@@ -10,12 +10,12 @@ require 'test/unit/testresult'
 
 require "selenium"
 require "seleniumrc/extensions/testrunnermediator"
+require "seleniumrc/wait_for"
 require "seleniumrc/selenium_driver"
 require "seleniumrc/app_server_checker"
 require "seleniumrc/selenium_server_runner"
 require "seleniumrc/mongrel_selenium_server_runner"
 require "seleniumrc/webrick_selenium_server_runner"
-require "seleniumrc/wait_for"
 require "seleniumrc/dsl/test_unit_dsl"
 require "seleniumrc/dsl/selenium_dsl"
 require "seleniumrc/selenium_context"

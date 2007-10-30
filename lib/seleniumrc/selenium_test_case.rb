@@ -69,11 +69,11 @@ module Seleniumrc
         end
       end
   #        puts self.class.to_s + "#" + @method_name
-      @selenium = configuration.selenese_interpreter
+      @driver = configuration.selenese_interpreter
     end
 
     def teardown
-      @selenium.stop if should_stop_selenese_interpreter?
+      selenium.stop if should_stop_selenese_interpreter?
       super
       if @beginning
         duration = (time_class.now - @beginning).to_f

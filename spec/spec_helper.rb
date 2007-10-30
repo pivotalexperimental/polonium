@@ -55,3 +55,9 @@ class FakeTimeClass
     @now += 1
   end
 end
+
+describe "Selenium", :shared => true do
+  def result(response_text=nil)
+    "OK,#{response_text }"
+  end  
+end
