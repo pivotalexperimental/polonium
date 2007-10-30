@@ -750,7 +750,7 @@ end
 describe "SeleniumTestCase in test browser mode and test fails" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "should stop interpreter when configuration says to stop test" do
+  it "should stop driver when configuration says to stop test" do
     @test_case.configuration = configuration = Seleniumrc::SeleniumConfiguration.new
     configuration.test_browser_mode!
 
@@ -763,7 +763,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     @test_case.teardown
   end
 
-  it "should not stop interpreter when configuration says not to stop test" do
+  it "should not stop driver when configuration says not to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
@@ -779,7 +779,7 @@ end
 describe "SeleniumTestCase in test browser mode and test pass" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "should stop interpreter when configuration says to stop test" do
+  it "should stop driver when configuration says to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
@@ -792,7 +792,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     @test_case.teardown
   end
 
-  it "should not stop interpreter when configuration says not to stop test" do
+  it "should not stop driver when configuration says not to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
@@ -808,7 +808,7 @@ end
 describe "SeleniumTestCase not in suite browser mode" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "should not stop interpreter when tests fail" do
+  it "should not stop driver when tests fail" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode? {false}
 
@@ -819,7 +819,7 @@ describe "SeleniumTestCase not in suite browser mode" do
     @test_case.teardown
   end
 
-   it "should stop interpreter when tests pass" do
+   it "should stop driver when tests pass" do
      @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
      mock(@test_case.configuration).test_browser_mode? {false}
 
@@ -834,7 +834,7 @@ end
 describe "SeleniumTestCase in test browser mode and test pass" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-  it "should stop interpreter when configuration says to stop test" do
+  it "should stop driver when configuration says to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode?.returns(true)
 
@@ -847,7 +847,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     @test_case.teardown
   end
 
-  it "should not stop interpreter when configuration says not to stop test" do
+  it "should not stop driver when configuration says not to stop test" do
     @test_case.configuration = "Seleniumrc::SeleniumConfiguration"
     mock(@test_case.configuration).test_browser_mode? {true}
 

@@ -58,10 +58,10 @@ module Seleniumrc
       configuration.after_driver_started(&proc1)
       configuration.after_driver_started(&proc2)
 
-      expected_interpreter = Object.new
-      configuration.notify_after_driver_started(expected_interpreter)
-      proc1_args.should == [expected_interpreter]
-      proc2_args.should == [expected_interpreter]
+      expected_driver = Object.new
+      configuration.notify_after_driver_started(expected_driver)
+      proc1_args.should == [expected_driver]
+      proc2_args.should == [expected_driver]
     end
 
     it "creates app server checker" do
@@ -93,16 +93,16 @@ module Seleniumrc
     end
 
     it "creates, initializes. and notifies listeners for a Selenese driver " do
-      passed_interpreter = nil
-      configuration.after_driver_started {|driver| passed_interpreter = driver}
+      passed_driver = nil
+      configuration.after_driver_started {|driver| passed_driver = driver}
 
-      stub_interpreter = Object.new
+      stub_driver = Object.new
       start_called = false
-      stub(stub_interpreter).start.returns {start_called = true}
-      stub(configuration).create_driver.returns {stub_interpreter}
+      stub(stub_driver).start.returns {start_called = true}
+      stub(configuration).create_driver.returns {stub_driver}
       driver = configuration.create_and_initialize_driver
-      driver.should == stub_interpreter
-      passed_interpreter.should == driver
+      driver.should == stub_driver
+      passed_driver.should == driver
       start_called.should == true
     end
 
@@ -335,26 +335,26 @@ module Seleniumrc
     end
 
     it "when suite passes, should stop driver" do
-      mock_interpreter = "mock_interpreter"
-      mock(mock_interpreter).stop.once
-      configuration.driver = mock_interpreter
+      mock_driver = "mock_driver"
+      mock(mock_driver).stop.once
+      configuration.driver = mock_driver
 
       configuration.stop_driver_if_necessary true
     end
 
     it "when suite fails and keep browser open on failure, should not stop driver" do
-      mock_interpreter = "mock_interpreter"
-      mock(mock_interpreter).stop.never
-      configuration.driver = mock_interpreter
+      mock_driver = "mock_driver"
+      mock(mock_driver).stop.never
+      configuration.driver = mock_driver
       configuration.keep_browser_open_on_failure = true
 
       configuration.stop_driver_if_necessary false
     end
 
     it "when suite fails and not keep browser open on failure, should stop driver" do
-      mock_interpreter = "mock_interpreter"
-      mock(mock_interpreter).stop
-      configuration.driver = mock_interpreter
+      mock_driver = "mock_driver"
+      mock(mock_driver).stop
+      configuration.driver = mock_driver
       configuration.keep_browser_open_on_failure = false
 
       configuration.stop_driver_if_necessary false
