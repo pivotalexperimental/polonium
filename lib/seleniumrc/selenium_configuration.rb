@@ -94,7 +94,7 @@ module Seleniumrc
     def initialize
       self.verify_remote_app_server_is_running = true
       @before_suite_listeners = []
-      @after_selenese_driver_started_listeners = []
+      @after_driver_started_listeners = []
       @app_server_initialization = proc {}
     end
 
@@ -111,13 +111,13 @@ module Seleniumrc
     end
 
     # A callback hook that gets run after the Selenese Interpreter is started.
-    def after_selenese_driver_started(&block)
-      @after_selenese_driver_started_listeners << block
+    def after_driver_started(&block)
+      @after_driver_started_listeners << block
     end
 
-    # Notify all after_selenese_driver_started callbacks.
-    def notify_after_selenese_driver_started(driver)
-      for listener in @after_selenese_driver_started_listeners
+    # Notify all after_driver_started callbacks.
+    def notify_after_driver_started(driver)
+      for listener in @after_driver_started_listeners
         listener.call(driver)
       end
     end
@@ -212,7 +212,7 @@ module Seleniumrc
     def create_and_initialize_driver # nodoc
       driver = create_driver
       driver.start
-      notify_after_selenese_driver_started(driver)
+      notify_after_driver_started(driver)
       driver
     end
 

@@ -49,17 +49,17 @@ module Seleniumrc
       proc2_called.should == true
     end
 
-    it "registers and notifies after_selenese_driver_started callbacks" do
+    it "registers and notifies after_driver_started callbacks" do
       proc1_args = nil
       proc1 = lambda {|*args| proc1_args = args}
       proc2_args = nil
       proc2 = lambda {|*args| proc2_args = args}
 
-      configuration.after_selenese_driver_started(&proc1)
-      configuration.after_selenese_driver_started(&proc2)
+      configuration.after_driver_started(&proc1)
+      configuration.after_driver_started(&proc2)
 
       expected_interpreter = Object.new
-      configuration.notify_after_selenese_driver_started(expected_interpreter)
+      configuration.notify_after_driver_started(expected_interpreter)
       proc1_args.should == [expected_interpreter]
       proc2_args.should == [expected_interpreter]
     end
@@ -94,7 +94,7 @@ module Seleniumrc
 
     it "creates, initializes. and notifies listeners for a Selenese driver " do
       passed_interpreter = nil
-      configuration.after_selenese_driver_started {|driver| passed_interpreter = driver}
+      configuration.after_driver_started {|driver| passed_interpreter = driver}
 
       stub_interpreter = Object.new
       start_called = false
