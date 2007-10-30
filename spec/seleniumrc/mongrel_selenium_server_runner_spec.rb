@@ -2,33 +2,34 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
   context MongrelSeleniumServerRunner, "#start_server" do
+    attr_reader :configuration
     before do
-      @context = SeleniumConfiguration.new
+      @configuration = SeleniumConfiguration.new
     end
 
     it "initializes server and runs app_server_initialization callback" do
-      configurator = @context.create_mongrel_configurator
-      stub(@context).create_mongrel_configurator.returns(configurator)
-      mock(configurator).run
-      stub(configurator).log
-      mock(configurator).join
+      mongrel_configurator = configuration.create_mongrel_configurator
+      stub(configuration).create_mongrel_configurator {mongrel_configurator}
+      mock(mongrel_configurator).run
+      stub(mongrel_configurator).log
+      mock(mongrel_configurator).join
       fake_rails = "fake rails"
-      mock(configurator).rails.returns(fake_rails)
-      mock(configurator).uri.with("/", {:handler => fake_rails})
-      mock(configurator).load_plugins.once
-      mock(configurator).listener.yields(configurator)
+      mock(mongrel_configurator).rails {fake_rails}
+      mock(mongrel_configurator).uri("/", {:handler => fake_rails})
+      mock(mongrel_configurator).load_plugins
+      mock(mongrel_configurator).listener.yields(mongrel_configurator)
 
       callback_mongrel = nil
-      @context.app_server_initialization = proc do |mongrel|
+      configuration.app_server_initialization = proc do |mongrel|
         callback_mongrel = mongrel
       end
-      runner = @context.create_mongrel_runner
-      stub(runner).defaults.returns({:environment => ""})
+      runner = configuration.create_mongrel_runner
+      stub(runner).defaults do; {:environment => ""}; end
       runner.thread_class = mock_thread_class = "mock_thread_class"
       mock(mock_thread_class).start.yields
 
       runner.start
-      callback_mongrel.should == configurator
+      callback_mongrel.should == mongrel_configurator
     end
   end
 end
