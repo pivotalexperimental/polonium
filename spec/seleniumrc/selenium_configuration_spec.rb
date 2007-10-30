@@ -36,19 +36,6 @@ module Seleniumrc
       end
     end
 
-    it "registers and notifies before_suite callbacks" do
-      proc1_called = false
-      proc1 = lambda {proc1_called = true}
-      proc2_called = false
-      proc2 = lambda {proc2_called = true}
-
-      configuration.before_suite(&proc1)
-      configuration.before_suite(&proc2)
-      configuration.notify_before_suite
-      proc1_called.should == true
-      proc2_called.should == true
-    end
-
     it "registers and notifies after_driver_started callbacks" do
       proc1_args = nil
       proc1 = lambda {|*args| proc1_args = args}

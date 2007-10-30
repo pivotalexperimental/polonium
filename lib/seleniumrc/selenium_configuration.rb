@@ -93,21 +93,8 @@ module Seleniumrc
 
     def initialize
       self.verify_remote_app_server_is_running = true
-      @before_suite_listeners = []
       @after_driver_started_listeners = []
       @app_server_initialization = proc {}
-    end
-
-    # A callback hook that gets run before the suite is run.
-    def before_suite(&block)
-      @before_suite_listeners << block
-    end
-
-    # Notify all before_suite callbacks.
-    def notify_before_suite
-      for listener in @before_suite_listeners
-        listener.call
-      end
     end
 
     # A callback hook that gets run after the Selenese Interpreter is started.
