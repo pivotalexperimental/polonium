@@ -66,7 +66,7 @@ describe WebrickSeleniumServerRunner do
   end
 
   def create_runner_that_is_stubbed_so_start_method_works()
-    @context = Seleniumrc::SeleniumContext.new
+    @context = Seleniumrc::SeleniumConfiguration.new
     runner = @context.create_webrick_runner
     class << runner; public :start_server; end
 

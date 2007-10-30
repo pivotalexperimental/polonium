@@ -25,7 +25,7 @@ describe SeleniumTestCase, :shared => true do
   end
 
   def stub_selenium_configuration
-    @context = SeleniumContext.new
+    @context = SeleniumConfiguration.new
     @context.external_app_server_host = "test.com"
     @context.external_app_server_port = 80
 
@@ -750,7 +750,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
   it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
   it "should stop interpreter when configuration says to stop test" do
-    @test_case.configuration = configuration = Seleniumrc::SeleniumContext.new
+    @test_case.configuration = configuration = Seleniumrc::SeleniumConfiguration.new
     configuration.test_browser_mode!
 
     stub(@test_case).passed?.returns(false)

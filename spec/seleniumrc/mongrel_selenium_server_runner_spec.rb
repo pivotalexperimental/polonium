@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 module Seleniumrc
   context MongrelSeleniumServerRunner, "#start_server" do
     before do
-      @context = SeleniumContext.new
+      @context = SeleniumConfiguration.new
     end
 
     it "initializes server and runs app_server_initialization callback" do

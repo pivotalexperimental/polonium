@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 module Seleniumrc
 describe AppServerChecker, "on local host" do
   before(:each) do
-    @context = Seleniumrc::SeleniumContext.new
+    @context = Seleniumrc::SeleniumConfiguration.new
     @host = "0.0.0.0"
     @context.internal_app_server_host = @host
     @port = 4000
@@ -27,7 +27,7 @@ end
 
 describe AppServerChecker, "on remote host" do
   before(:each) do
-    @context = Seleniumrc::SeleniumContext.new
+    @context = Seleniumrc::SeleniumConfiguration.new
     @host = "some-remote-host"
     @context.internal_app_server_host = @host
     @port = 4000
