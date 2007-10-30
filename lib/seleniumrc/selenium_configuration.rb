@@ -202,13 +202,6 @@ module Seleniumrc
       return !keep_browser_open_on_failure
     end
 
-    def create_app_server_checker # nodoc
-      app_server_checker = AppServerChecker.new()
-      app_server_checker.configuration = self
-      app_server_checker.tcp_socket_class = TCPSocket
-      return app_server_checker
-    end
-
     def create_and_initialize_driver # nodoc
       driver = create_driver
       driver.start

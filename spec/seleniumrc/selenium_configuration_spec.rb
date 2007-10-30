@@ -64,12 +64,6 @@ module Seleniumrc
       proc2_args.should == [expected_driver]
     end
 
-    it "creates app server checker" do
-      app_server_checker = configuration.create_app_server_checker
-      app_server_checker.configuration.should == configuration
-      app_server_checker.tcp_socket_class.should == TCPSocket
-    end
-
     it "defaults to true for verify_remote_app_server_is_running" do
       configuration.verify_remote_app_server_is_running.should ==  true
     end
