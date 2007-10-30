@@ -57,8 +57,8 @@ module Seleniumrc
     end
     alias_method :wait_for_and_click, :click
 
-    def select(select_locator,option_locator)
-      element(select_locator).is_present
+    def select(select_locator, option_locator)
+      wait_for_is_element_present(select_locator)
       super
     end
     
