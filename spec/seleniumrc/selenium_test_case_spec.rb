@@ -37,7 +37,7 @@ module Seleniumrc
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
     it "should not allow transactional fixtures" do
-      stub(@test_case.class).use_transactional_fixtures.returns true
+      @test_case.class.use_transactional_fixtures = true
 
       expected_message = "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)."
       proc {@test_case.setup}.should raise_error(RuntimeError, expected_message)
