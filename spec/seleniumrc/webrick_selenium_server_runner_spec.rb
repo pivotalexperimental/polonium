@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
 describe WebrickSeleniumServerRunner do
+  attr_reader :configuration
   before(:each) do
     Object.const_set(:RAILS_ROOT, "foobar")
   end
@@ -66,8 +67,8 @@ describe WebrickSeleniumServerRunner do
   end
 
   def create_runner_that_is_stubbed_so_start_method_works()
-    @context = Seleniumrc::SeleniumConfiguration.new
-    runner = @context.create_webrick_runner
+    configuration = Seleniumrc::SeleniumConfiguration.new
+    runner = configuration.create_webrick_runner
     class << runner; public :start_server; end
 
     def runner.require(*args)
@@ -78,28 +79,28 @@ describe WebrickSeleniumServerRunner do
     stub(mock_socket).do_not_reverse_lookup=(true)
 
     @mock_server = mock_server = "mock_server"
-    (class << @context; self; end).class_eval do
+    (class << configuration; self; end).class_eval do
       define_method :create_webrick_server do
         mock_server
       end
     end
 
-    @context.internal_app_server_port = 4000
-    @context.internal_app_server_host = "localhost"
-    @context.rails_env = "test"
+    configuration.internal_app_server_port = 4000
+    configuration.internal_app_server_host = "localhost"
+    configuration.rails_env = "test"
     stub(@mock_server).mount('/')
     mock(@mock_server).mount(
       '/',
       DispatchServlet,
       {
-        :port            => @context.internal_app_server_port,
-        :ip              => @context.internal_app_server_host,
-        :environment     => @context.rails_env,
-        :server_root     => File.expand_path("#{@context.rails_root}/public/"),
+        :port            => configuration.internal_app_server_port,
+        :ip              => configuration.internal_app_server_host,
+        :environment     => configuration.rails_env,
+        :server_root     => File.expand_path("#{configuration.rails_root}/public/"),
         :server_type     => WEBrick::SimpleServer,
         :charset         => "UTF-8",
         :mime_types      => WEBrick::HTTPUtils::DefaultMimeTypes,
-        :working_directory => File.expand_path(@context.rails_root.to_s)
+        :working_directory => File.expand_path(configuration.rails_root.to_s)
       }
     )
 
