@@ -49,17 +49,17 @@ module Seleniumrc
       proc2_called.should == true
     end
 
-    it "registers and notifies after_selenese_interpreter_started callbacks" do
+    it "registers and notifies after_selenese_driver_started callbacks" do
       proc1_args = nil
       proc1 = lambda {|*args| proc1_args = args}
       proc2_args = nil
       proc2 = lambda {|*args| proc2_args = args}
 
-      configuration.after_selenese_interpreter_started(&proc1)
-      configuration.after_selenese_interpreter_started(&proc2)
+      configuration.after_selenese_driver_started(&proc1)
+      configuration.after_selenese_driver_started(&proc2)
 
       expected_interpreter = Object.new
-      configuration.notify_after_selenese_interpreter_started(expected_interpreter)
+      configuration.notify_after_selenese_driver_started(expected_interpreter)
       proc1_args.should == [expected_interpreter]
       proc2_args.should == [expected_interpreter]
     end
@@ -78,31 +78,31 @@ module Seleniumrc
       configuration.app_server_initialization.should be_instance_of(Proc)
     end
 
-    it "creates a Selenese interpreter and notify listeners" do
+    it "creates a Selenese driver and notify listeners" do
       configuration.selenium_server_host = "selenium_server_host.com"
       configuration.selenium_server_port = 80
       configuration.current_browser = "iexplore"
       configuration.external_app_server_host = "browser_host.com"
       configuration.external_app_server_port = 80
 
-      interpreter = configuration.create_driver
-      interpreter.server_host.should == "selenium_server_host.com"
-      interpreter.server_port.should == 80
-      interpreter.browser_start_command.should == "*iexplore"
-      interpreter.browser_url.should == "http://browser_host.com:80"
+      driver = configuration.create_driver
+      driver.server_host.should == "selenium_server_host.com"
+      driver.server_port.should == 80
+      driver.browser_start_command.should == "*iexplore"
+      driver.browser_url.should == "http://browser_host.com:80"
     end
 
-    it "creates, initializes. and notifies listeners for a Selenese interpreter " do
+    it "creates, initializes. and notifies listeners for a Selenese driver " do
       passed_interpreter = nil
-      configuration.after_selenese_interpreter_started {|interpreter| passed_interpreter = interpreter}
+      configuration.after_selenese_driver_started {|driver| passed_interpreter = driver}
 
       stub_interpreter = Object.new
       start_called = false
       stub(stub_interpreter).start.returns {start_called = true}
       stub(configuration).create_driver.returns {stub_interpreter}
-      interpreter = configuration.create_and_initialize_interpreter
-      interpreter.should == stub_interpreter
-      passed_interpreter.should == interpreter
+      driver = configuration.create_and_initialize_driver
+      driver.should == stub_interpreter
+      passed_interpreter.should == driver
       start_called.should == true
     end
 
@@ -334,27 +334,27 @@ module Seleniumrc
       @configuration = SeleniumConfiguration.new
     end
 
-    it "when suite passes, should stop interpreter" do
+    it "when suite passes, should stop driver" do
       mock_interpreter = "mock_interpreter"
       mock(mock_interpreter).stop.once
-      configuration.interpreter = mock_interpreter
+      configuration.driver = mock_interpreter
 
       configuration.stop_interpreter_if_necessary true
     end
 
-    it "when suite fails and keep browser open on failure, should not stop interpreter" do
+    it "when suite fails and keep browser open on failure, should not stop driver" do
       mock_interpreter = "mock_interpreter"
       mock(mock_interpreter).stop.never
-      configuration.interpreter = mock_interpreter
+      configuration.driver = mock_interpreter
       configuration.keep_browser_open_on_failure = true
 
       configuration.stop_interpreter_if_necessary false
     end
 
-    it "when suite fails and not keep browser open on failure, should stop interpreter" do
+    it "when suite fails and not keep browser open on failure, should stop driver" do
       mock_interpreter = "mock_interpreter"
       mock(mock_interpreter).stop
-      configuration.interpreter = mock_interpreter
+      configuration.driver = mock_interpreter
       configuration.keep_browser_open_on_failure = false
 
       configuration.stop_interpreter_if_necessary false

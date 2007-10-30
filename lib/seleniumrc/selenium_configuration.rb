@@ -77,7 +77,7 @@ module Seleniumrc
                   :rails_root,
                   :browsers,
                   :current_browser,
-                  :interpreter,
+                  :driver,
                   :browser_mode,
                   :selenium_server_host,
                   :selenium_server_port,
@@ -94,7 +94,7 @@ module Seleniumrc
     def initialize
       self.verify_remote_app_server_is_running = true
       @before_suite_listeners = []
-      @after_selenese_interpreter_started_listeners = []
+      @after_selenese_driver_started_listeners = []
       @app_server_initialization = proc {}
     end
 
@@ -111,18 +111,18 @@ module Seleniumrc
     end
 
     # A callback hook that gets run after the Selenese Interpreter is started.
-    def after_selenese_interpreter_started(&block)
-      @after_selenese_interpreter_started_listeners << block
+    def after_selenese_driver_started(&block)
+      @after_selenese_driver_started_listeners << block
     end
 
-    # Notify all after_selenese_interpreter_started callbacks.
-    def notify_after_selenese_interpreter_started(interpreter)
-      for listener in @after_selenese_interpreter_started_listeners
-        listener.call(interpreter)
+    # Notify all after_selenese_driver_started callbacks.
+    def notify_after_selenese_driver_started(driver)
+      for listener in @after_selenese_driver_started_listeners
+        listener.call(driver)
       end
     end
 
-    # The browser formatted for the Selenese interpreter.
+    # The browser formatted for the Selenese driver.
     def formatted_browser
       return "*#{@current_browser}"
     end
@@ -183,17 +183,17 @@ module Seleniumrc
     # The Selenese Interpreter object. This is the Interpreter provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
     def selenese_interpreter
       return nil unless suite_browser_mode?
-      unless @interpreter
-        @interpreter = create_and_initialize_interpreter
+      unless @driver
+        @driver = create_and_initialize_driver
       end
-      @interpreter
+      @driver
     end
 
     def stop_interpreter_if_necessary(suite_passed) # nodoc
       failure_has_occurred! unless suite_passed
-      if @interpreter && stop_selenese_interpreter?(suite_passed)
-        @interpreter.stop
-        @interpreter = nil
+      if @driver && stop_selenese_interpreter?(suite_passed)
+        @driver.stop
+        @driver = nil
       end
     end
 
@@ -209,11 +209,11 @@ module Seleniumrc
       return app_server_checker
     end
 
-    def create_and_initialize_interpreter # nodoc
-      interpreter = create_driver
-      interpreter.start
-      notify_after_selenese_interpreter_started(interpreter)
-      interpreter
+    def create_and_initialize_driver # nodoc
+      driver = create_driver
+      driver.start
+      notify_after_selenese_driver_started(driver)
+      driver
     end
 
     def create_driver # nodoc
