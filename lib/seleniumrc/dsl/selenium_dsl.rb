@@ -5,6 +5,7 @@ module Seleniumrc
       @configuration ||= SeleniumConfiguration.instance
     end
     attr_writer :configuration
+    attr_accessor :selenium_driver  
     include WaitFor
     include TestUnitDsl
 
@@ -17,15 +18,14 @@ module Seleniumrc
 
     # Open the home page of the Application and wait for the page to load.
     def open_home_page
-      selenium.open(configuration.browser_url)
+      selenium_driver.open(configuration.browser_url)
     end
 
     def method_missing(name, *args)
-      return selenium.send(name, *args)
+      return selenium_driver.send(name, *args)
     end
 
     protected
-    attr_accessor :selenium
     delegate :open,
              :type,
              :wait_for_condition,
@@ -41,7 +41,7 @@ module Seleniumrc
              :get_selected_values,
              :get_body_text,
              :get_html_source,
-             :to => :selenium
+             :to => :selenium_driver
 
     def should_stop_selenese_interpreter?
       return false unless configuration.test_browser_mode?

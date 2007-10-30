@@ -10,7 +10,7 @@ describe SeleniumTestCase, :shared => true do
     stub_selenium_configuration
     @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
     @driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
-    test_case.base_selenium = driver
+    test_case.selenium_driver = driver
     stub(driver).do_command("getEval", [SeleniumPage::PAGE_LOADED_COMMAND]) do
       result(true)
     end
@@ -757,7 +757,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     configuration.keep_browser_open_on_failure = false
 
     mock(driver).stop.once
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -769,7 +769,7 @@ describe "SeleniumTestCase in test browser mode and test fails" do
     stub(@test_case).passed?.returns(false)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(false).returns(false)
 
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -786,7 +786,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
     mock(driver).stop.once
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -798,7 +798,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -813,7 +813,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
     def @test_case.passed?; false; end
 
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -824,7 +824,7 @@ describe "SeleniumTestCase not in suite browser mode" do
 
      stub(@test_case).passed?.returns(true)
 
-     @test_case.base_selenium = driver
+     @test_case.selenium_driver = driver
 
      @test_case.teardown
    end
@@ -841,7 +841,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(true)
 
     mock(driver).stop.once
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end
@@ -853,7 +853,7 @@ describe "SeleniumTestCase in test browser mode and test pass" do
     stub(@test_case).passed?.returns(true)
     mock(@test_case.configuration).stop_selenese_interpreter?.with(true).returns(false)
 
-    @test_case.base_selenium = driver
+    @test_case.selenium_driver = driver
 
     @test_case.teardown
   end

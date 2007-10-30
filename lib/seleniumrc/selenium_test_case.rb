@@ -57,7 +57,6 @@ module Seleniumrc
       setup_once = false
 
       raise "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)." if self.class.use_transactional_fixtures
-  #        @beginning = time_class.now
       unless setup_once
         ActiveRecord::Base.connection.update('SET FOREIGN_KEY_CHECKS = 0')
         super
@@ -68,12 +67,11 @@ module Seleniumrc
           InstanceMethods.const_set("ALREADY_SETUP_ONCE", true)
         end
       end
-  #        puts self.class.to_s + "#" + @method_name
-      @driver = configuration.selenese_interpreter
+      @selenium_driver = configuration.selenese_interpreter
     end
 
     def teardown
-      selenium.stop if should_stop_selenese_interpreter?
+      selenium_driver.stop if should_stop_selenese_interpreter?
       super
       if @beginning
         duration = (time_class.now - @beginning).to_f

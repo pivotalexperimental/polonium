@@ -12,12 +12,5 @@ module SeleniumTestCaseSpec
     end
     def test_nothing
     end
-
-    def base_selenium
-      @selenium
-    end
-    def base_selenium=(value)
-      @selenium = value
-    end
   end
 end
