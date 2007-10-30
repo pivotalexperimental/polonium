@@ -1,3 +1,5 @@
+* SeleniumPage and SeleniumElement delegate to Driver [Paired with Jeff Whitmore]
+
 0.0.2
 * Supports multiple sessions by instantiating multiple SeleniumDrivers
 * Added Seleniumrc::SeleniumDriver which holds most of the polling methods
