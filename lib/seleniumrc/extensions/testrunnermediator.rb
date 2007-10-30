@@ -1,19 +1,22 @@
 class Test::Unit::UI::TestRunnerMediator
-  alias_method :initialize_without_seleniumrc, :initialize
-  def initialize_with_seleniumrc(suite)
-    initialize_without_seleniumrc(suite)
-    add_listener(TestCase::STARTED, &method(:start_app_server))
-    add_listener(TestCase::FINISHED, &method(:stop_app_server))
+  alias_method :run_suite_without_seleniumrc, :run_suite
+  def run_suite_with_seleniumrc
+    start_app_server
+    result = run_suite_without_seleniumrc
+    stop_app_server(result)
+    result
   end
-  alias_method :initialize, :initialize_with_seleniumrc
+  alias_method :run_suite, :run_suite_with_seleniumrc
 
   protected
-  def start_app_server(*args)
-    @app_runner = Seleniumrc::SeleniumConfiguration.instance.create_server_runner
+  def start_app_server
+    @selenium_driver = Seleniumrc::SeleniumConfiguration.instance
+    @app_runner = @selenium_driver.create_server_runner
     @app_runner.start
   end
 
-  def stop_app_server(*args)
+  def stop_app_server(result)
     @app_runner.stop
+    @selenium_driver.stop_driver_if_necessary(result.passed?)
   end
 end

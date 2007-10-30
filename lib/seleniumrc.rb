@@ -7,6 +7,7 @@ require "active_record"
 require 'net/http'
 require 'test/unit'
 require 'test/unit/testresult'
+require 'test/unit/ui/testrunnermediator'
 
 require "selenium"
 require "seleniumrc/extensions/testrunnermediator"
