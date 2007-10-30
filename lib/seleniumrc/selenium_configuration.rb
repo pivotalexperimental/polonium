@@ -180,7 +180,7 @@ module Seleniumrc
       end
     end
 
-    # The Selenese Interpreter object. This is the Interpreter provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
+    # The SeleniumDriver object, which sublcasses the SeleniumDriver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
     def driver
       return nil unless suite_browser_mode?
       unless @driver
@@ -189,7 +189,7 @@ module Seleniumrc
       @driver
     end
 
-    def stop_interpreter_if_necessary(suite_passed) # nodoc
+    def stop_driver_if_necessary(suite_passed) # nodoc
       failure_has_occurred! unless suite_passed
       if @driver && stop_driver?(suite_passed)
         @driver.stop

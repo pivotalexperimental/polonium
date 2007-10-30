@@ -328,7 +328,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumConfiguration, "#stop_interpreter_if_necessary" do
+  describe SeleniumConfiguration, "#stop_driver_if_necessary" do
     attr_reader :configuration
     before(:each) do
       @configuration = SeleniumConfiguration.new
@@ -339,7 +339,7 @@ module Seleniumrc
       mock(mock_interpreter).stop.once
       configuration.driver = mock_interpreter
 
-      configuration.stop_interpreter_if_necessary true
+      configuration.stop_driver_if_necessary true
     end
 
     it "when suite fails and keep browser open on failure, should not stop driver" do
@@ -348,7 +348,7 @@ module Seleniumrc
       configuration.driver = mock_interpreter
       configuration.keep_browser_open_on_failure = true
 
-      configuration.stop_interpreter_if_necessary false
+      configuration.stop_driver_if_necessary false
     end
 
     it "when suite fails and not keep browser open on failure, should stop driver" do
@@ -357,7 +357,7 @@ module Seleniumrc
       configuration.driver = mock_interpreter
       configuration.keep_browser_open_on_failure = false
 
-      configuration.stop_interpreter_if_necessary false
+      configuration.stop_driver_if_necessary false
     end
 
   end
