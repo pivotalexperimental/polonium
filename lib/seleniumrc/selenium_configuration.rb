@@ -29,14 +29,13 @@ module Seleniumrc
         @instance = new
         @instance.env = ENV
 
-        # TODO: BT - We need to only run one browser per run. Having an array makes the architecture wack.
         @instance.browser = FIREFOX
         @instance.selenium_server_host = "localhost"     # address of selenium RC server (java)
         @instance.selenium_server_port = 4444
         @instance.app_server_engine = :webrick
-        @instance.internal_app_server_host = "0.0.0.0"    # internal address of app server (webrick)
+        @instance.internal_app_server_host = "0.0.0.0"    # internal address of app server (webrick or mongrel)
         @instance.internal_app_server_port = 4000
-        @instance.external_app_server_host = "localhost"             # external address of app server (webrick)
+        @instance.external_app_server_host = "localhost"             # external address of app server (webrick or mongrel)
         @instance.external_app_server_port = 4000
         @instance.server_engine = :webrick
         @instance.keep_browser_open_on_failure = true
