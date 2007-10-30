@@ -3,27 +3,6 @@ module Seleniumrc
     include WaitFor
     attr_reader :server_host, :server_port
 
-    def type(locator, value)
-      element(locator).is_present
-      super
-    end
-
-    # Reload the current page that the browser is on.
-    def reload
-      get_eval("selenium.browserbot.getCurrentWindow().location.reload()")
-    end
-
-    def click(locator)
-      element(locator).is_present
-      super
-    end
-    alias_method :wait_for_and_click, :click
-
-    def select(select_locator,option_locator)
-      element(select_locator).is_present
-      super
-    end
-
     def browser_start_command
       @browserStartCommand
     end
@@ -35,8 +14,6 @@ module Seleniumrc
     def timeout_in_milliseconds
       @timeout
     end
-
-    alias_method :confirm, :get_confirmation
 
     def insert_javascript_file(uri)
       js = <<-USEREXTENSIONS
@@ -61,6 +38,30 @@ module Seleniumrc
     end
 
     #--------- Commands
+    alias_method :confirm, :get_confirmation
+
+    # Type text into a page element
+    def type(locator, value)
+      element(locator).is_present
+      super
+    end
+
+    # Reload the current page that the browser is on.
+    def reload
+      get_eval("selenium.browserbot.getCurrentWindow().location.reload()")
+    end
+
+    def click(locator)
+      element(locator).is_present
+      super
+    end
+    alias_method :wait_for_and_click, :click
+
+    def select(select_locator,option_locator)
+      element(select_locator).is_present
+      super
+    end
+    
     # Click a link and wait for the page to load.
     def click_and_wait(locator, wait_for = default_timeout)
       click locator
