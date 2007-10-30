@@ -8,12 +8,12 @@ module Seleniumrc
       @configuration = SeleniumConfiguration.new
     end
 
-    it "should create a new context if it hasn't been called yet" do
+    it "should create a new SeleniumConfiguration if it hasn't been called yet" do
       mock(SeleniumConfiguration).new.returns(configuration)
       SeleniumConfiguration.instance.should == configuration
     end
 
-    it "should reuse the existing context if it has been called.  So new/establish_environment should only be called once." do
+    it "should reuse the existing SeleniumConfiguration if it has been called.  So new/establish_environment should only be called once." do
       SeleniumConfiguration.instance.should_not be_nil
       dont_allow(SeleniumConfiguration).new
     end

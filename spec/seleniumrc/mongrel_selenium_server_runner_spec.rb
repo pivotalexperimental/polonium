@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Seleniumrc
-  context MongrelSeleniumServerRunner, "#start_server" do
+  describe MongrelSeleniumServerRunner, "#start_server" do
     attr_reader :configuration
     before do
       @configuration = SeleniumConfiguration.new
