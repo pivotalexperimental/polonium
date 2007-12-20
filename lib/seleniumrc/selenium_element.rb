@@ -86,7 +86,7 @@ module Seleniumrc
       end
     end
 
-    def has_text(expected_text, options={})
+    def assert_text(expected_text, options={})
       is_present
       wait_for(options) do |configuration|
         actual = driver.get_text(locator)

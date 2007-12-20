@@ -506,7 +506,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_text("expected text", {})
+        mock.proxy(element).assert_text("expected text")
         element
       end
     end

@@ -33,11 +33,7 @@ module Seleniumrc
     element_assertion :selected
     element_assertion :checked
     element_assertion :not_checked
-
-    # Assert and wait for locator element to have text equal to passed in text.
-    def assert_text(locator, text, options={})
-      element(locator).has_text(text, options)
-    end
+    element_assertion :text
 
     # Assert and wait for locator element to be present.
     def assert_element_present(locator, params = {})
