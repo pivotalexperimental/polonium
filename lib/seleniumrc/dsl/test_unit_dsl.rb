@@ -37,7 +37,7 @@ module Seleniumrc
     element_assertion :element_present
     element_assertion :element_not_present
     element_assertion :next_sibling
-    element_assertion :text_in_order
+    element_assertion :contains_in_order
     element_assertion :visible
     element_assertion :not_visible
 
@@ -52,6 +52,6 @@ module Seleniumrc
     end
     deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
-    deprecate :wait_for_text_in_order, :assert_text_in_order
+    deprecate :wait_for_text_in_order, :assert_contains_in_order
   end
 end

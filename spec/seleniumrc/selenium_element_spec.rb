@@ -416,12 +416,12 @@ module Seleniumrc
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
-    it "calls assert_text_in_order when passed an array" do
+    it "calls assert_contains_in_order when passed an array" do
       element_ticks = [false, false, false, true]
       mock(driver).is_element_present(@element_locator) {true}
       mock(driver).get_text(@element_locator) {"foo bar baz"}
       
-      mock.proxy(@element).assert_text_in_order("foo", "bar", "baz")
+      mock.proxy(@element).assert_contains_in_order("foo", "bar", "baz")
       @element.assert_contains(["foo", "bar", "baz"])
     end
   end
@@ -498,7 +498,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#assert_text_in_order" do
+  describe SeleniumElement, "#assert_contains_in_order" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -520,21 +520,21 @@ module Seleniumrc
       mock(driver).get_text(@element_locator) do
         get_text_ticks.shift
       end.times(4)
-      @element.assert_text_in_order('one', 'two', 'three')
+      @element.assert_contains_in_order('one', 'two', 'three')
     end
 
     it "fails when element is present and value is not expected" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_text(@element_locator) {"no match"}
       proc do
-        @element.assert_text_in_order 'one', 'two', 'three'
+        @element.assert_contains_in_order 'one', 'two', 'three'
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.assert_text_in_order 'one', 'two', 'three'
+        @element.assert_contains_in_order 'one', 'two', 'three'
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end

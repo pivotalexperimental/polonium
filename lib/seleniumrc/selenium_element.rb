@@ -96,7 +96,7 @@ module Seleniumrc
     end
 
     def assert_contains(expected_text, options={})
-      return assert_text_in_order(*expected_text) if expected_text.is_a? Array
+      return assert_contains_in_order(*expected_text) if expected_text.is_a? Array
       assert_element_present
       options = {
         :message => "#{locator} should contain #{expected_text}"
@@ -122,7 +122,7 @@ module Seleniumrc
       end
     end
 
-    def assert_text_in_order(*text_fragments)
+    def assert_contains_in_order(*text_fragments)
       assert_element_present
       wait_for do |configuration|
         success = false

@@ -370,18 +370,18 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumTestCase, "#assert_text_in_order" do
+  describe SeleniumTestCase, "#assert_contains_in_order" do
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
     it "when text is in order, it succeeds" do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_text_in_order("one", "two", "three")
+        mock.proxy(element).assert_contains_in_order("one", "two", "three")
         element
       end
       stub(@driver).get_text(sample_locator).returns("one\ntwo\nthree\n")
       stub(@driver).is_element_present(sample_locator) {true}
 
-      test_case.assert_text_in_order sample_locator, "one", "two", "three"
+      test_case.assert_contains_in_order sample_locator, "one", "two", "three"
     end
   end
 
@@ -614,7 +614,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumTestCase, "#assert_text_in_order" do
+  describe SeleniumTestCase, "#assert_contains_in_order" do
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
     before do
@@ -627,7 +627,7 @@ module Seleniumrc
         o.is_element_present(sample_locator) {true}
         o.get_text(sample_locator) {"one\ntwo\nthree\n"}
       end
-      test_case.assert_text_in_order sample_locator, "one", "two", "three"
+      test_case.assert_contains_in_order sample_locator, "one", "two", "three"
     end
 
     it "fails when element is present and text is not in order" do
@@ -636,7 +636,7 @@ module Seleniumrc
         o.get_text(sample_locator) {"<html>one\ntext not in order\n</html>"}
       end
       proc do
-        test_case.assert_text_in_order sample_locator, "one", "two", "three"
+        test_case.assert_contains_in_order sample_locator, "one", "two", "three"
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
