@@ -24,7 +24,7 @@ module Seleniumrc
       expected_title == actual_title
     end
 
-    def is_text_present(expected_text, options = {})
+    def assert_text_present(expected_text, options = {})
       options = {
         :message => "Expected '#{expected_text}' to be present, but it wasn't"
       }.merge(options)
@@ -36,7 +36,7 @@ module Seleniumrc
       page_loaded? && driver.is_text_present(expected_text)
     end
 
-    def is_text_not_present(unexpected_text, options = {})
+    def assert_text_not_present(unexpected_text, options = {})
       options = {
         :message => "Expected '#{unexpected_text}' to be absent, but it wasn't"
       }.merge(options)

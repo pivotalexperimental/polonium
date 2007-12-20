@@ -2,9 +2,15 @@
 <module relativePaths="true" type="RUBY_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Ruby SDK" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntryProperties />
+  </component>
+  <component name="RModuleContentRootManager">
+    <TEST_URLS url="file://$MODULE_DIR$/spec" />
+  </component>
+  <component name="RModuleSettingsStorage">
+    <option name="shouldUseRSpecTestFramework" value="true" />
   </component>
 </module>
 

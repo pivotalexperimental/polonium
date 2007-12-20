@@ -8,12 +8,12 @@ module Seleniumrc
 
     # Assert and wait for page to contain text.
     def assert_text_present(pattern, options = {})
-      page.is_text_present(pattern, options)
+      page.assert_text_present(pattern, options)
     end
 
     # Assert and wait for page to not contain text.
     def assert_text_not_present(pattern, options = {})
-      page.is_text_not_present(pattern, options)
+      page.assert_text_not_present(pattern, options)
     end
 
     # Assert and wait for the locator element to have value.

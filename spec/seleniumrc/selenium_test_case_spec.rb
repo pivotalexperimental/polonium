@@ -100,7 +100,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumPage).new(driver) do |page|
-        mock.proxy(page).is_text_present("my page", {})
+        mock.proxy(page).assert_text_present("my page", {})
         page
       end
     end
@@ -126,7 +126,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumPage).new(driver) do |page|
-        mock.proxy(page).is_text_not_present("my page", {})
+        mock.proxy(page).assert_text_not_present("my page", {})
         page
       end
     end
