@@ -3,7 +3,7 @@ module Seleniumrc
     #------ Assertions and Conditions
     # Assert and wait for the page title.
     def assert_title(title, params={})
-      page.has_title(title, params)
+      page.assert_title(title, params)
     end
 
     # Assert and wait for page to contain text.

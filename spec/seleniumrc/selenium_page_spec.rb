@@ -69,28 +69,28 @@ module Seleniumrc
       mock(driver).get_title do
         ticks.shift
       end.times(4)
-      @page.has_title("my page")
+      @page.assert_title("my page")
     end
 
     it "fails when element is not present" do
       stub(driver).get_title {"no page"}
       proc do
-        @page.has_title("my page")
+        @page.assert_title("my page")
       end.should raise_error("Expected title 'my page' but was 'no page' (after 5 sec)")
     end
   end
 
-  describe SeleniumPage, "#has_title?" do
+  describe SeleniumPage, "#title" do
     it_should_behave_like "Seleniumrc::SeleniumPage"
 
     it "returns true when passed in title is the page title" do
       mock(driver).get_title {"my page"}
-      @page.has_title?("my page").should be_true
+      @page.title.should == "my page"
     end
 
     it "returns false when passed in title is not the page title" do
       mock(driver).get_title {"no page"}
-      @page.has_title?("my page").should be_false
+      @page.title.should_not == "my page"
     end
   end
 

@@ -13,15 +13,15 @@ module Seleniumrc
     end
     alias_method :open_and_wait, :open
 
-    def has_title(expected_title, params = {})
+    def assert_title(expected_title, params = {})
       wait_for(params) do |configuration|
-        actual_title = driver.get_title
+        actual_title = title
         configuration.message = "Expected title '#{expected_title}' but was '#{actual_title}'"
-        has_title? expected_title, actual_title
+        expected_title == actual_title
       end
     end
-    def has_title?(expected_title, actual_title=driver.get_title)
-      expected_title == actual_title
+    def title
+      driver.get_title
     end
 
     def assert_text_present(expected_text, options = {})
