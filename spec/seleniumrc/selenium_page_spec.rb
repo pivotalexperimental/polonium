@@ -45,7 +45,7 @@ module Seleniumrc
       @page.open_and_wait("/users/list")
     end
 
-    it "fails when titles contains Exception caught" do
+    it "fails when title contains 'Exception caught'" do
       mock(driver) do |m|
         m.do_command("open", ["/users/list"]) {result}
         m.do_command("waitForPageToLoad", [@page.default_timeout]) do
@@ -54,10 +54,13 @@ module Seleniumrc
         m.do_command("getTitle", []) do
           result("Exception caught")
         end
+        m.do_command("getHtmlSource", []) do
+          result("The page's html")
+        end
       end
       proc do
         @page.open_and_wait("/users/list")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 

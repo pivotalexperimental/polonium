@@ -111,14 +111,14 @@ module Seleniumrc
       stub(driver).get_value(@element_locator) {"jane"}
       proc do
         @element.assert_value("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_value("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -160,14 +160,14 @@ module Seleniumrc
       stub(driver).get_attribute(@element_locator) {"jane"}
       proc do
         @element.assert_attribute("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_attribute("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -195,14 +195,14 @@ module Seleniumrc
       stub(driver).get_selected_label(@element_locator) {"jane"}
       proc do
         @element.assert_selected("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_selected("joe")
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -230,14 +230,14 @@ module Seleniumrc
       stub(driver).is_visible(@element_locator) {false}
       proc do
         @element.assert_visible
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_visible
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -265,14 +265,14 @@ module Seleniumrc
       stub(driver).is_visible(@element_locator) {true}
       proc do
         @element.is_not_visible
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_visible
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -300,14 +300,14 @@ module Seleniumrc
       stub(driver).is_checked(@element_locator) {false}
       proc do
         @element.assert_checked
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_checked
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -335,14 +335,14 @@ module Seleniumrc
       stub(driver).is_checked(@element_locator) {true}
       proc do
         @element.assert_not_checked
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_not_checked
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -370,14 +370,14 @@ module Seleniumrc
       stub(driver).get_text(@element_locator) {"no match"}
       proc do
         @element.assert_text "match"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_text "match"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -442,14 +442,14 @@ module Seleniumrc
       stub(driver).get_eval(@evaled_js) {"html match html"}
       proc do
         @element.assert_does_not_contain "match"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_does_not_contain "match"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -478,14 +478,14 @@ module Seleniumrc
       stub(driver).get_eval(@evaled_js) {""}
       proc do
         @element.assert_next_sibling "next_element"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
         @element.assert_next_sibling "match"
-      end.should raise_error
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
@@ -518,15 +518,15 @@ module Seleniumrc
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_text(@element_locator) {"no match"}
       proc do
-        @element.has_text_in_order 'one', 'two', 'three'
-      end.should raise_error
+        @element.assert_text_in_order 'one', 'two', 'three'
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.has_text_in_order 'one', 'two', 'three'
-      end.should raise_error
+        @element.assert_text_in_order 'one', 'two', 'three'
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 
