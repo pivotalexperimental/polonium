@@ -2,11 +2,12 @@ module Seleniumrc
   module TestUnitDsl
     class << self
       def page_assert(thing)
-        module_eval("def assert_#{thing}(value, params={})\n" +
-          "page.assert_#{thing}(value, params)\n" +
+        module_eval(
+          "def assert_#{thing}(value, params={})\n" +
+          "  page.assert_#{thing}(value, params)\n" +
           "end",
           __FILE__,
-          __LINE__ - 3
+          __LINE__ - 4
         )
       end
     end
