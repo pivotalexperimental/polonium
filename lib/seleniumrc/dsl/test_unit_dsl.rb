@@ -31,16 +31,8 @@ module Seleniumrc
     element_assertion :value
     element_assertion :attribute   # yes, it's a little weird... in this case element is really an attribute
     element_assertion :selected
-
-    # Assert and wait for locator check box to be checked.
-    def assert_checked(locator)
-      element(locator).assert_checked
-    end
-
-    # Assert and wait for locator check box to not be checked.
-    def assert_not_checked(locator)
-      element(locator).is_not_checked
-    end
+    element_assertion :checked
+    element_assertion :not_checked
 
     # Assert and wait for locator element to have text equal to passed in text.
     def assert_text(locator, text, options={})
