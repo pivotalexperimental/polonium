@@ -448,7 +448,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).is_checked
+        mock.proxy(element).assert_checked
         element
       end
     end
@@ -462,9 +462,9 @@ module Seleniumrc
     end
 
     it "fails when not checked" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.is_checked(sample_locator) {false}
+      stub(driver) do |driver|
+        driver.is_element_present(sample_locator) {true}
+        driver.is_checked(sample_locator) {false}
       end
       proc do
         test_case.assert_checked(sample_locator)
@@ -483,17 +483,17 @@ module Seleniumrc
     end
 
     it "passes when not checked" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.is_checked(sample_locator) {false}
+      mock(driver) do |driver|
+        driver.is_element_present(sample_locator) {true}
+        driver.is_checked(sample_locator) {false}
       end
       test_case.assert_not_checked(sample_locator)
     end
 
     it "fails when checked" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.is_checked(sample_locator) {true}
+      stub(driver) do |driver|
+        driver.is_element_present(sample_locator) {true}
+        driver.is_checked(sample_locator) {true}
       end
       proc do
         test_case.assert_not_checked(sample_locator)

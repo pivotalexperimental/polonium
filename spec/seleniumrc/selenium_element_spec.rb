@@ -292,21 +292,21 @@ module Seleniumrc
       mock(driver).is_checked(@element_locator) do
         checked_ticks.shift
       end.times(4)
-      @element.is_checked
+      @element.assert_checked
     end
 
     it "fails when element is present and value is not expected" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).is_checked(@element_locator) {false}
       proc do
-        @element.is_checked
+        @element.assert_checked
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.is_checked
+        @element.assert_checked
       end.should raise_error
     end
   end

@@ -72,7 +72,7 @@ module Seleniumrc
       end
     end
 
-    def is_checked
+    def assert_checked
       is_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
         driver.is_checked(locator)

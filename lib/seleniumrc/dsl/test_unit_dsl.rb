@@ -34,7 +34,7 @@ module Seleniumrc
 
     # Assert and wait for locator check box to be checked.
     def assert_checked(locator)
-      element(locator).is_checked
+      element(locator).assert_checked
     end
 
     # Assert and wait for locator check box to not be checked.
