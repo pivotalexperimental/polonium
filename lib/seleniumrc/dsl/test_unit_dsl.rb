@@ -36,6 +36,7 @@ module Seleniumrc
     element_assertion :text
     element_assertion :element_present
     element_assertion :element_not_present
+    element_assertion :next_sibling
 
     # Assert and wait for locator element to contain text.
     def assert_element_contains(locator, text, options = {})
@@ -48,11 +49,6 @@ module Seleniumrc
     end
     deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
-
-    # Assert and wait for the element with id next sibling is the element with id expected_sibling_id.
-    def assert_next_sibling(locator, expected_sibling_id, options = {})
-      element(locator).has_next_sibling(expected_sibling_id, options)
-    end
 
     # Assert and wait for locator element has text fragments in a certain order.
     def assert_text_in_order(locator, *text_fragments)

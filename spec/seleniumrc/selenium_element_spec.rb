@@ -453,7 +453,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#has_next_sibling" do
+  describe SeleniumElement, "#assert_next_sibling" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -470,21 +470,21 @@ module Seleniumrc
       mock(driver).get_eval(@evaled_js) do
         inner_html_ticks.shift
       end.times(4)
-      @element.has_next_sibling("next_element")
+      @element.assert_next_sibling("next_element")
     end
 
     it "fails when element is present and value is not expected" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_eval(@evaled_js) {""}
       proc do
-        @element.has_next_sibling "next_element"
+        @element.assert_next_sibling "next_element"
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.has_next_sibling "match"
+        @element.assert_next_sibling "match"
       end.should raise_error
     end
   end

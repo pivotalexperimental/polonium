@@ -112,7 +112,7 @@ module Seleniumrc
       end
     end
 
-    def has_next_sibling(expected_sibling_id, options = {})
+    def assert_next_sibling(expected_sibling_id, options = {})
       assert_element_present
       eval_js = "this.page().findElement('#{locator}').nextSibling.id"
       wait_for(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do

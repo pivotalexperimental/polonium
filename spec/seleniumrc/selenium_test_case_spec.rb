@@ -589,7 +589,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_next_sibling("next_sibling", {})
+        mock.proxy(element).assert_next_sibling("next_sibling")
         element
       end
       @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
