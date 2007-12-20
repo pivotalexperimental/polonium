@@ -77,10 +77,7 @@ module Seleniumrc
     def assert_location_ends_with(ends_with, options={})
       page.assert_location_ends_with(ends_with, options)
     end
-    def assert_location_ends_in(ends_with, options={})
-      warn "assert_location_ends_in is deprecated. Use assert_location_ends_with instead"
-      assert_location_ends_with(ends_with, options={})
-    end
+    deprecate :assert_location_ends_in, :assert_location_ends_with
 
     # Assert and wait for locator element has text fragments in a certain order.
     def assert_text_in_order(locator, *text_fragments)
