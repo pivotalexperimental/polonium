@@ -74,8 +74,12 @@ module Seleniumrc
     end
 
     # Assert browser url ends with passed in url.
+    def assert_location_ends_with(ends_with, options={})
+      page.assert_location_ends_with(ends_with, options)
+    end
     def assert_location_ends_in(ends_with, options={})
-      page.url_ends_with(ends_with, options)
+      warn "assert_location_ends_in is deprecated. Use assert_location_ends_with instead"
+      assert_location_ends_with(ends_with, options={})
     end
 
     # Assert and wait for locator element has text fragments in a certain order.

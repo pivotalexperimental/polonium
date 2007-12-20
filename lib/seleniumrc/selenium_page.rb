@@ -52,15 +52,15 @@ module Seleniumrc
       driver.get_eval(PAGE_LOADED_COMMAND) == true.to_s
     end
 
-    def url_ends_with(ends_with, options  ={})
+    def assert_location_ends_with(ends_with, options  ={})
       options = {
         :message => "Expected '#{driver.get_location}' to end with '#{ends_with}'"
       }.merge(options)
       wait_for(options) do
-        url_ends_with? ends_with
+        assert_location_ends_with? ends_with
       end
     end
-    def url_ends_with?(ends_with)
+    def assert_location_ends_with?(ends_with)
       if driver.get_location =~ Regexp.new("#{Regexp.escape(ends_with)}$")
         true
       else

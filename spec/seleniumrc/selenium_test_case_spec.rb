@@ -147,13 +147,13 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumTestCase, "#assert_location_ends_in" do
+  describe SeleniumTestCase, "#assert_location_ends_with" do
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
     before do
       @ends_with = "foobar.com?arg1=2"
       mock.proxy(SeleniumPage).new(driver) do |page|
-        mock.proxy(page).url_ends_with(@ends_with, {})
+        mock.proxy(page).assert_location_ends_with(@ends_with, {})
         page
       end
     end
@@ -168,13 +168,13 @@ module Seleniumrc
       mock(driver).get_location do
         ticks.shift
       end.times(4)
-      test_case.assert_location_ends_in(@ends_with)
+      test_case.assert_location_ends_with(@ends_with)
     end
 
     it "fails when the url does not end with the passed in value" do
       stub(driver).get_location {"http://no.com"}
       proc do
-        test_case.assert_location_ends_in(@ends_with)
+        test_case.assert_location_ends_with(@ends_with)
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end

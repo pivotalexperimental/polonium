@@ -10,6 +10,7 @@ require 'test/unit/testresult'
 require 'test/unit/ui/testrunnermediator'
 
 require "selenium"
+require "seleniumrc/extensions/module"
 require "seleniumrc/extensions/testrunnermediator"
 require "seleniumrc/wait_for"
 require "seleniumrc/selenium_driver"

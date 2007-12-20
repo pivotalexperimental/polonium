@@ -174,7 +174,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumPage, "#url_ends_with" do
+  describe SeleniumPage, "#assert_location_ends_with" do
     it_should_behave_like "Seleniumrc::SeleniumPage"
 
     before do
@@ -191,18 +191,18 @@ module Seleniumrc
       mock(driver).get_location do
         ticks.shift
       end.times(4)
-      @page.url_ends_with(@ends_with)
+      @page.assert_location_ends_with(@ends_with)
     end
 
     it "fails when element is not present" do
       stub(driver).get_location {"http://no.com"}
       proc do
-        @page.url_ends_with(@ends_with)
+        @page.assert_location_ends_with(@ends_with)
       end.should raise_error("Expected 'http://no.com' to end with '#{@ends_with}' (after 5 sec)")
     end
   end
 
-  describe SeleniumPage, "#url_ends_with?" do
+  describe SeleniumPage, "#assert_location_ends_with?" do
     it_should_behave_like "Seleniumrc::SeleniumPage"
 
     before do
@@ -211,12 +211,12 @@ module Seleniumrc
 
     it "passes when title is expected" do
       mock(driver).get_location {"http://foobar.com?arg1=2"}
-      @page.url_ends_with?(@ends_with).should be_true
+      @page.assert_location_ends_with?(@ends_with).should be_true
     end
 
     it "fails when element is not present" do
       mock(driver).get_location {"http://no.com"}
-      @page.url_ends_with?(@ends_with).should be_false
+      @page.assert_location_ends_with?(@ends_with).should be_false
     end
   end
 
