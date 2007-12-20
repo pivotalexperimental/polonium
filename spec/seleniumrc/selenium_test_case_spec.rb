@@ -375,7 +375,7 @@ module Seleniumrc
 
     it "when text is in order, it succeeds" do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_text_in_order("one", "two", "three")
+        mock.proxy(element).assert_text_in_order("one", "two", "three")
         element
       end
       stub(@driver).get_text(sample_locator).returns("one\ntwo\nthree\n")

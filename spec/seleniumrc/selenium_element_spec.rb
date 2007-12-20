@@ -489,7 +489,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#has_text_in_order" do
+  describe SeleniumElement, "#assert_text_in_order" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -511,7 +511,7 @@ module Seleniumrc
       mock(driver).get_text(@element_locator) do
         get_text_ticks.shift
       end.times(4)
-      @element.has_text_in_order('one', 'two', 'three')
+      @element.assert_text_in_order('one', 'two', 'three')
     end
 
     it "fails when element is present and value is not expected" do

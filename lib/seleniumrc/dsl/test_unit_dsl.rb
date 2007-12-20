@@ -37,6 +37,7 @@ module Seleniumrc
     element_assertion :element_present
     element_assertion :element_not_present
     element_assertion :next_sibling
+    element_assertion :text_in_order
 
     # Assert and wait for locator element to contain text.
     def assert_element_contains(locator, text, options = {})
@@ -49,12 +50,7 @@ module Seleniumrc
     end
     deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
-
-    # Assert and wait for locator element has text fragments in a certain order.
-    def assert_text_in_order(locator, *text_fragments)
-      element(locator).has_text_in_order(*text_fragments)
-    end
-    alias_method :wait_for_text_in_order, :assert_text_in_order
+    deprecate :wait_for_text_in_order, :assert_text_in_order
 
     def assert_visible(locator, options = {})
       element(locator).is_visible(options)

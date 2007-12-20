@@ -121,7 +121,7 @@ module Seleniumrc
       end
     end
 
-    def has_text_in_order(*text_fragments)
+    def assert_text_in_order(*text_fragments)
       assert_element_present
       wait_for do |configuration|
         success = false
