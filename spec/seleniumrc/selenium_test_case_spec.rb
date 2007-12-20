@@ -338,12 +338,12 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumTestCase, "#assert_element_does_not_contain_text" do
+  describe SeleniumTestCase, "#assert_element_does_not_contain" do
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).does_not_contain_text("passed in value", {})
+        mock.proxy(element).assert_does_not_contain("passed in value", {})
         element
       end
       @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
@@ -356,7 +356,7 @@ module Seleniumrc
           "another value"
         end
       end
-      test_case.assert_element_does_not_contain_text(sample_locator, "passed in value")
+      test_case.assert_element_does_not_contain(sample_locator, "passed in value")
     end
 
     it "fails when text is in the element's inner_html" do
@@ -365,7 +365,7 @@ module Seleniumrc
         o.get_eval(@evaled_js) {"html passed in value html"}
       end
       proc do
-        test_case.assert_element_does_not_contain_text(sample_locator, "passed in value")
+        test_case.assert_element_does_not_contain(sample_locator, "passed in value")
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end

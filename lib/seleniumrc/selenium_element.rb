@@ -105,7 +105,7 @@ module Seleniumrc
       end
     end
 
-    def does_not_contain_text(expected_text, options={})
+    def assert_does_not_contain(expected_text, options={})
       assert_element_present
       wait_for(options) do
         !inner_html.include?(expected_text)

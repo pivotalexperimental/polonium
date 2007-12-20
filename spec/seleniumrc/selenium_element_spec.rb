@@ -417,7 +417,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#does_not_contain_text" do
+  describe SeleniumElement, "#assert_does_not_contain" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -434,21 +434,21 @@ module Seleniumrc
       mock(driver).get_eval(@evaled_js) do
         inner_html_ticks.shift
       end.times(4)
-      @element.does_not_contain_text("match")
+      @element.assert_does_not_contain("match")
     end
 
     it "fails when element is present and the element contains text" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_eval(@evaled_js) {"html match html"}
       proc do
-        @element.does_not_contain_text "match"
+        @element.assert_does_not_contain "match"
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.does_not_contain_text "match"
+        @element.assert_does_not_contain "match"
       end.should raise_error
     end
   end

@@ -43,11 +43,11 @@ module Seleniumrc
     end
 
     # Assert and wait for locator element to not contain text.
-    def assert_element_does_not_contain_text(locator, text, options={})
-      element(locator).does_not_contain_text(text, options)
+    def assert_element_does_not_contain(locator, text, options={})
+      element(locator).assert_does_not_contain(text, options)
     end
-    alias_method :assert_element_does_not_contain, :assert_element_does_not_contain_text
-    alias_method :wait_for_element_to_not_contain_text, :assert_element_does_not_contain_text
+    deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
+    deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
 
     # Assert and wait for the element with id next sibling is the element with id expected_sibling_id.
     def assert_next_sibling(locator, expected_sibling_id, options = {})
