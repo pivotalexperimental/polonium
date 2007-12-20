@@ -381,7 +381,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#contains" do
+  describe SeleniumElement, "#assert_contains" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -414,6 +414,15 @@ module Seleniumrc
       proc do
         @element.assert_contains "the element does not exist"
       end.should raise_error(Test::Unit::AssertionFailedError)
+    end
+
+    it "calls assert_text_in_order when passed an array" do
+      element_ticks = [false, false, false, true]
+      mock(driver).is_element_present(@element_locator) {true}
+      mock(driver).get_text(@element_locator) {"foo bar baz"}
+      
+      mock.proxy(@element).assert_text_in_order("foo", "bar", "baz")
+      @element.assert_contains(["foo", "bar", "baz"])
     end
   end
 
