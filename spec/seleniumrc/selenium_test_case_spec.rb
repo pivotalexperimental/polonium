@@ -370,14 +370,18 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumTestCase, "#element_does_not_contain_text" do
+  describe SeleniumTestCase, "#assert_text_in_order" do
     it_should_behave_like "Seleniumrc::SeleniumTestCase"
 
-    it "checks if text is in order" do
-      locator = "id=foo"
-      stub(@driver).get_text(locator).returns("one\ntwo\nthree\n")
+    it "when text is in order, it succeeds" do
+      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+        mock.proxy(element).has_text_in_order("one", "two", "three")
+        element
+      end
+      stub(@driver).get_text(sample_locator).returns("one\ntwo\nthree\n")
+      stub(@driver).is_element_present(sample_locator) {true}
 
-      test_case.is_text_in_order locator, "one", "two", "three"
+      test_case.assert_text_in_order sample_locator, "one", "two", "three"
     end
   end
 

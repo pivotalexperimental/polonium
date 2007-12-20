@@ -1,20 +1,21 @@
 module Seleniumrc
   module TestUnitDsl
-    #------ Assertions and Conditions
-    # Assert and wait for the page title.
-    def assert_title(title, params={})
-      page.assert_title(title, params)
+    class << self
+      def page_assert(thing)
+        module_eval("def assert_#{thing}(value, params={})\n" +
+          "page.assert_#{thing}(value, params)\n" +
+          "end",
+          __FILE__,
+          __LINE__ - 3
+        )
+      end
     end
 
-    # Assert and wait for page to contain text.
-    def assert_text_present(pattern, options = {})
-      page.assert_text_present(pattern, options)
-    end
-
-    # Assert and wait for page to not contain text.
-    def assert_text_not_present(pattern, options = {})
-      page.assert_text_not_present(pattern, options)
-    end
+    page_assert :title
+    page_assert :text_present
+    page_assert :text_not_present
+    page_assert :location_ends_with
+    deprecate :assert_location_ends_in, :assert_location_ends_with
 
     # Assert and wait for the locator element to have value.
     def assert_value(locator, value)
@@ -73,12 +74,6 @@ module Seleniumrc
       element(locator).has_next_sibling(expected_sibling_id, options)
     end
 
-    # Assert browser url ends with passed in url.
-    def assert_location_ends_with(ends_with, options={})
-      page.assert_location_ends_with(ends_with, options)
-    end
-    deprecate :assert_location_ends_in, :assert_location_ends_with
-
     # Assert and wait for locator element has text fragments in a certain order.
     def assert_text_in_order(locator, *text_fragments)
       element(locator).has_text_in_order(*text_fragments)
@@ -91,6 +86,6 @@ module Seleniumrc
 
     def assert_not_visible(locator, options = {})
       element(locator).is_not_visible(options)
-    end    
+    end
   end
 end

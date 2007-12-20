@@ -57,10 +57,10 @@ module Seleniumrc
         :message => "Expected '#{driver.get_location}' to end with '#{ends_with}'"
       }.merge(options)
       wait_for(options) do
-        assert_location_ends_with? ends_with
+        location_ends_with? ends_with
       end
     end
-    def assert_location_ends_with?(ends_with)
+    def location_ends_with?(ends_with)
       if driver.get_location =~ Regexp.new("#{Regexp.escape(ends_with)}$")
         true
       else

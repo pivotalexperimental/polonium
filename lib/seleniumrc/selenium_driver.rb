@@ -98,44 +98,6 @@ module Seleniumrc
       return !get_inner_html(locator).include?(text)
     end
 
-    # Does locator element have text fragments in a certain order?
-    def is_text_in_order(locator, *text_fragments)
-      container = Hpricot(get_text(locator))
-
-      everything_found = true
-      wasnt_found_message = "Certain fragments weren't found:\n"
-
-      everything_in_order = true
-      wasnt_in_order_message = "Certain fragments were out of order:\n"
-
-      text_fragments.inject([-1, nil]) do |old_results, new_fragment|
-        old_index = old_results[0]
-        old_fragment = old_results[1]
-        new_index = container.inner_html.index(new_fragment)
-
-        unless new_index
-          everything_found = false
-          wasnt_found_message << "Fragment #{new_fragment} was not found\n"
-        end
-
-        if new_index < old_index
-          everything_in_order = false
-          wasnt_in_order_message << "Fragment #{new_fragment} out of order:\n"
-          wasnt_in_order_message << "\texpected '#{old_fragment}'\n"
-          wasnt_in_order_message << "\tto come before '#{new_fragment}'\n"
-        end
-
-        [new_index, new_fragment]
-      end
-
-      wasnt_found_message << "\n\nhtml follows:\n #{container.inner_html}\n"
-      wasnt_in_order_message << "\n\nhtml follows:\n #{container.inner_html}\n"
-
-      unless everything_found && everything_in_order
-        yield(everything_found, wasnt_found_message, everything_in_order, wasnt_in_order_message)
-      end
-    end
-
     #----- Waiting for conditions
     def wait_for_is_element_present(locator, params={})
       params = {

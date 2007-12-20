@@ -202,7 +202,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumPage, "#assert_location_ends_with?" do
+  describe SeleniumPage, "#location_ends_with?" do
     it_should_behave_like "Seleniumrc::SeleniumPage"
 
     before do
@@ -211,12 +211,12 @@ module Seleniumrc
 
     it "passes when title is expected" do
       mock(driver).get_location {"http://foobar.com?arg1=2"}
-      @page.assert_location_ends_with?(@ends_with).should be_true
+      @page.location_ends_with?(@ends_with).should be_true
     end
 
     it "fails when element is not present" do
       mock(driver).get_location {"http://no.com"}
-      @page.assert_location_ends_with?(@ends_with).should be_false
+      @page.location_ends_with?(@ends_with).should be_false
     end
   end
 
