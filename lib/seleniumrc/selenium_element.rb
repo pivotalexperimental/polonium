@@ -22,7 +22,7 @@ module Seleniumrc
       !driver.is_element_present(locator)
     end
 
-    def has_value(expected_value)
+    def assert_value(expected_value)
       is_present
       wait_for do |configuration|
         actual_value = driver.get_value(locator)
@@ -34,7 +34,7 @@ module Seleniumrc
       expected_value == actual_value
     end
 
-    def has_attribute(expected_value)
+    def assert_attribute(expected_value)
       is_present
       wait_for do |configuration|
         actual = driver.get_attribute(locator)  #todo: actual value
@@ -43,7 +43,7 @@ module Seleniumrc
       end
     end
 
-    def has_selected(expected_value)
+    def assert_selected(expected_value)
       is_present
       wait_for do |configuration|
         actual = driver.get_selected_label(locator)

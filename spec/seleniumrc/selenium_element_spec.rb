@@ -91,7 +91,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#has_value" do
+  describe SeleniumElement, "#assert_value" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     it "passes when element is present and value is expected value" do
@@ -103,21 +103,21 @@ module Seleniumrc
       mock(driver).get_value(@element_locator) do
         value_ticks.shift
       end.times(4)
-      @element.has_value("joe")
+      @element.assert_value("joe")
     end
 
     it "fails when element is present and not expected value" do
       mock(driver).is_element_present(@element_locator) {true}
       stub(driver).get_value(@element_locator) {"jane"}
       proc do
-        @element.has_value("joe")
+        @element.assert_value("joe")
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.has_value("joe")
+        @element.assert_value("joe")
       end.should raise_error
     end
   end
@@ -136,7 +136,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#has_attribute" do
+  describe SeleniumElement, "#assert_attribute" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -152,26 +152,26 @@ module Seleniumrc
       mock(driver).get_attribute(@element_locator) do
         label_ticks.shift
       end.times(4)
-      @element.has_attribute("joe")
+      @element.assert_attribute("joe")
     end
 
     it "fails when element is present and value is not expected" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_attribute(@element_locator) {"jane"}
       proc do
-        @element.has_attribute("joe")
+        @element.assert_attribute("joe")
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.has_attribute("joe")
+        @element.assert_attribute("joe")
       end.should raise_error
     end
   end
 
-  describe SeleniumElement, "#has_selected" do
+  describe SeleniumElement, "#assert_selected" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -187,21 +187,21 @@ module Seleniumrc
       mock(driver).get_selected_label(@element_locator) do
         label_ticks.shift
       end.times(4)
-      @element.has_selected("joe")
+      @element.assert_selected("joe")
     end
 
     it "fails when element is present and value is not expected" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_selected_label(@element_locator) {"jane"}
       proc do
-        @element.has_selected("joe")
+        @element.assert_selected("joe")
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.has_selected("joe")
+        @element.assert_selected("joe")
       end.should raise_error
     end
   end
@@ -276,7 +276,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#is_checked" do
+  describe SeleniumElement, "#assert_checked" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do

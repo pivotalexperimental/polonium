@@ -242,7 +242,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_value("passed in value")
+        mock.proxy(element).assert_value("passed in value")
         element
       end
     end
@@ -390,7 +390,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_attribute("passed in value")
+        mock.proxy(element).assert_attribute("passed in value")
         element
       end
     end
@@ -419,7 +419,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).has_selected("passed_in_element")
+        mock.proxy(element).assert_selected("passed_in_element")
         element
       end
     end

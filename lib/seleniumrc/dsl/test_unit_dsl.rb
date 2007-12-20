@@ -1,10 +1,20 @@
 module Seleniumrc
   module TestUnitDsl
     class << self
-      def page_assert(thing)
+      def page_assertion(name)
         module_eval(
-          "def assert_#{thing}(value, params={})\n" +
-          "  page.assert_#{thing}(value, params)\n" +
+          "def assert_#{name}(value, params={})\n" +
+          "  page.assert_#{name}(value, params)\n" +
+          "end",
+          __FILE__,
+          __LINE__ - 4
+        )
+      end
+
+      def element_assertion(name)
+        module_eval(
+          "def assert_#{name}(locator, *args)\n" +
+          "  element(locator).assert_#{name}(*args)\n" +
           "end",
           __FILE__,
           __LINE__ - 4
@@ -12,26 +22,15 @@ module Seleniumrc
       end
     end
 
-    page_assert :title
-    page_assert :text_present
-    page_assert :text_not_present
-    page_assert :location_ends_with
+    page_assertion :title
+    page_assertion :text_present
+    page_assertion :text_not_present
+    page_assertion :location_ends_with
     deprecate :assert_location_ends_in, :assert_location_ends_with
 
-    # Assert and wait for the locator element to have value.
-    def assert_value(locator, value)
-      element(locator).has_value(value)
-    end
-
-    # Assert and wait for the locator attribute to have a value.
-    def assert_attribute(locator, value)
-      element(locator).has_attribute(value)
-    end
-
-    # Assert and wait for locator select element to have value option selected.
-    def assert_selected(locator, value)
-      element(locator).has_selected(value)
-    end
+    element_assertion :value
+    element_assertion :attribute   # yes, it's a little weird... in this case element is really an attribute
+    element_assertion :selected
 
     # Assert and wait for locator check box to be checked.
     def assert_checked(locator)
