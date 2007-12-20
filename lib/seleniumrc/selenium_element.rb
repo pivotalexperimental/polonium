@@ -8,7 +8,7 @@ module Seleniumrc
       @locator = locator
     end
 
-    def is_present(params={})
+    def assert_element_present(params={})
       driver.wait_for_is_element_present(locator, params)
     end
     def is_present?
@@ -23,7 +23,7 @@ module Seleniumrc
     end
 
     def assert_value(expected_value)
-      is_present
+      assert_element_present
       wait_for do |configuration|
         actual_value = driver.get_value(locator)
         configuration.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
@@ -35,7 +35,7 @@ module Seleniumrc
     end
 
     def assert_attribute(expected_value)
-      is_present
+      assert_element_present
       wait_for do |configuration|
         actual = driver.get_attribute(locator)  #todo: actual value
         configuration.message = "Expected attribute '#{locator}' to be '#{expected_value}' but was '#{actual}'"
@@ -44,7 +44,7 @@ module Seleniumrc
     end
 
     def assert_selected(expected_value)
-      is_present
+      assert_element_present
       wait_for do |configuration|
         actual = driver.get_selected_label(locator)
         configuration.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
@@ -53,7 +53,7 @@ module Seleniumrc
     end
 
     def is_visible(options={})
-      is_present
+      assert_element_present
       options = {
         :message => "Expected '#{locator}' to be visible, but it wasn't"
       }.merge(options)
@@ -63,7 +63,7 @@ module Seleniumrc
     end
 
     def is_not_visible(options={})
-      is_present
+      assert_element_present
       options = {
         :message => "Expected '#{locator}' to be hidden, but it wasn't"
       }.merge(options)
@@ -73,21 +73,21 @@ module Seleniumrc
     end
 
     def assert_checked
-      is_present
+      assert_element_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
         driver.is_checked(locator)
       end
     end
 
     def assert_not_checked
-      is_present
+      assert_element_present
       wait_for(:message => "Expected '#{locator}' to be checked") do
         !driver.is_checked(locator)
       end
     end
 
     def assert_text(expected_text, options={})
-      is_present
+      assert_element_present
       wait_for(options) do |configuration|
         actual = driver.get_text(locator)
         configuration.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
@@ -96,7 +96,7 @@ module Seleniumrc
     end
 
     def contains_text(expected_text, options={})
-      is_present
+      assert_element_present
       options = {
         :message => "#{locator} should contain #{expected_text}"
       }.merge(options)
@@ -106,14 +106,14 @@ module Seleniumrc
     end
 
     def does_not_contain_text(expected_text, options={})
-      is_present
+      assert_element_present
       wait_for(options) do
         !inner_html.include?(expected_text)
       end
     end
 
     def has_next_sibling(expected_sibling_id, options = {})
-      is_present
+      assert_element_present
       eval_js = "this.page().findElement('#{locator}').nextSibling.id"
       wait_for(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do
         actual_sibling_id = driver.get_eval(eval_js)
@@ -122,7 +122,7 @@ module Seleniumrc
     end
 
     def has_text_in_order(*text_fragments)
-      is_present
+      assert_element_present
       wait_for do |configuration|
         success = false
 

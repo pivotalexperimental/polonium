@@ -184,7 +184,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).is_present({})
+        mock.proxy(element).assert_element_present
         element
       end
     end

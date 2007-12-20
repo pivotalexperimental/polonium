@@ -25,7 +25,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#is_present" do
+  describe SeleniumElement, "#assert_element_present" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     it "passes when element is present" do
@@ -33,13 +33,13 @@ module Seleniumrc
       mock(driver).do_command("isElementPresent", [@element_locator]).times(4) do
         result ticks.shift
       end
-      @element.is_present
+      @element.assert_element_present
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.is_present
+        @element.assert_element_present
       end.should raise_error("Expected element 'id=foobar' to be present, but it was not (after 5 sec)")
     end
   end

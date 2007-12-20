@@ -34,11 +34,7 @@ module Seleniumrc
     element_assertion :checked
     element_assertion :not_checked
     element_assertion :text
-
-    # Assert and wait for locator element to be present.
-    def assert_element_present(locator, params = {})
-      element(locator).is_present(params)
-    end
+    element_assertion :element_present
 
     # Assert and wait for locator element to not be present.
     def assert_element_not_present(locator, params = {})
