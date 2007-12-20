@@ -58,7 +58,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#is_not_present" do
+  describe SeleniumElement, "#assert_element_not_present" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     it "passes when element is not present" do
@@ -66,13 +66,13 @@ module Seleniumrc
       mock(driver).is_element_present(@element_locator) do
         ticks.shift
       end.times(4)
-      @element.is_not_present
+      @element.assert_element_not_present
     end
 
     it "fails when element is present" do
       stub(driver).is_element_present(@element_locator) {true}
       proc do
-        @element.is_not_present
+        @element.assert_element_not_present
       end.should raise_error("Expected element 'id=foobar' to be absent, but it was not (after 5 sec)")
     end
   end
@@ -381,7 +381,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#contains_text" do
+  describe SeleniumElement, "#contains" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -398,22 +398,22 @@ module Seleniumrc
       mock(driver).get_eval(@evaled_js) do
         inner_html_ticks.shift
       end.times(4)
-      @element.contains_text("match")
+      @element.assert_contains("match")
     end
 
     it "fails when element is present and the element does not contain text" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).get_eval(@evaled_js) {"html"}
       proc do
-        @element.contains_text "match"
-      end.should raise_error
+        @element.assert_contains "this is not contained in the html"
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.contains_text "match"
-      end.should raise_error
+        @element.assert_contains "the element does not exist"
+      end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
 

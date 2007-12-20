@@ -212,7 +212,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).is_not_present({})
+        mock.proxy(element).assert_element_not_present
         element
       end
     end
@@ -271,7 +271,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).contains_text("passed in value", {})
+        mock.proxy(element).assert_contains("passed in value", {})
         element
       end
       @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"

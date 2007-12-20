@@ -15,7 +15,7 @@ module Seleniumrc
       driver.is_element_present(locator)
     end
 
-    def is_not_present(params={})
+    def assert_element_not_present(params={})
       driver.wait_for_is_element_not_present(locator, params)
     end
     def is_not_present?
@@ -95,7 +95,7 @@ module Seleniumrc
       end
     end
 
-    def contains_text(expected_text, options={})
+    def assert_contains(expected_text, options={})
       assert_element_present
       options = {
         :message => "#{locator} should contain #{expected_text}"
