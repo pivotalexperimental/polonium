@@ -206,7 +206,7 @@ module Seleniumrc
     end
   end
 
-  describe SeleniumElement, "#is_visible" do
+  describe SeleniumElement, "#assert_visible" do
     it_should_behave_like "Seleniumrc::SeleniumElement"
 
     prepend_before do
@@ -222,21 +222,21 @@ module Seleniumrc
       mock(driver).is_visible(@element_locator) do
         visible_ticks.shift
       end.times(4)
-      @element.is_visible
+      @element.assert_visible
     end
 
     it "fails when element is present and is not visible" do
       stub(driver).is_element_present(@element_locator) {true}
       stub(driver).is_visible(@element_locator) {false}
       proc do
-        @element.is_visible
+        @element.assert_visible
       end.should raise_error
     end
 
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.is_visible
+        @element.assert_visible
       end.should raise_error
     end
   end
@@ -262,7 +262,7 @@ module Seleniumrc
 
     it "fails when element is present and is visible" do
       stub(driver).is_element_present(@element_locator) {true}
-      stub(driver).is__visible(@element_locator) {true}
+      stub(driver).is_visible(@element_locator) {true}
       proc do
         @element.is_not_visible
       end.should raise_error
@@ -271,7 +271,7 @@ module Seleniumrc
     it "fails when element is not present" do
       stub(driver).is_element_present(@element_locator) {false}
       proc do
-        @element.is_visible
+        @element.assert_visible
       end.should raise_error
     end
   end

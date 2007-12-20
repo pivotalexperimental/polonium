@@ -52,7 +52,7 @@ module Seleniumrc
       end
     end
 
-    def is_visible(options={})
+    def assert_visible(options={})
       assert_element_present
       options = {
         :message => "Expected '#{locator}' to be visible, but it wasn't"
