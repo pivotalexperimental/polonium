@@ -39,6 +39,7 @@ module Seleniumrc
     element_assertion :next_sibling
     element_assertion :text_in_order
     element_assertion :visible
+    element_assertion :not_visible
 
     # Assert and wait for locator element to contain text.
     def assert_element_contains(locator, text, options = {})
@@ -52,9 +53,5 @@ module Seleniumrc
     deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_text_in_order, :assert_text_in_order
-
-    def assert_not_visible(locator, options = {})
-      element(locator).is_not_visible(options)
-    end
   end
 end

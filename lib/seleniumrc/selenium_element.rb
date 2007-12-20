@@ -62,7 +62,7 @@ module Seleniumrc
       end
     end
 
-    def is_not_visible(options={})
+    def assert_not_visible(options={})
       assert_element_present
       options = {
         :message => "Expected '#{locator}' to be hidden, but it wasn't"

@@ -562,7 +562,7 @@ module Seleniumrc
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
-        mock.proxy(element).is_not_visible({})
+        mock.proxy(element).assert_not_visible
         element
       end
     end
