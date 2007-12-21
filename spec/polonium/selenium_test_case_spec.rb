@@ -753,6 +753,15 @@ module Polonium
     end
   end
 
+  describe TestCase, "#get_eval" do
+    it_should_behave_like "Polonium::TestCase"
+    
+    it "delegates to Driver" do
+      mock(driver).get_eval "foobar"
+      test_case.get_eval "foobar"
+    end
+  end
+
   describe "TestCase in test browser mode and test fails" do
     it_should_behave_like "Polonium::TestCase"
 

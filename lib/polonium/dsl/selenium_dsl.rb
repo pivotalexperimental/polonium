@@ -21,9 +21,12 @@ module Polonium
     end
 
     protected
-    Driver.public_instance_methods(false).each do |method_name|
-      delegate method_name, :to => :selenium_driver
+    def method_missing(method_name, *args, &block)
+      selenium_driver.__send__(method_name, *args, &block)
     end
+    delegate :open,
+             :type,
+             :to => :selenium_driver
 
     def should_stop_driver?
       return false unless configuration.test_browser_mode?
