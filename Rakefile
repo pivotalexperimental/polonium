@@ -63,5 +63,6 @@ end
 
 def tag_release
   dashed_version = PKG_VERSION.gsub('.', '-')
-  `svn cp svn+ssh://rubyforge.org/var/svn/pivotalrb/polonium/trunk svn+ssh://rubyforge.org/var/svn/pivotalrb/polonium/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
+  svn_user_prefix = "#{ENV["SVN_USER"]}@" if ENV["SVN_USER"]
+  `svn cp svn+ssh://#{svn_user_prefix}rubyforge.org/var/svn/pivotalrb/polonium/trunk svn+ssh://#{svn_user_prefix}rubyforge.org/var/svn/pivotalrb/polonium/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
 end
