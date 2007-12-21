@@ -34,7 +34,7 @@ module Polonium
     end
 
     def page
-      SeleniumPage.new(self)
+      Page.new(self)
     end
 
     #--------- Commands

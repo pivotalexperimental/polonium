@@ -1,5 +1,5 @@
 module Polonium
-  class SeleniumPage
+  class Page
     include WaitFor
     attr_reader :driver
     PAGE_LOADED_COMMAND = "this.browserbot.getDocument().body ? true : false"
@@ -69,7 +69,7 @@ module Polonium
     end
 
     def ==(other)
-      return false unless other.is_a?(SeleniumPage)
+      return false unless other.is_a?(Page)
       self.driver == other.driver
     end
 

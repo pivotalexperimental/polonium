@@ -11,7 +11,7 @@ module Polonium
       @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
       @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       test_case.selenium_driver = driver
-      stub(driver).do_command("getEval", [SeleniumPage::PAGE_LOADED_COMMAND]) do
+      stub(driver).do_command("getEval", [Page::PAGE_LOADED_COMMAND]) do
         result(true)
       end
     end
@@ -99,7 +99,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumPage).new(driver) do |page|
+      mock.proxy(Page).new(driver) do |page|
         mock.proxy(page).assert_text_present("my page", {})
         page
       end
@@ -125,7 +125,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumPage).new(driver) do |page|
+      mock.proxy(Page).new(driver) do |page|
         mock.proxy(page).assert_text_not_present("my page", {})
         page
       end
@@ -152,7 +152,7 @@ module Polonium
 
     before do
       @ends_with = "foobar.com?arg1=2"
-      mock.proxy(SeleniumPage).new(driver) do |page|
+      mock.proxy(Page).new(driver) do |page|
         mock.proxy(page).assert_location_ends_with(@ends_with, {})
         page
       end
@@ -749,7 +749,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "returns page" do
-      test_case.page.should == SeleniumPage.new(driver)
+      test_case.page.should == Page.new(driver)
     end
   end
 

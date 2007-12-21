@@ -1,36 +1,36 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe SeleniumPage, :shared => true do
+  describe Page, :shared => true do
     it_should_behave_like "Selenium"
     include SeleniumTestCaseSpec
     attr_reader :driver
 
     before do
       @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
-      @page = SeleniumPage.new(driver)
+      @page = Page.new(driver)
       page_loaded
     end
 
     def page_loaded
-      stub(driver).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"true"}
+      stub(driver).get_eval(Page::PAGE_LOADED_COMMAND) {"true"}
     end
 
     def page_not_loaded
-      stub(driver).get_eval(SeleniumPage::PAGE_LOADED_COMMAND) {"false"}
+      stub(driver).get_eval(Page::PAGE_LOADED_COMMAND) {"false"}
     end
   end
 
-  describe SeleniumPage, "#initialize" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#initialize" do
+    it_should_behave_like "Polonium::Page"
 
     it "sets the selenium object" do
       @page.driver.should == driver
     end
   end
 
-  describe SeleniumPage, "#open_and_wait" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#open_and_wait" do
+    it_should_behave_like "Polonium::Page"
 
     it "opens the url and waits for the page to load" do
       mock(driver) do |m|
@@ -64,8 +64,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#has_title" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#has_title" do
+    it_should_behave_like "Polonium::Page"
 
     it "passes when title is expected" do
       ticks = ["no page", "no page", "no page", "my page"]
@@ -83,8 +83,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#title" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#title" do
+    it_should_behave_like "Polonium::Page"
 
     it "returns true when passed in title is the page title" do
       mock(driver).get_title {"my page"}
@@ -97,8 +97,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#assert_text_present" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#assert_text_present" do
+    it_should_behave_like "Polonium::Page"
 
     it "passes when title is expected" do
       ticks = [false, false, false, true]
@@ -123,8 +123,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#is_text_present?" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#is_text_present?" do
+    it_should_behave_like "Polonium::Page"
 
     it "returns true when title is expected" do
       mock(driver).is_text_present("my page") {true}
@@ -137,8 +137,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#is_text_not_present" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#is_text_not_present" do
+    it_should_behave_like "Polonium::Page"
 
     it "passes when text is not present" do
       ticks = [true, true, true, false]
@@ -163,8 +163,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#is_text_not_present?" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#is_text_not_present?" do
+    it_should_behave_like "Polonium::Page"
 
     it "returns true when text is not present" do
       mock(driver).is_text_present("my page") {false}
@@ -177,8 +177,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#assert_location_ends_with" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#assert_location_ends_with" do
+    it_should_behave_like "Polonium::Page"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -205,8 +205,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#location_ends_with?" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#location_ends_with?" do
+    it_should_behave_like "Polonium::Page"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -223,8 +223,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#page_loaded?" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#page_loaded?" do
+    it_should_behave_like "Polonium::Page"
 
     it "when page loaded command returns 'true', returns true" do
       page_loaded
@@ -237,8 +237,8 @@ module Polonium
     end
   end
 
-  describe SeleniumPage, "#method_missing" do
-    it_should_behave_like "Polonium::SeleniumPage"
+  describe Page, "#method_missing" do
+    it_should_behave_like "Polonium::Page"
 
     it "delegates command to the driver" do
       @page.methods.should_not include('get_location')
