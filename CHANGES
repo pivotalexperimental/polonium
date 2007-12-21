@@ -1,3 +1,4 @@
+0.1.0
 * Renamed to Polonium
 * Methods renamed to match Test::Unit assertions
 * Page and Element delegate to Driver [Paired with Jeff Whitmore]
