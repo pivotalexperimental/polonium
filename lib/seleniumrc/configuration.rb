@@ -1,8 +1,8 @@
 module Polonium
-  # The configuration interface. This SeleniumConfiguration acts as a singleton to a SeleniumContext.
-  # You can access the SeleniumConfiguration object by calling
-  #   Polonium::SeleniumConfiguration.instance
-  class SeleniumConfiguration
+  # The configuration interface. This Configuration acts as a singleton to a SeleniumContext.
+  # You can access the Configuration object by calling
+  #   Polonium::Configuration.instance
+  class Configuration
     module BrowserMode
       Suite = "suite" unless const_defined? :Suite
       Test = "test" unless const_defined? :Test
@@ -11,7 +11,7 @@ module Polonium
     IEXPLORE = "iexplore" unless const_defined? :IEXPLORE
 
     class << self
-      # The instance of the Singleton SeleniumConfiguration. On its initial call, the initial configuration is set.
+      # The instance of the Singleton Configuration. On its initial call, the initial configuration is set.
       # The initial configuration is based on Environment variables and defaults.
       # The environment variables are:
       # * RAILS_ENV - The Rails environment (defaults: test)
@@ -140,22 +140,22 @@ module Polonium
 
     # Sets the Test Suite to open a new browser instance for each TestCase
     def test_browser_mode
-      @browser_mode = SeleniumConfiguration::BrowserMode::Test
+      @browser_mode = Configuration::BrowserMode::Test
     end
 
     # Are we going to open a new browser instance for each TestCase?
     def test_browser_mode?
-      @browser_mode == SeleniumConfiguration::BrowserMode::Test
+      @browser_mode == Configuration::BrowserMode::Test
     end
 
     # Sets the Test Suite to use one browser instance
     def suite_browser_mode
-      @browser_mode = SeleniumConfiguration::BrowserMode::Suite
+      @browser_mode = Configuration::BrowserMode::Suite
     end
 
     # Does the Test Suite to use one browser instance?
     def suite_browser_mode?
-      @browser_mode == SeleniumConfiguration::BrowserMode::Suite
+      @browser_mode == Configuration::BrowserMode::Suite
     end
 
     # The SeleniumDriver object, which sublcasses the SeleniumDriver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.

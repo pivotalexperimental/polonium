@@ -4,7 +4,7 @@ module Polonium
   describe MongrelSeleniumServerRunner, "#start_server" do
     attr_reader :configuration
     before do
-      @configuration = SeleniumConfiguration.new
+      @configuration = Configuration.new
     end
 
     it "initializes server and runs app_server_initialization callback" do

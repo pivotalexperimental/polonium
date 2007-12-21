@@ -1,8 +1,8 @@
 module Polonium
   module SeleniumDsl
-    # The SeleniumConfiguration object.
+    # The Configuration object.
     def configuration
-      @configuration ||= SeleniumConfiguration.instance
+      @configuration ||= Configuration.instance
     end
     attr_writer :configuration
     attr_accessor :selenium_driver  

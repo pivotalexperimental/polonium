@@ -25,11 +25,11 @@ module Polonium
     end
 
     def stub_selenium_configuration
-      @configuration = SeleniumConfiguration.new
+      @configuration = Configuration.new
       configuration.external_app_server_host = "test.com"
       configuration.external_app_server_port = 80
 
-      stub(SeleniumConfiguration.instance) {configuration}
+      stub(Configuration.instance) {configuration}
     end
   end
 
@@ -757,7 +757,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = configuration = Polonium::SeleniumConfiguration.new
+      test_case.configuration = configuration = Polonium::Configuration.new
       configuration.test_browser_mode
 
       stub(test_case).passed? {false}
@@ -770,7 +770,7 @@ module Polonium
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed? {false}
@@ -786,7 +786,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -799,7 +799,7 @@ module Polonium
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -815,7 +815,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should not stop driver when tests fail" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode? {false}
 
       def test_case.passed?;
@@ -828,7 +828,7 @@ module Polonium
     end
 
     it "should stop driver when tests pass" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode? {false}
 
       stub(test_case).passed?.returns(true)
@@ -843,7 +843,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -856,7 +856,7 @@ module Polonium
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::SeleniumConfiguration"
+      test_case.configuration = "Polonium::Configuration"
       mock(test_case.configuration).test_browser_mode? {true}
 
       stub(test_case).passed?.returns(true)

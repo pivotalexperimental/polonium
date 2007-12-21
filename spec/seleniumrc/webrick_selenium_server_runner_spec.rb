@@ -67,7 +67,7 @@ describe WebrickSeleniumServerRunner do
   end
 
   def create_runner_that_is_stubbed_so_start_method_works()
-    configuration = Polonium::SeleniumConfiguration.new
+    configuration = Polonium::Configuration.new
     runner = configuration.create_webrick_runner
     class << runner; public :start_server; end
 

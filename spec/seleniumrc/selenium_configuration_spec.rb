@@ -1,28 +1,28 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe SeleniumConfiguration, ".instance" do
+  describe Configuration, ".instance" do
     attr_reader :configuration
     before(:each) do
-      SeleniumConfiguration.instance = nil
-      @configuration = SeleniumConfiguration.new
+      Configuration.instance = nil
+      @configuration = Configuration.new
     end
 
-    it "should create a new SeleniumConfiguration if it hasn't been called yet" do
-      mock(SeleniumConfiguration).new.returns(configuration)
-      SeleniumConfiguration.instance.should == configuration
+    it "should create a new Configuration if it hasn't been called yet" do
+      mock(Configuration).new.returns(configuration)
+      Configuration.instance.should == configuration
     end
 
-    it "should reuse the existing SeleniumConfiguration if it has been called.  So new/establish_environment should only be called once." do
-      SeleniumConfiguration.instance.should_not be_nil
-      dont_allow(SeleniumConfiguration).new
+    it "should reuse the existing Configuration if it has been called.  So new/establish_environment should only be called once." do
+      Configuration.instance.should_not be_nil
+      dont_allow(Configuration).new
     end
   end
 
-  describe SeleniumConfiguration do
+  describe Configuration do
     attr_reader :configuration
     before(:each) do
-      @configuration = SeleniumConfiguration.new
+      @configuration = Configuration.new
       @old_rails_root = RAILS_ROOT if Object.const_defined? :RAILS_ROOT
       silence_warnings { Object.const_set :RAILS_ROOT, "foobar" }
       require 'webrick_server'
@@ -149,17 +149,17 @@ module Polonium
     end
   end
 
-  describe SeleniumConfiguration, "#establish_environment" do
+  describe Configuration, "#establish_environment" do
     attr_reader :configuration
     before(:each) do
-      @old_configuration = SeleniumConfiguration.instance
-      SeleniumConfiguration.instance = nil
-      @configuration = SeleniumConfiguration.instance
+      @old_configuration = Configuration.instance
+      Configuration.instance = nil
+      @configuration = Configuration.instance
       configuration = @configuration
     end
 
     after(:each) do
-      SeleniumConfiguration.instance = @old_configuration
+      Configuration.instance = @old_configuration
     end
 
     it "establish_environment__webrick_host" do
@@ -193,7 +193,7 @@ module Polonium
     it "initializes browser" do
       configuration.env = stub_env
       stub_env['browser'] = 'konqueror'
-      SeleniumConfiguration.__send__(:establish_environment)
+      Configuration.__send__(:establish_environment)
       configuration.browser.should == 'konqueror'
     end
 
@@ -201,17 +201,17 @@ module Polonium
       configuration.env = stub_env
       env_var = 'keep_browser_open_on_failure'
       stub_env[env_var] = 'false'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == false
       configuration.send(env_var).should == false
 
       stub_env[env_var] = 'true'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == true
       configuration.send(env_var).should == true
 
       stub_env[env_var] = 'blah'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == true
       configuration.send(env_var).should == true
     end
@@ -220,17 +220,17 @@ module Polonium
       configuration.env = stub_env
       env_var = 'verify_remote_app_server_is_running'
       stub_env[env_var] = 'false'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == false
       configuration.send(env_var).should == false
 
       stub_env[env_var] = 'true'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == true
       configuration.send(env_var).should == true
 
       stub_env[env_var] = 'blah'
-      SeleniumConfiguration.send :establish_environment
+      Configuration.send :establish_environment
       configuration.send(env_var).should == true
       configuration.send(env_var).should == true
     end
@@ -252,7 +252,7 @@ module Polonium
     end
 
     it "browsers__lazy_loaded" do
-      should_lazily_load configuration, :browser, SeleniumConfiguration::FIREFOX
+      should_lazily_load configuration, :browser, Configuration::FIREFOX
     end
 
     it "keep_browser_open_on_failure" do
@@ -260,7 +260,7 @@ module Polonium
     end
 
     it "formatted_browser" do
-      configuration.browser = SeleniumConfiguration::IEXPLORE
+      configuration.browser = Configuration::IEXPLORE
       configuration.formatted_browser.should == "*iexplore"
     end
 
@@ -280,8 +280,8 @@ module Polonium
       method_name = env_var unless method_name
       configuration.env = stub_env
       stub_env[env_var] = expected_value
-      SeleniumConfiguration.send :establish_environment
-      SeleniumConfiguration.instance.send(method_name).should == expected_value
+      Configuration.send :establish_environment
+      Configuration.instance.send(method_name).should == expected_value
     end
 
     def stub_env
@@ -296,10 +296,10 @@ module Polonium
     end
   end
 
-  describe SeleniumConfiguration, "#stop_driver_if_necessary" do
+  describe Configuration, "#stop_driver_if_necessary" do
     attr_reader :configuration
     before(:each) do
-      @configuration = SeleniumConfiguration.new
+      @configuration = Configuration.new
     end
 
     it "when suite passes, should stop driver" do
@@ -330,16 +330,16 @@ module Polonium
 
   end
 
-  describe SeleniumConfiguration, "#create_server_runner where application server engine is mongrel" do
+  describe Configuration, "#create_server_runner where application server engine is mongrel" do
     it "creates a mongrel server runner" do
-      configuration = SeleniumConfiguration.new
+      configuration = Configuration.new
       configuration.app_server_engine = :mongrel
       runner = configuration.create_server_runner
       runner.should be_instance_of(MongrelSeleniumServerRunner)
     end
   end
 
-  describe SeleniumConfiguration, "#create_server_runner where application server engine is webrick" do
+  describe Configuration, "#create_server_runner where application server engine is webrick" do
     before do
       Object.const_set :RAILS_ROOT, "foobar"
       require 'webrick_server'
@@ -350,7 +350,7 @@ module Polonium
     end
 
     it "creates a webrick server runner" do
-      configuration = SeleniumConfiguration.new
+      configuration = Configuration.new
       configuration.app_server_engine = :webrick
       runner = configuration.create_server_runner
       runner.should be_instance_of(WebrickSeleniumServerRunner)
