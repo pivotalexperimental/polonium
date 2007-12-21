@@ -1,20 +1,20 @@
 == Introduction
 
-Welcome to Selenium RC!
+Welcome to Polonium!
 
-This plugin is designed to let you use Selenium RC to write Selenium tests in Ruby, using a simple series of
+This plugin is designed to let you use Polonium to write Selenium tests in Ruby, using a simple series of
 Rake tasks.
 
 == Installation
 
-The current version of this plugin can be found at: http://rubyforge.org/var/svn/pivotalrb/seleniumrc/trunk
+The current version of this plugin can be found at: http://rubyforge.org/var/svn/pivotalrb/polonium/trunk
 
 You may install the plugin with the following command:
 
-  script/plugin install svn://rubyforge.org/var/svn/pivotalrb/seleniumrc/trunk
+  script/plugin install svn://rubyforge.org/var/svn/pivotalrb/polonium/trunk
 
 == Usage
-The seleniumrc plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
+The polonium plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
 it.  A sample selenium_suite.rb and selenium_helper.rb can be copied into your test/selenium directory.
 
 You'll get the following tasks:
@@ -31,7 +31,7 @@ There are a few things we'd like to improve, but we wanted to get this out now. 
 
 == License
 
-Selenium RC Fu is distributed under the MIT license. Copyright © 2007 Pivotal Labs, Inc.
+Polonium is distributed under the MIT license. Copyright © 2007 Pivotal Labs, Inc.
 
 == Contributing
 
