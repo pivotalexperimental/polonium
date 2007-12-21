@@ -25,7 +25,7 @@ def run_suite
   system("ruby #{dir}/spec/spec_suite.rb") || raise("Example Suite failed")
 end
 
-PKG_NAME = "seleniumrc"
+PKG_NAME = "polonium"
 PKG_VERSION = "0.0.2"
 PKG_FILES = FileList[
   '[A-Z]*',
@@ -64,5 +64,5 @@ end
 
 def tag_release
   dashed_version = PKG_VERSION.gsub('.', '-')
-  `svn cp svn+ssh://rubyforge.org/var/svn/pivotalrb/seleniumrc/trunk svn+ssh://rubyforge.org/var/svn/pivotalrb/seleniumrc/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
+  `svn cp svn+ssh://rubyforge.org/var/svn/pivotalrb/polonium/trunk svn+ssh://rubyforge.org/var/svn/pivotalrb/polonium/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
 end
