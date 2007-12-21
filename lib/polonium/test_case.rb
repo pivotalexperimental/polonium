@@ -42,6 +42,7 @@ module Polonium
       end
     end
     extend ClassMethods
+    undef_method 'default_test' if instance_methods.include?('default_test')
 
     self.use_transactional_fixtures = false
     self.use_instantiated_fixtures  = true
