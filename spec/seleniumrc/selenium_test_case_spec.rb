@@ -183,7 +183,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_element_present
         element
       end
@@ -211,7 +211,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_element_not_present
         element
       end
@@ -241,7 +241,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_value("passed in value")
         element
       end
@@ -270,7 +270,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_contains("passed in value", {})
         element
       end
@@ -342,7 +342,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_does_not_contain("passed in value", {})
         element
       end
@@ -374,7 +374,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "when text is in order, it succeeds" do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_contains_in_order("one", "two", "three")
         element
       end
@@ -389,7 +389,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_attribute("passed in value")
         element
       end
@@ -418,7 +418,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_selected("passed_in_element")
         element
       end
@@ -447,7 +447,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_checked
         element
       end
@@ -476,7 +476,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_not_checked
         element
       end
@@ -505,7 +505,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_text("expected text")
         element
       end
@@ -534,7 +534,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_visible
         element
       end
@@ -561,7 +561,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_not_visible
         element
       end
@@ -588,7 +588,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
+      mock.proxy(Element).new(driver, sample_locator) do |element|
         mock.proxy(element).assert_next_sibling("next_sibling")
         element
       end
@@ -618,7 +618,7 @@ module Polonium
     it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
-      mock.proxy(SeleniumElement).new(driver, sample_locator)
+      mock.proxy(Element).new(driver, sample_locator)
       @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
     end
 

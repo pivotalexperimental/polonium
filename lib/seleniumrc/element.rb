@@ -1,5 +1,5 @@
 module Polonium
-  class SeleniumElement
+  class Element
     include WaitFor
     attr_reader :driver, :locator
 
@@ -161,7 +161,7 @@ module Polonium
     end
 
     def ==(other)
-      return false unless other.is_a?(SeleniumElement)
+      return false unless other.is_a?(Element)
       return false unless self.driver == other.driver
       return false unless self.locator == other.locator
       true

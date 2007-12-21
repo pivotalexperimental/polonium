@@ -1,4 +1,4 @@
-* SeleniumPage and SeleniumElement delegate to Driver [Paired with Jeff Whitmore]
+* SeleniumPage and Element delegate to Driver [Paired with Jeff Whitmore]
 
 0.0.2
 * Supports multiple sessions by instantiating multiple SeleniumDrivers

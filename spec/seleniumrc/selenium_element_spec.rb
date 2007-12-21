@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe SeleniumElement, :shared => true do
+  describe Element, :shared => true do
     it_should_behave_like "Selenium"
     include SeleniumTestCaseSpec
     attr_reader :driver
@@ -9,12 +9,12 @@ module Polonium
     before do
       @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       @element_locator ||= "id=foobar"
-      @element = SeleniumElement.new(driver, @element_locator)
+      @element = Element.new(driver, @element_locator)
     end
   end
 
-  describe SeleniumElement, "#initialize" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#initialize" do
+    it_should_behave_like "Polonium::Element"
 
     it "sets the locator" do
       @element.locator.should == @element_locator
@@ -25,8 +25,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_element_present" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_element_present" do
+    it_should_behave_like "Polonium::Element"
 
     it "passes when element is present" do
       ticks = [false, false, false, true]
@@ -44,8 +44,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#is_present?" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#is_present?" do
+    it_should_behave_like "Polonium::Element"
 
     it "returns true when element is present" do
       mock(driver).is_element_present(@element_locator) {true}
@@ -58,8 +58,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_element_not_present" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_element_not_present" do
+    it_should_behave_like "Polonium::Element"
 
     it "passes when element is not present" do
       ticks = [true, true, true, false]
@@ -77,8 +77,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#is_not_present?" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#is_not_present?" do
+    it_should_behave_like "Polonium::Element"
 
     it "returns true when element is not present" do
       mock(driver).is_element_present(@element_locator) {false}
@@ -91,8 +91,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_value" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_value" do
+    it_should_behave_like "Polonium::Element"
 
     it "passes when element is present and value is expected value" do
       element_ticks = [false, false, false, true]
@@ -122,8 +122,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#has_value?" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#has_value?" do
+    it_should_behave_like "Polonium::Element"
 
     it "returns true when value is expected value" do
       mock(driver).get_value(@element_locator) {"joe"}
@@ -136,8 +136,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_attribute" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_attribute" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar@theattribute"
@@ -171,8 +171,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_selected" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_selected" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -206,8 +206,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_visible" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_visible" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -241,8 +241,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_not_visible" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_not_visible" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -276,8 +276,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_checked" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_checked" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -311,8 +311,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_not_checked" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_not_checked" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -346,8 +346,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_text" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_text" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -381,8 +381,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_contains" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_contains" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -426,8 +426,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_does_not_contain" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_does_not_contain" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -462,8 +462,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_next_sibling" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_next_sibling" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -498,8 +498,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#assert_contains_in_order" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#assert_contains_in_order" do
+    it_should_behave_like "Polonium::Element"
 
     prepend_before do
       @element_locator = "id=foobar"
@@ -539,8 +539,8 @@ module Polonium
     end
   end
 
-  describe SeleniumElement, "#method_missing" do
-    it_should_behave_like "Polonium::SeleniumElement"
+  describe Element, "#method_missing" do
+    it_should_behave_like "Polonium::Element"
 
     it "delegates command to the driver" do
       @element.methods.should_not include('click')

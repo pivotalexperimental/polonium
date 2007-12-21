@@ -30,7 +30,7 @@ module Polonium
     end
 
     def element(locator)
-      SeleniumElement.new(self, locator)
+      Element.new(self, locator)
     end
 
     def page
