@@ -1,5 +1,5 @@
 module Polonium
-  class MongrelSeleniumServerRunner < SeleniumServerRunner
+  class MongrelSeleniumServerRunner < ServerRunner
     def start
       mongrel_configurator = configuration.create_mongrel_configurator
       initialize_server(mongrel_configurator)

@@ -1,5 +1,5 @@
 module Polonium
-  class WebrickSeleniumServerRunner < SeleniumServerRunner
+  class WebrickSeleniumServerRunner < ServerRunner
     attr_accessor :socket, :dispatch_servlet, :environment_path, :server
 
     protected
