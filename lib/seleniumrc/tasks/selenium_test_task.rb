@@ -1,7 +1,7 @@
 
 module Polonium
   module Tasks
-    class SeleniumTestTask
+    class PoloniumTestTask
       attr_reader :rails_env, :rails_root
 
       def initialize(rails_env = RAILS_ENV, rails_root = RAILS_ROOT)
