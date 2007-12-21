@@ -21,27 +21,10 @@ module Polonium
       selenium_driver.open(configuration.browser_url)
     end
 
-    def method_missing(name, *args)
-      return selenium_driver.send(name, *args)
-    end
-
     protected
-    delegate :open,
-             :type,
-             :wait_for_condition,
-             :get_select_options,
-             :get_selected_id,
-             :get_selected_id,
-             :get_selected_ids,
-             :get_selected_index,
-             :get_selected_indexes,
-             :get_selected_label,
-             :get_selected_labels,
-             :get_selected_value,
-             :get_selected_values,
-             :get_body_text,
-             :get_html_source,
-             :to => :selenium_driver
+    SeleniumDriver.public_instance_methods(false).each do |method_name|
+      delegate method_name, :to => :selenium_driver
+    end
 
     def should_stop_driver?
       return false unless configuration.test_browser_mode?
