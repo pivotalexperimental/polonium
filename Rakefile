@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "polonium"
-PKG_VERSION = "0.0.2"
+PKG_VERSION = "0.1.0"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
@@ -38,7 +38,7 @@ spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.summary = "Selenium RC with enhanced assertions that also runs your rails app."
-  s.test_files = "examples/example_suite.rb"
+  s.test_files = "spec/spec_suite.rb"
   s.description = s.summary
 
   s.files = PKG_FILES.to_a
@@ -50,7 +50,6 @@ spec = Gem::Specification.new do |s|
 
   s.test_files = Dir.glob('spec/*_spec.rb')
   s.require_path = 'lib'
-  s.autorequire = 'rr'
   s.author = "Pivotal Labs"
   s.email = "opensource@pivotallabs.com"
   s.homepage = "http://pivotallabs.com"
