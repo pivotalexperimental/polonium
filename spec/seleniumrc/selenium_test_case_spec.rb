@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe SeleniumTestCase, :shared => true do
+  describe TestCase, :shared => true do
     it_should_behave_like "Selenium"
     include SeleniumTestCaseSpec
     attr_reader :driver, :test_case, :configuration
@@ -33,8 +33,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#setup" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#setup" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should not allow transactional fixtures" do
       test_case.class.use_transactional_fixtures = true
@@ -46,8 +46,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#wait_for" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#wait_for" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should pass when the block returns true within time limit" do
       test_case.wait_for(:timeout => 2) do
@@ -62,16 +62,16 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#default_timeout" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#default_timeout" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "default_timeout should be 20 seconds" do
       test_case.default_timeout.should == 20000
     end
   end
 
-  describe SeleniumTestCase, "#open_home_page" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#open_home_page" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "opens home page" do
       mock(driver).open("http://localhost:4000")
@@ -79,8 +79,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_title" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_title" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "when title is expected, passes" do
       mock(driver).do_command("getTitle", []) {result("my page")}
@@ -95,8 +95,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_text_present" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_text_present" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Page).new(driver) do |page|
@@ -121,8 +121,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_text_not_present" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_text_not_present" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Page).new(driver) do |page|
@@ -147,8 +147,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_location_ends_with" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_location_ends_with" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -179,8 +179,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_element_present" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_element_present" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -207,8 +207,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_element_not_present" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_element_not_present" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -237,8 +237,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_value" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_value" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -266,8 +266,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_element_contains" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_element_contains" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -298,8 +298,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#element_does_not_contain_text" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#element_does_not_contain_text" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "when element is not on the page, returns true" do
       locator = "id=element_id"
@@ -338,8 +338,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_element_does_not_contain" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_element_does_not_contain" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -370,8 +370,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_contains_in_order" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "when text is in order, it succeeds" do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -385,8 +385,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_attribute" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_attribute" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -414,8 +414,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_selected" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_selected" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -443,8 +443,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_checked" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_checked" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -472,8 +472,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_not_checked" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_not_checked" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -501,8 +501,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_text" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_text" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -530,8 +530,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_visible" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_visible" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -557,8 +557,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_not_visible" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_not_visible" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -584,8 +584,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_next_sibling" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_next_sibling" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
@@ -614,8 +614,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#assert_contains_in_order" do
+    it_should_behave_like "Polonium::TestCase"
 
     before do
       mock.proxy(Element).new(driver, sample_locator)
@@ -641,8 +641,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#type" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#type" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "types when element is present and types" do
       is_element_present_results = [false, true]
@@ -668,8 +668,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#click" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#click" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "click when element is present and types" do
       is_element_present_results = [false, true]
@@ -694,8 +694,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#select" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#select" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "types when element is present and types" do
       is_element_present_results = [false, true]
@@ -719,8 +719,8 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#wait_for_and_click" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#wait_for_and_click" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "click when element is present and types" do
       is_element_present_results = [false, true]
@@ -745,16 +745,16 @@ module Polonium
     end
   end
 
-  describe SeleniumTestCase, "#page" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe TestCase, "#page" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "returns page" do
       test_case.page.should == Page.new(driver)
     end
   end
 
-  describe "SeleniumTestCase in test browser mode and test fails" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe "TestCase in test browser mode and test fails" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should stop driver when configuration says to stop test" do
       test_case.configuration = configuration = Polonium::Configuration.new
@@ -782,8 +782,8 @@ module Polonium
     end
   end
 
-  describe "SeleniumTestCase in test browser mode and test pass" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe "TestCase in test browser mode and test pass" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should stop driver when configuration says to stop test" do
       test_case.configuration = "Polonium::Configuration"
@@ -811,8 +811,8 @@ module Polonium
     end
   end
 
-  describe "SeleniumTestCase not in suite browser mode" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe "TestCase not in suite browser mode" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should not stop driver when tests fail" do
       test_case.configuration = "Polonium::Configuration"
@@ -839,8 +839,8 @@ module Polonium
     end
   end
 
-  describe "SeleniumTestCase in test browser mode and test pass" do
-    it_should_behave_like "Polonium::SeleniumTestCase"
+  describe "TestCase in test browser mode and test pass" do
+    it_should_behave_like "Polonium::TestCase"
 
     it "should stop driver when configuration says to stop test" do
       test_case.configuration = "Polonium::Configuration"

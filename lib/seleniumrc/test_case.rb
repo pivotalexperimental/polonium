@@ -1,7 +1,7 @@
 module Polonium
   # The Test Case class that runs your Selenium tests.
   # You are able to use all methods provided by Selenium::SeleneseInterpreter with some additions.
-  class SeleniumTestCase < Test::Unit::TestCase
+  class TestCase < Test::Unit::TestCase
     module ClassMethods
       def subclasses
         @subclasses ||= []
@@ -80,7 +80,7 @@ module Polonium
     end
 
     def selenium_test_case
-      @selenium_test_case ||= SeleniumTestCase
+      @selenium_test_case ||= TestCase
     end
 
     def run(result, &block)
@@ -90,4 +90,4 @@ module Polonium
   end
 end
 
-SeleniumTestCase = Polonium::SeleniumTestCase
+TestCase = Polonium::TestCase

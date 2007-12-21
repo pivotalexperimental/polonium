@@ -1,11 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-describe SeleniumTestCase, "Class methods" do
+describe TestCase, "Class methods" do
   include SeleniumTestCaseSpec
   it "should maintain a subclass array" do
     test_class = Class.new
-    test_class.extend Polonium::SeleniumTestCase::ClassMethods
+    test_class.extend Polonium::TestCase::ClassMethods
 
     subclass1 = Class.new(test_class)
     subclass2 = Class.new(test_class)
@@ -14,14 +14,14 @@ describe SeleniumTestCase, "Class methods" do
   end
 
   it "should not use transactional fixtures by default" do
-    Polonium::SeleniumTestCase.use_transactional_fixtures.should ==  false
+    Polonium::TestCase.use_transactional_fixtures.should ==  false
   end
 
   it "should use instantiated fixtures by default" do
-    Polonium::SeleniumTestCase.use_instantiated_fixtures.should ==  true
+    Polonium::TestCase.use_instantiated_fixtures.should ==  true
   end
 
-  class Parent < Polonium::SeleniumTestCase
+  class Parent < Polonium::TestCase
   end
   class Child1 < Parent
   end
