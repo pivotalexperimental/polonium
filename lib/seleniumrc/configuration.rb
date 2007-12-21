@@ -158,7 +158,7 @@ module Polonium
       @browser_mode == Configuration::BrowserMode::Suite
     end
 
-    # The SeleniumDriver object, which sublcasses the SeleniumDriver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
+    # The Driver object, which sublcasses the Driver provided by the Selenium RC (http://openqa.org/selenium-rc/) project.
     def driver
       return nil unless suite_browser_mode?
       @driver ||= create_and_initialize_driver
@@ -185,7 +185,7 @@ module Polonium
     end
 
     def create_driver # nodoc
-      return ::Polonium::SeleniumDriver.new(
+      return ::Polonium::Driver.new(
         selenium_server_host,
         selenium_server_port,
         formatted_browser,

@@ -7,7 +7,7 @@ module Polonium
     attr_reader :driver
 
     before do
-      @driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       @page = SeleniumPage.new(driver)
       page_loaded
     end

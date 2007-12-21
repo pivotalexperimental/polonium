@@ -9,7 +9,7 @@ module Polonium
     before(:each) do
       stub_selenium_configuration
       @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
-      @driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       test_case.selenium_driver = driver
       stub(driver).do_command("getEval", [SeleniumPage::PAGE_LOADED_COMMAND]) do
         result(true)

@@ -1,5 +1,5 @@
 module Polonium
-  class SeleniumDriver < ::Selenium::SeleniumDriver
+  class Driver < ::Selenium::SeleniumDriver
     include WaitFor
     attr_reader :server_host, :server_port
 

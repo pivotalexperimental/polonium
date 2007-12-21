@@ -7,7 +7,7 @@ module Polonium
     attr_reader :driver
 
     before do
-      @driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       @element_locator ||= "id=foobar"
       @element = SeleniumElement.new(driver, @element_locator)
     end

@@ -21,7 +21,7 @@ module Polonium
     end
 
     protected
-    SeleniumDriver.public_instance_methods(false).each do |method_name|
+    Driver.public_instance_methods(false).each do |method_name|
       delegate method_name, :to => :selenium_driver
     end
 
