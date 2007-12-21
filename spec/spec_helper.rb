@@ -1,5 +1,5 @@
 require 'rubygems'
-gem 'rspec', ">=0.7.5"
+gem 'rspec', ">=1.1.0"
 require 'spec'
 require 'rr'
 
