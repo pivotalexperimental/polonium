@@ -11,15 +11,9 @@ module Seleniumrc
     def assert_element_present(params={})
       driver.wait_for_is_element_present(locator, params)
     end
-    def is_present?
-      driver.is_element_present(locator)
-    end
 
     def assert_element_not_present(params={})
       driver.wait_for_is_element_not_present(locator, params)
-    end
-    def is_not_present?
-      !driver.is_element_present(locator)
     end
 
     def assert_value(expected_value)
@@ -29,9 +23,6 @@ module Seleniumrc
         configuration.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
         has_value? expected_value, actual_value
       end
-    end
-    def has_value?(expected_value, actual_value=driver.get_value(locator))
-      expected_value == actual_value
     end
 
     def assert_attribute(expected_value)
@@ -102,7 +93,7 @@ module Seleniumrc
         :message => "#{locator} should contain #{expected_text}"
       }.merge(options)
       wait_for(options) do
-        inner_html.include?(expected_text)
+        contains?(expected_text)
       end
     end
 
@@ -148,18 +139,26 @@ module Seleniumrc
       end
     end
 
+
+    def is_present?
+      driver.is_element_present(locator)
+    end
+
+    def is_not_present?
+      !driver.is_element_present(locator)
+    end
+
+    def has_value?(expected_value, actual_value=driver.get_value(locator))
+      expected_value == actual_value
+    end
+
     def inner_html
       driver.get_inner_html(locator)
     end
 
-    def method_missing(method_name, *args, &blk)
-      if driver.respond_to?(method_name)
-        driver_args = [locator] + args
-        driver.__send__(method_name, *driver_args, &blk)
-      else
-        super
-      end
-    end    
+    def contains?(text)
+      inner_html.include?(text)
+    end
 
     def ==(other)
       return false unless other.is_a?(SeleniumElement)
@@ -169,6 +168,15 @@ module Seleniumrc
     end
 
     protected
+    def method_missing(method_name, *args, &blk)
+      if driver.respond_to?(method_name)
+        driver_args = [locator] + args
+        driver.__send__(method_name, *driver_args, &blk)
+      else
+        super
+      end
+    end
+    
     def find_text_order_error_fragments(html, text_fragments)
       fragments_not_found = []
       fragments_out_of_order = []

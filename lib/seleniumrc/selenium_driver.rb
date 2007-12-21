@@ -89,13 +89,13 @@ module Seleniumrc
 
     # Does the element at locator contain the text?
     def element_contains_text(locator, text)
-      is_element_present(locator) && get_inner_html(locator).include?(text)
+      is_element_present(locator) && element(locator).contains?(text)
     end
 
     # Does the element at locator not contain the text?
     def element_does_not_contain_text(locator, text)
       return true unless is_element_present(locator)
-      return !get_inner_html(locator).include?(text)
+      return !element(locator).contains?(text)
     end
 
     #----- Waiting for conditions
