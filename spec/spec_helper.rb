@@ -10,8 +10,8 @@ require "tmpdir"
 require "hpricot"
 require 'tempfile'
 
-require "seleniumrc"
-require File.dirname(__FILE__) + "/seleniumrc/selenium_test_case_spec_helper"
+require "polonium"
+require File.dirname(__FILE__) + "/polonium/selenium_test_case_spec_helper"
 
 Test::Unit.run = true
 
