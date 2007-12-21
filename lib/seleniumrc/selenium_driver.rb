@@ -120,7 +120,7 @@ module Seleniumrc
     def wait_for_page_to_load(timeout=default_timeout)
       super
       if get_title.include?("Exception caught")
-        flunk "We got a new page, but it was an application exception page.\n\n" + get_html_source
+        flunk "We got a new page, but it was an application exception page.\n\n#{get_html_source}"
       end
     end
 
