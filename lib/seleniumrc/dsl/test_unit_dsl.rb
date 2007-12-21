@@ -1,5 +1,6 @@
 module Polonium
   module TestUnitDsl
+    include SeleniumDsl
     class << self
       def page_assertion(name)
         module_eval(

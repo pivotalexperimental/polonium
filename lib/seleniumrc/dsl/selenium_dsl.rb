@@ -7,7 +7,6 @@ module Polonium
     attr_writer :configuration
     attr_accessor :selenium_driver  
     include WaitFor
-    include TestUnitDsl
 
     # Download a file from the Application Server
     def download(path)
