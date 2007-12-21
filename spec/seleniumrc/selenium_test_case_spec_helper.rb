@@ -1,7 +1,7 @@
 module SeleniumTestCaseSpec
   attr_reader :base_selenium
   
-  class MySeleniumTestCase < Seleniumrc::SeleniumTestCase
+  class MySeleniumTestCase < Polonium::SeleniumTestCase
     def initialize(*args)
       @_result = Test::Unit::TestResult.new
       super('test_nothing')

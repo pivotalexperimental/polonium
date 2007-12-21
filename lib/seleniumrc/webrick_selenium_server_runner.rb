@@ -1,4 +1,4 @@
-module Seleniumrc
+module Polonium
   class WebrickSeleniumServerRunner < SeleniumServerRunner
     attr_accessor :socket, :dispatch_servlet, :environment_path, :server
 

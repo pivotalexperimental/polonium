@@ -1,4 +1,4 @@
-module Seleniumrc
+module Polonium
   module SeleniumDsl
     # The SeleniumConfiguration object.
     def configuration

@@ -1,13 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
   describe SeleniumPage, :shared => true do
     it_should_behave_like "Selenium"
     include SeleniumTestCaseSpec
     attr_reader :driver
 
     before do
-      @driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      @driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       @page = SeleniumPage.new(driver)
       page_loaded
     end
@@ -22,7 +22,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#initialize" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "sets the selenium object" do
       @page.driver.should == driver
@@ -30,7 +30,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#open_and_wait" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "opens the url and waits for the page to load" do
       mock(driver) do |m|
@@ -65,7 +65,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#has_title" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "passes when title is expected" do
       ticks = ["no page", "no page", "no page", "my page"]
@@ -84,7 +84,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#title" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "returns true when passed in title is the page title" do
       mock(driver).get_title {"my page"}
@@ -98,7 +98,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#assert_text_present" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "passes when title is expected" do
       ticks = [false, false, false, true]
@@ -124,7 +124,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#is_text_present?" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "returns true when title is expected" do
       mock(driver).is_text_present("my page") {true}
@@ -138,7 +138,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#is_text_not_present" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "passes when text is not present" do
       ticks = [true, true, true, false]
@@ -164,7 +164,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#is_text_not_present?" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "returns true when text is not present" do
       mock(driver).is_text_present("my page") {false}
@@ -178,7 +178,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#assert_location_ends_with" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -206,7 +206,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#location_ends_with?" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -224,7 +224,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#page_loaded?" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "when page loaded command returns 'true', returns true" do
       page_loaded
@@ -238,7 +238,7 @@ module Seleniumrc
   end
 
   describe SeleniumPage, "#method_missing" do
-    it_should_behave_like "Seleniumrc::SeleniumPage"
+    it_should_behave_like "Polonium::SeleniumPage"
 
     it "delegates command to the driver" do
       @page.methods.should_not include('get_location')

@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
 describe SeleniumServerRunner do
   before(:each) do
-    @runner = Seleniumrc::SeleniumServerRunner.new
+    @runner = Polonium::SeleniumServerRunner.new
     class << @runner
       public :start_server, :stop_server
     end

@@ -1,5 +1,5 @@
 
-module Seleniumrc
+module Polonium
   module Tasks
     class SeleniumTestTask
       attr_reader :rails_env, :rails_root

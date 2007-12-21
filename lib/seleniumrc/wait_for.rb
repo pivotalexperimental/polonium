@@ -1,4 +1,4 @@
-module Seleniumrc
+module Polonium
   module WaitFor
     Context = Struct.new(:message)
     # Poll continuously for the return value of the block to be true. You can use this to assert that a client side

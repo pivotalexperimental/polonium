@@ -10,7 +10,7 @@ class Test::Unit::UI::TestRunnerMediator
 
   protected
   def start_app_server
-    @selenium_driver = Seleniumrc::SeleniumConfiguration.instance
+    @selenium_driver = Polonium::SeleniumConfiguration.instance
     @app_runner = @selenium_driver.create_server_runner
     @app_runner.start
   end

@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
   describe SeleniumTestCase, :shared => true do
     it_should_behave_like "Selenium"
     include SeleniumTestCaseSpec
@@ -9,7 +9,7 @@ module Seleniumrc
     before(:each) do
       stub_selenium_configuration
       @test_case = SeleniumTestCaseSpec::MySeleniumTestCase.new
-      @driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      @driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       test_case.selenium_driver = driver
       stub(driver).do_command("getEval", [SeleniumPage::PAGE_LOADED_COMMAND]) do
         result(true)
@@ -34,7 +34,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#setup" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should not allow transactional fixtures" do
       test_case.class.use_transactional_fixtures = true
@@ -47,7 +47,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#wait_for" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should pass when the block returns true within time limit" do
       test_case.wait_for(:timeout => 2) do
@@ -63,7 +63,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#default_timeout" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "default_timeout should be 20 seconds" do
       test_case.default_timeout.should == 20000
@@ -71,7 +71,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#open_home_page" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "opens home page" do
       mock(driver).open("http://localhost:4000")
@@ -80,7 +80,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_title" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "when title is expected, passes" do
       mock(driver).do_command("getTitle", []) {result("my page")}
@@ -96,7 +96,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_text_present" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumPage).new(driver) do |page|
@@ -122,7 +122,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_text_not_present" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumPage).new(driver) do |page|
@@ -148,7 +148,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_location_ends_with" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       @ends_with = "foobar.com?arg1=2"
@@ -180,7 +180,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_element_present" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -208,7 +208,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_element_not_present" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -238,7 +238,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_value" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -267,7 +267,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_element_contains" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -299,7 +299,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#element_does_not_contain_text" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "when element is not on the page, returns true" do
       locator = "id=element_id"
@@ -339,7 +339,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_element_does_not_contain" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -371,7 +371,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "when text is in order, it succeeds" do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -386,7 +386,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_attribute" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -415,7 +415,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_selected" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -444,7 +444,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_checked" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -473,7 +473,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_not_checked" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -502,7 +502,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_text" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -531,7 +531,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_visible" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -558,7 +558,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_not_visible" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -585,7 +585,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_next_sibling" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator) do |element|
@@ -615,7 +615,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     before do
       mock.proxy(SeleniumElement).new(driver, sample_locator)
@@ -642,7 +642,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#type" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "types when element is present and types" do
       is_element_present_results = [false, true]
@@ -669,7 +669,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#click" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "click when element is present and types" do
       is_element_present_results = [false, true]
@@ -695,7 +695,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#select" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "types when element is present and types" do
       is_element_present_results = [false, true]
@@ -720,7 +720,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#wait_for_and_click" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "click when element is present and types" do
       is_element_present_results = [false, true]
@@ -746,7 +746,7 @@ module Seleniumrc
   end
 
   describe SeleniumTestCase, "#page" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "returns page" do
       test_case.page.should == SeleniumPage.new(driver)
@@ -754,10 +754,10 @@ module Seleniumrc
   end
 
   describe "SeleniumTestCase in test browser mode and test fails" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = configuration = Seleniumrc::SeleniumConfiguration.new
+      test_case.configuration = configuration = Polonium::SeleniumConfiguration.new
       configuration.test_browser_mode
 
       stub(test_case).passed? {false}
@@ -770,7 +770,7 @@ module Seleniumrc
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed? {false}
@@ -783,10 +783,10 @@ module Seleniumrc
   end
 
   describe "SeleniumTestCase in test browser mode and test pass" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -799,7 +799,7 @@ module Seleniumrc
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -812,10 +812,10 @@ module Seleniumrc
   end
 
   describe "SeleniumTestCase not in suite browser mode" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should not stop driver when tests fail" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode? {false}
 
       def test_case.passed?;
@@ -828,7 +828,7 @@ module Seleniumrc
     end
 
     it "should stop driver when tests pass" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode? {false}
 
       stub(test_case).passed?.returns(true)
@@ -840,10 +840,10 @@ module Seleniumrc
   end
 
   describe "SeleniumTestCase in test browser mode and test pass" do
-    it_should_behave_like "Seleniumrc::SeleniumTestCase"
+    it_should_behave_like "Polonium::SeleniumTestCase"
 
     it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode?.returns(true)
 
       stub(test_case).passed?.returns(true)
@@ -856,7 +856,7 @@ module Seleniumrc
     end
 
     it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Seleniumrc::SeleniumConfiguration"
+      test_case.configuration = "Polonium::SeleniumConfiguration"
       mock(test_case.configuration).test_browser_mode? {true}
 
       stub(test_case).passed?.returns(true)

@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
   describe SeleniumConfiguration, ".instance" do
     attr_reader :configuration
     before(:each) do
@@ -303,7 +303,7 @@ module Seleniumrc
     end
 
     it "when suite passes, should stop driver" do
-      driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       mock(driver).stop.once
       configuration.driver = driver
 
@@ -311,7 +311,7 @@ module Seleniumrc
     end
 
     it "when suite fails and keep browser open on failure, should not stop driver" do
-      driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       mock(driver).stop.never
       configuration.driver = driver
       configuration.keep_browser_open_on_failure = true
@@ -320,7 +320,7 @@ module Seleniumrc
     end
 
     it "when suite fails and not keep browser open on failure, should stop driver" do
-      driver = ::Seleniumrc::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
+      driver = ::Polonium::SeleniumDriver.new('http://test.host', 4000, "*firefox", 'http://test.host')
       mock(driver).stop
       configuration.driver = driver
       configuration.keep_browser_open_on_failure = false

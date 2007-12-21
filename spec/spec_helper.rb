@@ -4,7 +4,7 @@ require 'spec'
 require 'rr'
 
 dir = File.dirname(__FILE__)
-$LOAD_PATH << File.expand_path("#{dir}/../lib")
+$LOAD_PATH.unshift(File.expand_path("#{dir}/../lib"))
 
 require "tmpdir"
 require "hpricot"
@@ -37,7 +37,7 @@ Spec::Runner.configure do |config|
   config.mock_with :rr
 end
 
-module Seleniumrc::WaitFor
+module Polonium::WaitFor
   def time_class
     @time_class ||= FakeTimeClass.new
   end

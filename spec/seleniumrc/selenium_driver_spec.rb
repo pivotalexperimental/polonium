@@ -1,11 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
   describe SeleniumDriver, :shared => true do
     it_should_behave_like "Selenium"
     attr_reader :driver, :commands
     before do
-      @driver = ::Seleniumrc::SeleniumDriver.new("localhost", 4444, "*iexplore", "localhost:3000")
+      @driver = ::Polonium::SeleniumDriver.new("localhost", 4444, "*iexplore", "localhost:3000")
     end
 
     def sample_locator
@@ -18,7 +18,7 @@ module Seleniumrc
   end
 
   describe SeleniumDriver, "#initialize" do
-    it_should_behave_like "Seleniumrc::SeleniumDriver"
+    it_should_behave_like "Polonium::SeleniumDriver"
     
     it "initializes with defaults" do
       driver.server_host.should == "localhost"
@@ -38,7 +38,7 @@ module Seleniumrc
   end
 
   describe SeleniumDriver, "#inner_html_js" do
-    it_should_behave_like "Seleniumrc::SeleniumDriver"
+    it_should_behave_like "Polonium::SeleniumDriver"
 
     it "returns findElement command in js" do
       driver.inner_html_js(sample_locator).should ==
@@ -47,7 +47,7 @@ module Seleniumrc
   end
 
   describe SeleniumDriver, "#wait_for_element_to_contain" do
-    it_should_behave_like "Seleniumrc::SeleniumDriver"
+    it_should_behave_like "Polonium::SeleniumDriver"
 
     it "when finding text within time limit, passes" do
       is_element_present_results = [false, true]
@@ -87,7 +87,7 @@ module Seleniumrc
   end
 
   describe SeleniumDriver, "#open and #open_and_wait" do
-    it_should_behave_like "Seleniumrc::SeleniumDriver"
+    it_should_behave_like "Polonium::SeleniumDriver"
 
     it "opens page and waits for it to load" do
       mock(driver).do_command("open", ["http://localhost:4000"])

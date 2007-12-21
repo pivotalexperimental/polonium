@@ -1,4 +1,4 @@
-module Seleniumrc
+module Polonium
   module TestUnitDsl
     class << self
       def page_assertion(name)

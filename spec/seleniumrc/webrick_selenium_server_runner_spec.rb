@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
-module Seleniumrc
+module Polonium
 describe WebrickSeleniumServerRunner do
   attr_reader :configuration
   before(:each) do
@@ -67,7 +67,7 @@ describe WebrickSeleniumServerRunner do
   end
 
   def create_runner_that_is_stubbed_so_start_method_works()
-    configuration = Seleniumrc::SeleniumConfiguration.new
+    configuration = Polonium::SeleniumConfiguration.new
     runner = configuration.create_webrick_runner
     class << runner; public :start_server; end
 

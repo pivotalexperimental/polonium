@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 describe Test::Unit::UI::TestRunnerMediator do
   attr_reader :driver
   before do
-    @driver = Seleniumrc::SeleniumConfiguration.instance
+    @driver = Polonium::SeleniumConfiguration.instance
   end
 
   it "start the server runner before suite and stops it after the suite" do
