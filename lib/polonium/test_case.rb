@@ -2,46 +2,11 @@ module Polonium
   # The Test Case class that runs your Selenium tests.
   # You are able to use all methods provided by Selenium::SeleneseInterpreter with some additions.
   class TestCase < Test::Unit::TestCase
-    module ClassMethods
-      def subclasses
-        @subclasses ||= []
-      end
-
-      def inherited(subclass)
-        # keep a list of all subclasses on the fly, so we can run them all later from the Runner
-        subclasses << subclass unless subclasses.include?(subclass)
-        super
-      end
-
-      def all_subclasses_as_suite(configuration)
-        suite = Test::Unit::TestSuite.new
-        all_descendant_classes.each do |test_case_class|
-          test_case_class.suite.tests.each do |test_case|
-            test_case.configuration = configuration
-            suite << test_case
-          end
-        end
-        suite
-      end
-
-      def all_descendant_classes
-        extract_subclasses(self)
-      end
-
-      def extract_subclasses(parent_class)
-        classes = []
-        parent_class.subclasses.each do |subclass|
-          classes << subclass
-          classes.push(*extract_subclasses(subclass))
-        end
-        classes
-      end
-
+    class << self
       unless Object.const_defined?(:RAILS_ROOT)
         attr_accessor :use_transactional_fixtures, :use_instantiated_fixtures
       end
     end
-    extend ClassMethods
     undef_method 'default_test' if instance_methods.include?('default_test')
 
     self.use_transactional_fixtures = false
