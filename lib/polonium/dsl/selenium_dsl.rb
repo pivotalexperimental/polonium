@@ -28,7 +28,7 @@ module Polonium
              :type,
              :to => :selenium_driver
 
-    def should_stop_driver?
+    def stop_driver?
       return false unless configuration.test_browser_mode?
       configuration.stop_driver?(passed?)
     end
