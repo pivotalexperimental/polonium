@@ -1,14 +1,26 @@
-selenium_configuration = Polonium::Configuration.instance
-selenium_app_runner = nil
+class Spec::Runner::Options
+  attr_accessor :selenium_configuration, :selenium_app_runner
+
+  def run_examples_with_selenium_runner(*args)
+    result = run_examples_without_selenium_runner(*args)
+    selenium_app_runner.stop
+    selenium_configuration.stop_driver_if_necessary(passed)
+    result
+  end
+  alias_method_chain :run_examples, :selenium_runner
+end
+
+rspec_options.selenium_configuration = Polonium::Configuration.instance
+rspec_options.selenium_app_runner = nil
 
 Spec::Example::ExampleMethods.before(:all) do
-  unless selenium_app_runner
-    selenium_app_runner = selenium_configuration.create_server_runner
-    selenium_app_runner.start
+  unless rspec_options.selenium_app_runner
+    rspec_options.selenium_app_runner = rspec_options.selenium_configuration.create_server_runner
+    rspec_options.selenium_app_runner.start
   end
 end
 
-Spec.after_suite do |passed|
-  selenium_app_runner.stop
-  selenium_configuration.stop_driver_if_necessary(passed)
-end
+#Spec.after_suite do |passed|
+#  selenium_app_runner.stop
+#  selenium_configuration.stop_driver_if_necessary(passed)
+#end
