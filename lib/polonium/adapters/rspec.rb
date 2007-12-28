@@ -1,9 +1,14 @@
-configuration = Polonium::Configuration.instance
-app_runner = configuration.create_server_runner
-app_runner.start
+selenium_configuration = Polonium::Configuration.instance
+selenium_app_runner = nil
 
-at_exit do
-  app_runner.stop
-  passed = $! ? false : true
-  configuration.stop_driver_if_necessary(passed)
+Spec::Example::ExampleMethods.before(:all) do
+  unless selenium_app_runner
+    selenium_app_runner = selenium_configuration.create_server_runner
+    selenium_app_runner.start
+  end
+end
+
+Spec.after_suite do |passed|
+  selenium_app_runner.stop
+  selenium_configuration.stop_driver_if_necessary(passed)
 end
