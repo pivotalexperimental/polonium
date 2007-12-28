@@ -2,10 +2,10 @@ class Spec::Runner::Options
   attr_accessor :selenium_configuration, :selenium_app_runner
 
   def run_examples_with_selenium_runner(*args)
-    result = run_examples_without_selenium_runner(*args)
+    success = run_examples_without_selenium_runner(*args)
     selenium_app_runner.stop
-    selenium_configuration.stop_driver_if_necessary(passed)
-    result
+    selenium_configuration.stop_driver_if_necessary(success)
+    success
   end
   alias_method_chain :run_examples, :selenium_runner
 end
