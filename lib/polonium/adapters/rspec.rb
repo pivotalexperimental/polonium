@@ -19,8 +19,3 @@ Spec::Example::ExampleMethods.before(:all) do
     rspec_options.selenium_app_runner.start
   end
 end
-
-#Spec.after_suite do |passed|
-#  selenium_app_runner.stop
-#  selenium_configuration.stop_driver_if_necessary(passed)
-#end
