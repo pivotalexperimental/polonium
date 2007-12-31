@@ -49,8 +49,8 @@ module Polonium
 
       private
       def establish_environment
-        @instance.rails_env = env['RAILS_ENV'] if env.include?('RAILS_ENV')
-        @instance.rails_root = Object.const_get(:RAILS_ROOT) if Object.const_defined?(:RAILS_ROOT)
+        instance.rails_env = env['RAILS_ENV'] if env.include?('RAILS_ENV')
+        instance.rails_root = Object.const_get(:RAILS_ROOT) if Object.const_defined?(:RAILS_ROOT)
         [
           'selenium_server_host',
           'selenium_server_port',
@@ -61,7 +61,7 @@ module Polonium
           'external_app_server_port'
         ].each do |env_key|
           if env.include?(env_key)
-            @instance.send("#{env_key}=", env[env_key])
+            instance.send("#{env_key}=", env[env_key])
           end
         end
         [
@@ -69,35 +69,37 @@ module Polonium
           'verify_remote_app_server_is_running'
         ].each do |env_key|
           if env.include?(env_key)
-            @instance.send("#{env_key}=", env[env_key].to_s != false.to_s)
+            instance.send("#{env_key}=", env[env_key].to_s != false.to_s)
           end
         end
-        @instance.browser = env['browser'] if env.include?('browser')
+        instance.browser = env['browser'] if env.include?('browser')
       end
 
       def env
-        @instance.env
+        instance.env
       end
     end
 
-        attr_accessor :configuration,
-                  :env,
-                  :rails_env,
-                  :rails_root,
-                  :browser,
-                  :driver,
-                  :browser_mode,
-                  :selenium_server_host,
-                  :selenium_server_port,
-                  :app_server_engine,
-                  :internal_app_server_host,
-                  :internal_app_server_port,
-                  :external_app_server_host,
-                  :external_app_server_port,
-                  :server_engine,
-                  :keep_browser_open_on_failure,
-                  :verify_remote_app_server_is_running,
-                  :app_server_initialization
+    attr_accessor(
+      :configuration,
+      :env,
+      :rails_env,
+      :rails_root,
+      :browser,
+      :driver,
+      :browser_mode,
+      :selenium_server_host,
+      :selenium_server_port,
+      :app_server_engine,
+      :internal_app_server_host,
+      :internal_app_server_port,
+      :external_app_server_host,
+      :external_app_server_port,
+      :server_engine,
+      :keep_browser_open_on_failure,
+      :verify_remote_app_server_is_running,
+      :app_server_initialization
+    )
 
     def initialize
       self.verify_remote_app_server_is_running = true
@@ -164,7 +166,7 @@ module Polonium
       @driver ||= create_and_initialize_driver
     end
 
-    def stop_driver_if_necessary(suite_passed) # nodoc
+    def stop_driver_if_necessary(suite_passed) #:nodoc:
       failure_has_occurred unless suite_passed
       if @driver && stop_driver?(suite_passed)
         @driver.stop
@@ -172,19 +174,19 @@ module Polonium
       end
     end
 
-    def stop_driver?(passed) # nodoc
+    def stop_driver?(passed) #:nodoc:
       return true if passed
       return !keep_browser_open_on_failure
     end
 
-    def create_and_initialize_driver # nodoc
+    def create_and_initialize_driver #:nodoc:
       driver = create_driver
       driver.start
       notify_after_driver_started(driver)
       driver
     end
 
-    def create_driver # nodoc
+    def create_driver #:nodoc:
       return ::Polonium::Driver.new(
         selenium_server_host,
         selenium_server_port,
@@ -194,7 +196,7 @@ module Polonium
       )
     end
 
-    def create_server_runner # nodoc
+    def create_server_runner #:nodoc:
       case @app_server_engine.to_sym
       when :mongrel
         create_mongrel_runner
@@ -205,7 +207,7 @@ module Polonium
       end
     end
 
-    def create_webrick_runner # nodoc
+    def create_webrick_runner #:nodoc:
       require 'webrick_server'
       runner = WebrickSeleniumServerRunner.new
       runner.configuration = self
@@ -216,7 +218,7 @@ module Polonium
       runner
     end
 
-    def create_webrick_server # nodoc
+    def create_webrick_server #:nodoc:
       WEBrick::HTTPServer.new({
         :Port => @internal_app_server_port,
         :BindAddress => @internal_app_server_host,
@@ -231,14 +233,14 @@ module Polonium
       Logger.new(StringIO.new)
     end
 
-    def create_mongrel_runner # nodoc
+    def create_mongrel_runner #:nodoc:
       runner = MongrelSeleniumServerRunner.new
       runner.configuration = self
       runner.thread_class = Thread
       runner
     end
 
-    def create_mongrel_configurator # nodoc
+    def create_mongrel_configurator #:nodoc:
       dir = File.dirname(__FILE__)
       require 'mongrel/rails'
       settings = {

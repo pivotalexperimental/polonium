@@ -1,11 +1,11 @@
 class Test::Unit::UI::TestRunnerMediator
-  alias_method :run_suite_without_seleniumrc, :run_suite
   def run_suite_with_seleniumrc
     start_app_server
     result = run_suite_without_seleniumrc
     stop_app_server(result)
     result
   end
+  alias_method :run_suite_without_seleniumrc, :run_suite
   alias_method :run_suite, :run_suite_with_seleniumrc
 
   protected

@@ -11,7 +11,6 @@ require 'test/unit/ui/testrunnermediator'
 
 require "selenium"
 require "polonium/extensions/module"
-require "polonium/extensions/testrunnermediator"
 require "polonium/wait_for"
 require "polonium/driver"
 require "polonium/server_runner"
@@ -26,3 +25,8 @@ require "polonium/test_case"
 require "polonium/tasks/selenium_test_task"
 
 require 'webrick_server' if self.class.const_defined? :RAILS_ROOT
+
+require "polonium/adapters/test_unit"
+if Object.const_defined?(:Spec)
+  require "polonium/adapters/rspec"
+end
