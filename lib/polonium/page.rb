@@ -1,6 +1,6 @@
 module Polonium
   class Page
-    include WaitFor
+    include WaitFor, ValuesMatch
     attr_reader :driver
     PAGE_LOADED_COMMAND = "this.browserbot.getDocument().body ? true : false"
 
@@ -17,7 +17,7 @@ module Polonium
       wait_for(params) do |configuration|
         actual_title = title
         configuration.message = "Expected title '#{expected_title}' but was '#{actual_title}'"
-        expected_title == actual_title
+        values_match?(actual_title, expected_title)
       end
     end
     def title
@@ -33,7 +33,8 @@ module Polonium
       end
     end
     def is_text_present?(expected_text)
-      page_loaded? && driver.is_text_present(expected_text)
+      element = element("xpath=//body")
+      page_loaded? && element.is_present? && element.contains?(expected_text)
     end
 
     def assert_text_not_present(unexpected_text, options = {})
@@ -45,7 +46,8 @@ module Polonium
       end
     end
     def is_text_not_present?(unexpected_text)
-      page_loaded? && !driver.is_text_present(unexpected_text)
+      element = element("xpath=//body")
+      page_loaded? && element.is_present? && !element.contains?(unexpected_text)
     end
 
     def page_loaded?

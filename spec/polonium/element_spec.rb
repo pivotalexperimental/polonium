@@ -51,6 +51,33 @@ module Polonium
       end
     end
 
+    describe "#contains?" do
+      describe "when passed a String" do
+        it "returns true when inner html does contain passed in text" do
+          mock(driver).get_inner_html(element_locator) {"hello world"}
+          element.contains?("hello").should be_true
+        end
+
+        it "returns false when inner html does not contain passed in text" do
+          mock(driver).get_inner_html(element_locator) {"hello world"}
+          element.contains?("goodbye").should be_false
+        end
+      end
+
+      describe "when passed a Regexp" do
+        it "returns true when inner html does match passed in Regexp" do
+          mock(driver).get_inner_html(element_locator) {"hello world"}
+          element.contains?(/hello/).should be_true
+        end
+
+        it "returns false when inner html does not match passed in Regexp" do
+          mock(driver).get_inner_html(element_locator) {"hello world"}
+          element.contains?(/goodbye/).should be_false
+        end
+      end
+      
+    end
+
     describe "#assert_element_not_present" do
       it "passes when element is not present" do
         ticks = [true, true, true, false]

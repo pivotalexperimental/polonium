@@ -158,7 +158,7 @@ module Polonium
     end
 
     def contains?(text)
-      inner_html.match(text)
+      inner_html.match(text) ? true : false
     end
 
     def ==(other)

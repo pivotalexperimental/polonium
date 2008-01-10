@@ -14,6 +14,9 @@ module Polonium
       stub(driver).do_command("getEval", [Page::PAGE_LOADED_COMMAND]) do
         result(true)
       end
+      stub(driver).do_command("isElementPresent", ["xpath=//body"]) do
+        result(true)
+      end
     end
 
     def sample_locator
@@ -106,15 +109,17 @@ module Polonium
     end
 
     it "passes when text is in page" do
-      ticks = [false, false, false, true]
-      mock(driver).is_text_present("my page") do
-        ticks.shift
+      ticks = ["nothing here", "nothing here", "nothing here", "my page is here", ]
+      mock(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
+        result(ticks.shift)
       end.times(4)
       test_case.assert_text_present("my page")
     end
 
     it "fails when text is not in page" do
-      stub(driver).is_text_present("my page") {false}
+      stub(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
+        result("nothing here")
+      end
       proc do
         test_case.assert_text_present("my page")
       end.should raise_error(Test::Unit::AssertionFailedError)
@@ -132,15 +137,17 @@ module Polonium
     end
 
     it "passes when text is not in page" do
-      ticks = [true, true, true, false]
-      mock(driver).is_text_present("my page") do
-        ticks.shift
+      ticks = ["my page is here", "my page is here", "my page is here", "no match",]
+      mock(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
+        result(ticks.shift)
       end.times(4)
       test_case.assert_text_not_present("my page")
     end
 
     it "fails when text is in page" do
-      stub(driver).is_text_present("my page") {true}
+      stub(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
+        result("my page is here")
+      end
       proc do
         test_case.assert_text_not_present("my page")
       end.should raise_error(Test::Unit::AssertionFailedError)
