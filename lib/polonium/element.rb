@@ -25,12 +25,13 @@ module Polonium
       end
     end
 
-    def assert_attribute(expected_value)
+    def assert_attribute(expected_name, expected_value)
       assert_element_present
+      attr_locator = "#{locator}@#{expected_name}"
       wait_for do |configuration|
-        actual = driver.get_attribute(locator)  #todo: actual value
-        configuration.message = "Expected attribute '#{locator}' to be '#{expected_value}' but was '#{actual}'"
-        expected_value == actual
+        actual = driver.get_attribute(attr_locator)  #todo: actual value
+        configuration.message = "Expected attribute '#{attr_locator}' to be '#{expected_value}' but was '#{actual}'"
+        values_match? actual, expected_value
       end
     end
 
@@ -39,7 +40,7 @@ module Polonium
       wait_for do |configuration|
         actual = driver.get_selected_label(locator)
         configuration.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
-        expected_value == actual
+        values_match? actual, expected_value
       end
     end
 
@@ -72,7 +73,7 @@ module Polonium
 
     def assert_not_checked
       assert_element_present
-      wait_for(:message => "Expected '#{locator}' to be checked") do
+      wait_for(:message => "Expected '#{locator}' to not be checked") do
         !driver.is_checked(locator)
       end
     end
@@ -82,7 +83,7 @@ module Polonium
       wait_for(options) do |configuration|
         actual = driver.get_text(locator)
         configuration.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
-        expected_text == actual
+        values_match? actual, expected_text
       end
     end
 
@@ -100,7 +101,7 @@ module Polonium
     def assert_does_not_contain(expected_text, options={})
       assert_element_present
       wait_for(options) do
-        !inner_html.include?(expected_text)
+        !contains?(expected_text)
       end
     end
 
@@ -157,7 +158,7 @@ module Polonium
     end
 
     def contains?(text)
-      inner_html.include?(text)
+      inner_html.match(text)
     end
 
     def ==(other)
@@ -165,6 +166,14 @@ module Polonium
       return false unless self.driver == other.driver
       return false unless self.locator == other.locator
       true
+    end
+
+    def values_match?(actual, expected)
+      if expected.is_a? Regexp
+        (actual =~ expected) ? true : false
+      else
+        expected == actual
+      end
     end
 
     protected
@@ -176,7 +185,7 @@ module Polonium
         super
       end
     end
-    
+
     def find_text_order_error_fragments(html, text_fragments)
       fragments_not_found = []
       fragments_out_of_order = []

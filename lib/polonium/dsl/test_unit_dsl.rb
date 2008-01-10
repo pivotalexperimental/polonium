@@ -30,7 +30,6 @@ module Polonium
     deprecate :assert_location_ends_in, :assert_location_ends_with
 
     element_assertion :value
-    element_assertion :attribute   # yes, it's a little weird... in this case element is really an attribute
     element_assertion :selected
     element_assertion :checked
     element_assertion :not_checked
@@ -41,6 +40,10 @@ module Polonium
     element_assertion :contains_in_order
     element_assertion :visible
     element_assertion :not_visible
+
+    def assert_attribute(element_locator, attribute_name, expected_value)
+      element(element_locator).assert_attribute(attribute_name, expected_value)
+    end
 
     # Assert and wait for locator element to contain text.
     def assert_element_contains(locator, text, options = {})

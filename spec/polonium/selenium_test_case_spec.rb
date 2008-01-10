@@ -390,7 +390,7 @@ module Polonium
 
     before do
       mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_attribute("passed in value")
+        mock.proxy(element).assert_attribute('id', "passed in value")
         element
       end
     end
@@ -398,18 +398,18 @@ module Polonium
     it "passes when attribute is expected" do
       mock(driver) do |o|
         o.is_element_present(sample_locator) {true}
-        o.get_attribute(sample_locator) {"passed in value"}
+        o.get_attribute("#{sample_locator}@id") {"passed in value"}
       end
-      test_case.assert_attribute(sample_locator, "passed in value")
+      test_case.assert_attribute(sample_locator, 'id', "passed in value")
     end
 
     it "fails when attribute is not expected" do
       stub(driver) do |o|
         o.is_element_present(sample_locator) {true}
-        o.get_attribute(sample_locator) {"another value"}
+        o.get_attribute("#{sample_locator}@id") {"another value"}
       end
       proc do
-        test_case.assert_attribute(sample_locator, "passed in value")
+        test_case.assert_attribute(sample_locator, 'id', "passed in value")
       end.should raise_error(Test::Unit::AssertionFailedError)
     end
   end
