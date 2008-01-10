@@ -1,6 +1,6 @@
 module Polonium
   class Element
-    include WaitFor
+    include WaitFor, ValuesMatch
     attr_reader :driver, :locator
 
     def initialize(driver, locator)
@@ -166,14 +166,6 @@ module Polonium
       return false unless self.driver == other.driver
       return false unless self.locator == other.locator
       true
-    end
-
-    def values_match?(actual, expected)
-      if expected.is_a? Regexp
-        (actual =~ expected) ? true : false
-      else
-        expected == actual
-      end
     end
 
     protected

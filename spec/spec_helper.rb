@@ -11,7 +11,7 @@ require "hpricot"
 require 'tempfile'
 
 require "polonium"
-require File.dirname(__FILE__) + "/polonium/selenium_test_case_spec_helper"
+require File.dirname(__FILE__) + "/polonium/test_case_spec_helper"
 
 Test::Unit.run = true
 
