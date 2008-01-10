@@ -106,34 +106,15 @@ module Polonium
     it_should_behave_like "Polonium::Page"
 
     describe "when passed a String" do
-      before do
-        mock(driver).is_element_present(element_locator) {true}.at_least(1)
-      end
-
       it "passes when page contains expected text" do
-        get_text_ticks = [
-          "no match",
-          "no match",
-          "no match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+        get_text_ticks = [false, false, false, true]
+        mock(driver).is_text_present("three") {get_text_ticks.shift}.times(4)
         
         page.assert_text_present("three")
       end
 
       it "fails when page does not contain expected text" do
-        get_text_ticks = [
-          "no match",
-          "no match",
-          "no match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+        mock(driver).is_text_present("nowhere") {false}.times(4)
 
         lambda do
           page.assert_text_present("nowhere")
@@ -142,34 +123,15 @@ module Polonium
     end
 
     describe "when passed a Regexp" do
-      before do
-        mock(driver).is_element_present(element_locator) {true}.at_least(1)
-      end
-
       it "passes when page contains expected text" do
-        get_text_ticks = [
-          "no match",
-          "no match",
-          "no match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+        get_text_ticks = [false, false, false, true]
+        mock(driver).is_text_present("regexp:three") {get_text_ticks.shift}.times(4)
 
         page.assert_text_present(/three/)
       end
 
       it "fails when page does not contain expected text" do
-        get_text_ticks = [
-          "no match",
-          "no match",
-          "no match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+        mock(driver).is_text_present("regexp:nowhere") {false}.times(4)
 
         lambda do
           page.assert_text_present(/nowhere/)
@@ -183,28 +145,14 @@ module Polonium
         page.assert_text_present("my page")
       end.should raise_error("Expected 'my page' to be present, but it wasn't (after 5 sec)")
     end
-
-    it "fails when element is not present" do
-      mock(driver).is_element_present(element_locator) {false}.at_least(1)
-      proc do
-        page.assert_text_present("my page")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
   end
 
   describe Page, "#is_text_present?" do
     it_should_behave_like "Polonium::Page"
 
-    it "returns true when title is expected" do
-      mock(driver).is_element_present(element_locator) {true}
-      mock(driver).get_inner_html(element_locator) {"my page is great"}
+    it "returns true when text is present" do
+      mock(driver).is_text_present("my page") {true}
       page.is_text_present?("my page").should be_true
-    end
-
-    it "fails when element is not present" do
-      mock(driver).is_element_present(element_locator) {true}
-      mock(driver).get_inner_html(element_locator) {"nothing here"}
-      page.is_text_present?("my page").should be_false
     end
   end
 
@@ -212,34 +160,13 @@ module Polonium
     it_should_behave_like "Polonium::Page"
 
     describe "when passed a String" do
-      before do
-        mock(driver).is_element_present(element_locator) {true}.at_least(1)
-      end
-
       it "passes when page does not contain expected text" do
-        get_text_ticks = [
-          "match",
-          "match",
-          "match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
-
+        mock(driver).is_text_present("match") {false}
         page.assert_text_not_present("match")
       end
 
       it "fails when page contains expected text for the entire wait_for period" do
-        get_text_ticks = [
-          "match",
-          "match",
-          "match",
-          "match",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+        mock(driver).is_text_present("match") {true}.times(4)
 
         lambda do
           page.assert_text_not_present("match")
@@ -248,34 +175,14 @@ module Polonium
     end
 
     describe "when passed a Regexp" do
-      before do
-        mock(driver).is_element_present(element_locator) {true}.at_least(1)
-      end
-
-      it "passes when page contains expected text" do
-        get_text_ticks = [
-          "match",
-          "match",
-          "match",
-          "one\ntwo\nthree",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
-
+      it "passes when page does not contain expected text" do
+        ticks = [true, true, true, false]
+        mock(driver).is_text_present("regexp:match") {ticks.shift}.times(4)
         page.assert_text_not_present(/match/)
       end
 
-      it "fails when page does not contain expected text" do
-        get_text_ticks = [
-          "match",
-          "match",
-          "match",
-          "match",
-        ]
-        mock(driver).get_inner_html(element_locator) do
-          get_text_ticks.shift
-        end.times(4)
+      it "fails when page does contains expected text for the entire polling period" do
+        mock(driver).is_text_present("regexp:match") {true}.times(4)
 
         lambda do
           page.assert_text_not_present(/match/)
@@ -289,27 +196,18 @@ module Polonium
         page.assert_text_present("my page")
       end.should raise_error("Expected 'my page' to be present, but it wasn't (after 5 sec)")
     end
-
-    it "fails when element is not present" do
-      mock(driver).is_element_present(element_locator) {false}.at_least(1)
-      proc do
-        page.assert_text_present("my page")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
   end
 
   describe Page, "#is_text_not_present?" do
     it_should_behave_like "Polonium::Page"
 
     it "returns true when text is not present" do
-      mock(driver).is_element_present(element_locator) {true}
-      mock(driver).get_inner_html(element_locator) {"my page is great"}
+      mock(driver).is_text_present("your page") {false}
       page.is_text_not_present?("your page").should be_true
     end
 
     it "returns false when text is present" do
-      mock(driver).is_element_present(element_locator) {true}
-      mock(driver).get_inner_html(element_locator) {"my page is great"}
+      mock(driver).is_text_present("my page") {true}
       page.is_text_not_present?("my page").should be_false
     end
   end

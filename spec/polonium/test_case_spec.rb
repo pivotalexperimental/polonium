@@ -14,9 +14,6 @@ module Polonium
       stub(driver).do_command("getEval", [Page::PAGE_LOADED_COMMAND]) do
         result(true)
       end
-      stub(driver).do_command("isElementPresent", ["xpath=//body"]) do
-        result(true)
-      end
     end
 
     def sample_locator
@@ -109,17 +106,15 @@ module Polonium
     end
 
     it "passes when text is in page" do
-      ticks = ["nothing here", "nothing here", "nothing here", "my page is here", ]
-      mock(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
-        result(ticks.shift)
+      ticks = [false, false, false, true]
+      mock(driver).is_text_present("my page") do
+        ticks.shift
       end.times(4)
       test_case.assert_text_present("my page")
     end
 
     it "fails when text is not in page" do
-      stub(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
-        result("nothing here")
-      end
+      stub(driver).is_text_present("my page") {false}
       proc do
         test_case.assert_text_present("my page")
       end.should raise_error(Test::Unit::AssertionFailedError)
@@ -137,17 +132,15 @@ module Polonium
     end
 
     it "passes when text is not in page" do
-      ticks = ["my page is here", "my page is here", "my page is here", "no match",]
-      mock(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
-        result(ticks.shift)
+      ticks = [true, true, true, false]
+      mock(driver).is_text_present("my page") do
+        ticks.shift
       end.times(4)
       test_case.assert_text_not_present("my page")
     end
 
     it "fails when text is in page" do
-      stub(driver).do_command("getEval", ["this.page().findElement(\"xpath=//body\").innerHTML"]) do
-        result("my page is here")
-      end
+      stub(driver).is_text_present("my page") {true}
       proc do
         test_case.assert_text_not_present("my page")
       end.should raise_error(Test::Unit::AssertionFailedError)
@@ -762,7 +755,7 @@ module Polonium
 
   describe TestCase, "#get_eval" do
     it_should_behave_like "Polonium::TestCase"
-    
+
     it "delegates to Driver" do
       mock(driver).get_eval "foobar"
       test_case.get_eval "foobar"

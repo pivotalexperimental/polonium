@@ -33,8 +33,12 @@ module Polonium
       end
     end
     def is_text_present?(expected_text)
-      element = element("xpath=//body")
-      page_loaded? && element.is_present? && element.contains?(expected_text)
+      if expected_text.is_a?(Regexp)
+        text_finder = "regexp:#{expected_text.source}"
+      else
+        text_finder = expected_text
+      end
+      page_loaded? && driver.is_text_present(text_finder)
     end
 
     def assert_text_not_present(unexpected_text, options = {})
@@ -46,8 +50,12 @@ module Polonium
       end
     end
     def is_text_not_present?(unexpected_text)
-      element = element("xpath=//body")
-      page_loaded? && element.is_present? && !element.contains?(unexpected_text)
+      if unexpected_text.is_a?(Regexp)
+        text_finder = "regexp:#{unexpected_text.source}"
+      else
+        text_finder = unexpected_text
+      end
+      page_loaded? && !driver.is_text_present(text_finder)
     end
 
     def page_loaded?
