@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "polonium"
-PKG_VERSION = "0.1.0"
+PKG_VERSION = "0.1.1"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
