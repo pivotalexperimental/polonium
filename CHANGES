@@ -1,3 +1,6 @@
+0.1.1
+* Rspec support
+
 0.1.0
 * Renamed to Polonium
 * Methods renamed to match Test::Unit assertions
