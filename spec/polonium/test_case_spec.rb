@@ -7,6 +7,7 @@ module Polonium
     attr_reader :driver, :test_case, :configuration
 
     before(:each) do
+      @original_configuration = Configuration.instance
       stub_selenium_configuration
       @test_case = TestCaseSpecHelper::MySeleniumTestCase.new
       @driver = ::Polonium::Driver.new('http://test.host', 4000, "*firefox", 'http://test.host')
@@ -14,6 +15,10 @@ module Polonium
       stub(driver).do_command("getEval", [Page::PAGE_LOADED_COMMAND]) do
         result(true)
       end
+    end
+
+    after(:each) do
+      Configuration.instance = @original_configuration
     end
 
     def sample_locator
@@ -642,110 +647,6 @@ module Polonium
       end
     end
 
-    describe "#type" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "types when element is present and types" do
-        is_element_present_results = [false, true]
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-          result(is_element_present_results.shift)
-        end
-        mock(driver).do_command("type", ["id=foobar", "The Text"]) do
-          result()
-        end
-
-        test_case.type "id=foobar", "The Text"
-      end
-
-      it "fails when element is not present" do
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-          result(false)
-        end
-        dont_allow(driver).do_command("type", ["id=foobar", "The Text"])
-
-        proc {
-          test_case.type "id=foobar", "The Text"
-        }.should raise_error(Test::Unit::AssertionFailedError)
-      end
-    end
-
-    describe "#click" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "click when element is present and types" do
-        is_element_present_results = [false, true]
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-          result(is_element_present_results.shift)
-        end
-        mock(driver).do_command("click", ["id=foobar"]) {result}
-
-        test_case.click "id=foobar"
-      end
-
-      it "fails when element is not present" do
-        is_element_present_results = [false, false, false, false]
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-          result(is_element_present_results.shift)
-        end
-        dont_allow(driver).do_command("click", [])
-
-        proc {
-          test_case.click "id=foobar"
-        }.should raise_error(Test::Unit::AssertionFailedError)
-      end
-    end
-
-    describe "#select" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "types when element is present and types" do
-        is_element_present_results = [false, true]
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-          result is_element_present_results.shift
-        end
-        mock(driver).do_command("select", ["id=foobar", "value=3"]) {result}
-
-        test_case.select "id=foobar", "value=3"
-      end
-
-      it "fails when element is not present" do
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-          result false
-        end
-        dont_allow(driver).do_command("select", ["id=foobar", "value=3"])
-
-        proc {
-          test_case.select "id=foobar", "value=3"
-        }.should raise_error(Test::Unit::AssertionFailedError)
-      end
-    end
-
-    describe "#wait_for_and_click" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "click when element is present and types" do
-        is_element_present_results = [false, true]
-        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-          result is_element_present_results.shift
-        end
-        mock(driver).do_command("click", ["id=foobar"]) {result}
-
-        test_case.wait_for_and_click "id=foobar"
-      end
-
-      it "fails when element is not present" do
-        is_element_present_results = [false, false, false, false]
-        mock(driver).is_element_present("id=foobar").times(4) do
-          is_element_present_results.shift
-        end
-        dont_allow(driver).click
-
-        proc {
-          test_case.wait_for_and_click "id=foobar"
-        }.should raise_error(Test::Unit::AssertionFailedError)
-      end
-    end
-
     describe "#page" do
       it_should_behave_like "Polonium::TestCase"
 
@@ -767,7 +668,7 @@ module Polonium
       it_should_behave_like "Polonium::TestCase"
 
       it "should stop driver when configuration says to stop test" do
-        test_case.configuration = configuration = Polonium::Configuration.new
+        Configuration.instance = configuration = Polonium::Configuration.new
         configuration.test_browser_mode
 
         stub(test_case).passed? {false}
@@ -780,11 +681,11 @@ module Polonium
       end
 
       it "should not stop driver when configuration says not to stop test" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode?.returns(true)
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode?.returns(true)
 
         stub(test_case).passed? {false}
-        mock(test_case.configuration).stop_driver?(false) {false}
+        mock(Configuration.instance).stop_driver?(false) {false}
 
         test_case.selenium_driver = driver
 
@@ -796,11 +697,11 @@ module Polonium
       it_should_behave_like "Polonium::TestCase"
 
       it "should stop driver when configuration says to stop test" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode?.returns(true)
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode?.returns(true)
 
         stub(test_case).passed?.returns(true)
-        mock(test_case.configuration).stop_driver?(true) {true}
+        mock(Configuration.instance).stop_driver?(true) {true}
 
         mock(driver).stop.once
         test_case.selenium_driver = driver
@@ -809,11 +710,11 @@ module Polonium
       end
 
       it "should not stop driver when configuration says not to stop test" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode?.returns(true)
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode?.returns(true)
 
         stub(test_case).passed?.returns(true)
-        mock(test_case.configuration).stop_driver?(true) {false}
+        mock(Configuration.instance).stop_driver?(true) {false}
 
         test_case.selenium_driver = driver
 
@@ -825,8 +726,8 @@ module Polonium
       it_should_behave_like "Polonium::TestCase"
 
       it "should not stop driver when tests fail" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode? {false}
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode? {false}
 
         def test_case.passed?;
           false;
@@ -838,8 +739,8 @@ module Polonium
       end
 
       it "should stop driver when tests pass" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode? {false}
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode? {false}
 
         stub(test_case).passed?.returns(true)
 
@@ -853,11 +754,11 @@ module Polonium
       it_should_behave_like "Polonium::TestCase"
 
       it "should stop driver when configuration says to stop test" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode?.returns(true)
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode?.returns(true)
 
         stub(test_case).passed?.returns(true)
-        mock(test_case.configuration).stop_driver?(true) {true}
+        mock(Configuration.instance).stop_driver?(true) {true}
 
         mock(driver).stop.once
         test_case.selenium_driver = driver
@@ -866,11 +767,11 @@ module Polonium
       end
 
       it "should not stop driver when configuration says not to stop test" do
-        test_case.configuration = "Polonium::Configuration"
-        mock(test_case.configuration).test_browser_mode? {true}
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode? {true}
 
         stub(test_case).passed?.returns(true)
-        mock(test_case.configuration).stop_driver?(true) {false}
+        mock(Configuration.instance).stop_driver?(true) {false}
 
         test_case.selenium_driver = driver
 

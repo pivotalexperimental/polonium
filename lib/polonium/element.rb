@@ -141,12 +141,10 @@ module Polonium
     end
 
     def click
-      assert_element_present
-      driver.click(locator)
+      driver.click locator
     end
 
     def select(option_locator)
-      assert_element_present
       driver.select(locator, option_locator)
     end
 

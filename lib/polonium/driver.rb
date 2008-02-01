@@ -3,6 +3,11 @@ module Polonium
     include WaitFor
     attr_reader :server_host, :server_port
 
+    # The Configuration object.
+    def configuration
+      Configuration.instance
+    end    
+
     def browser_start_command
       @browserStartCommand
     end
@@ -37,12 +42,28 @@ module Polonium
       Page.new(self)
     end
 
+    # Open the home page of the Application and wait for the page to load.
+    def open_home_page
+      open(configuration.browser_url)
+    end
+
     #--------- Commands
     alias_method :confirm, :get_confirmation
 
     # Type text into a page element
     def type(locator, value)
-      wait_for_is_element_present(locator)
+      assert_element_present(locator)
+      super
+    end
+
+    def click(locator)
+      assert_element_present locator
+      super
+    end
+    alias_method :wait_for_and_click, :click
+
+    def select(select_locator, option_locator)
+      assert_element_present select_locator
       super
     end
 
@@ -83,7 +104,7 @@ module Polonium
     end
 
     #----- Waiting for conditions
-    def wait_for_is_element_present(locator, params={})
+    def assert_element_present(locator, params={})
       params = {
         :message => "Expected element '#{locator}' to be present, but it was not"
       }.merge(params)
@@ -91,6 +112,7 @@ module Polonium
         is_element_present(locator)
       end
     end
+    alias_method :wait_for_is_element_present, :assert_element_present
 
     def wait_for_is_element_not_present(locator, params={})
       params = {

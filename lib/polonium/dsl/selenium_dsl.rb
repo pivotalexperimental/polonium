@@ -57,15 +57,6 @@ module Polonium
     deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
     deprecate :wait_for_text_in_order, :assert_contains_in_order
 
-    def click(locator)
-      element(locator).click
-    end
-    alias_method :wait_for_and_click, :click
-
-    def select(select_locator, option_locator)
-      element(select_locator).select(option_locator)
-    end
-
     # Does the element at locator contain the text?
     def element_contains_text(locator, text)
       element(locator).assert_contains(text)
@@ -76,11 +67,6 @@ module Polonium
     end
     alias_method :wait_for_element_to_contain_text, :wait_for_element_to_contain
 
-    # The Configuration object.
-    def configuration
-      @configuration ||= Configuration.instance
-    end
-    attr_writer :configuration
     attr_accessor :selenium_driver  
     include WaitFor
 
@@ -89,11 +75,6 @@ module Polonium
       uri = URI.parse(configuration.browser_url + path)
       puts "downloading #{uri.to_s}"
       Net::HTTP.get(uri)
-    end
-
-    # Open the home page of the Application and wait for the page to load.
-    def open_home_page
-      selenium_driver.open(configuration.browser_url)
     end
 
     protected
