@@ -592,9 +592,9 @@ module Polonium
 
     describe "#method_missing" do
       it "delegates command to the driver" do
-        element.methods.should_not include('click')
-        mock(driver).click(@element_locator)
-        element.click
+        element.methods.should_not include('foobar')
+        mock(driver).foobar(@element_locator)
+        element.foobar
       end
     end
   end

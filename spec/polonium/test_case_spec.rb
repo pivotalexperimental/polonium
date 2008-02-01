@@ -33,847 +33,889 @@ module Polonium
     end
   end
 
-  describe TestCase, "#setup" do
-    it_should_behave_like "Polonium::TestCase"
+  describe TestCase do
+    describe "#setup" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "should not allow transactional fixtures" do
-      test_case.class.use_transactional_fixtures = true
+      it "should not allow transactional fixtures" do
+        test_case.class.use_transactional_fixtures = true
 
-      expected_message = "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)."
-      proc do
-        test_case.setup
-      end.should raise_error(RuntimeError, expected_message)
-    end
-  end
-
-  describe TestCase, "#wait_for" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "should pass when the block returns true within time limit" do
-      test_case.wait_for(:timeout => 2) do
-        true
+        expected_message = "Cannot use transactional fixtures if ActiveRecord concurrency is turned on (which is required for Selenium tests to work)."
+        proc do
+          test_case.setup
+        end.should raise_error(RuntimeError, expected_message)
       end
     end
 
-    it "should raise a AssertionFailedError when block times out" do
-      proc do
-        test_case.wait_for(:timeout => 2) {false}
-      end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
-    end
-  end
+    describe "#wait_for" do
+      it_should_behave_like "Polonium::TestCase"
 
-  describe TestCase, "#default_timeout" do
-    it_should_behave_like "Polonium::TestCase"
+      it "should pass when the block returns true within time limit" do
+        test_case.wait_for(:timeout => 2) do
+          true
+        end
+      end
 
-    it "default_timeout should be 20 seconds" do
-      test_case.default_timeout.should == 20000
-    end
-  end
-
-  describe TestCase, "#open_home_page" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "opens home page" do
-      mock(driver).open("http://localhost:4000")
-      test_case.open_home_page
-    end
-  end
-
-  describe TestCase, "#assert_title" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "when title is expected, passes" do
-      mock(driver).do_command("getTitle", []) {result("my page")}
-      test_case.assert_title("my page")
+      it "should raise a AssertionFailedError when block times out" do
+        proc do
+          test_case.wait_for(:timeout => 2) {false}
+        end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
+      end
     end
 
-    it "when title is not expected, fails" do
-      stub(driver).do_command("getTitle", []) {result("no page")}
-      proc do
+    describe "#default_timeout" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "default_timeout should be 20 seconds" do
+        test_case.default_timeout.should == 20000
+      end
+    end
+
+    describe "#open_home_page" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "opens home page" do
+        mock(driver).open("http://localhost:4000")
+        test_case.open_home_page
+      end
+    end
+
+    describe "#assert_title" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "when title is expected, passes" do
+        mock(driver).do_command("getTitle", []) {result("my page")}
         test_case.assert_title("my page")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_text_present" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Page).new(driver) do |page|
-        mock.proxy(page).assert_text_present("my page", {})
-        page
+      it "when title is not expected, fails" do
+        stub(driver).do_command("getTitle", []) {result("no page")}
+        proc do
+          test_case.assert_title("my page")
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when text is in page" do
-      ticks = [false, false, false, true]
-      mock(driver).is_text_present("my page") do
-        ticks.shift
-      end.times(4)
-      test_case.assert_text_present("my page")
-    end
+    describe "#assert_text_present" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when text is not in page" do
-      stub(driver).is_text_present("my page") {false}
-      proc do
-        test_case.assert_text_present("my page")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_text_not_present" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Page).new(driver) do |page|
-        mock.proxy(page).assert_text_not_present("my page", {})
-        page
+      before do
+        mock.proxy(Page).new(driver) do |page|
+          mock.proxy(page).assert_text_present("my page", {})
+          page
+        end
       end
-    end
 
-    it "passes when text is not in page" do
-      ticks = [true, true, true, false]
-      mock(driver).is_text_present("my page") do
-        ticks.shift
-      end.times(4)
-      test_case.assert_text_not_present("my page")
-    end
-
-    it "fails when text is in page" do
-      stub(driver).is_text_present("my page") {true}
-      proc do
-        test_case.assert_text_not_present("my page")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_location_ends_with" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      @ends_with = "foobar.com?arg1=2"
-      mock.proxy(Page).new(driver) do |page|
-        mock.proxy(page).assert_location_ends_with(@ends_with, {})
-        page
-      end
-    end
-
-    it "passes when the url ends with the passed in value" do
-      ticks = [
-        "http://no.com",
-          "http://no.com",
-          "http://no.com",
-          "http://foobar.com?arg1=2"
-      ]
-      mock(driver).get_location do
-        ticks.shift
-      end.times(4)
-      test_case.assert_location_ends_with(@ends_with)
-    end
-
-    it "fails when the url does not end with the passed in value" do
-      stub(driver).get_location {"http://no.com"}
-      proc do
-        test_case.assert_location_ends_with(@ends_with)
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_element_present" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_element_present
-        element
-      end
-    end
-
-    it "passes when element is present" do
-      ticks = [false, false, false, true]
-      mock(driver).do_command("isElementPresent", [sample_locator]).times(4) do
-        result(ticks.shift)
-      end
-      test_case.assert_element_present(sample_locator)
-    end
-
-    it "fails when element is not present" do
-      stub(driver).do_command("isElementPresent", [sample_locator]) do
-        result(false)
-      end
-      proc do
-        test_case.assert_element_present(sample_locator)
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_element_not_present" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_element_not_present
-        element
-      end
-    end
-
-    it "passes when element is not present" do
-      ticks = [true, true, true, false]
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) do
+      it "passes when text is in page" do
+        ticks = [false, false, false, true]
+        mock(driver).is_text_present("my page") do
           ticks.shift
         end.times(4)
+        test_case.assert_text_present("my page")
       end
-      test_case.assert_element_not_present(sample_locator)
+
+      it "fails when text is not in page" do
+        stub(driver).is_text_present("my page") {false}
+        proc do
+          test_case.assert_text_present("my page")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is present" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
+    describe "#assert_text_not_present" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Page).new(driver) do |page|
+          mock.proxy(page).assert_text_not_present("my page", {})
+          page
+        end
       end
-      proc do
+
+      it "passes when text is not in page" do
+        ticks = [true, true, true, false]
+        mock(driver).is_text_present("my page") do
+          ticks.shift
+        end.times(4)
+        test_case.assert_text_not_present("my page")
+      end
+
+      it "fails when text is in page" do
+        stub(driver).is_text_present("my page") {true}
+        proc do
+          test_case.assert_text_not_present("my page")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+    end
+
+    describe "#assert_location_ends_with" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        @ends_with = "foobar.com?arg1=2"
+        mock.proxy(Page).new(driver) do |page|
+          mock.proxy(page).assert_location_ends_with(@ends_with, {})
+          page
+        end
+      end
+
+      it "passes when the url ends with the passed in value" do
+        ticks = [
+          "http://no.com",
+            "http://no.com",
+            "http://no.com",
+            "http://foobar.com?arg1=2"
+        ]
+        mock(driver).get_location do
+          ticks.shift
+        end.times(4)
+        test_case.assert_location_ends_with(@ends_with)
+      end
+
+      it "fails when the url does not end with the passed in value" do
+        stub(driver).get_location {"http://no.com"}
+        proc do
+          test_case.assert_location_ends_with(@ends_with)
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+    end
+
+    describe "#assert_element_present" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_element_present
+          element
+        end
+      end
+
+      it "passes when element is present" do
+        ticks = [false, false, false, true]
+        mock(driver).do_command("isElementPresent", [sample_locator]).times(4) do
+          result(ticks.shift)
+        end
+        test_case.assert_element_present(sample_locator)
+      end
+
+      it "fails when element is not present" do
+        stub(driver).do_command("isElementPresent", [sample_locator]) do
+          result(false)
+        end
+        proc do
+          test_case.assert_element_present(sample_locator)
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+    end
+
+    describe "#assert_element_not_present" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_element_not_present
+          element
+        end
+      end
+
+      it "passes when element is not present" do
+        ticks = [true, true, true, false]
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) do
+            ticks.shift
+          end.times(4)
+        end
         test_case.assert_element_not_present(sample_locator)
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_value" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_value("passed in value")
-        element
+      it "fails when element is present" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+        end
+        proc do
+          test_case.assert_element_not_present(sample_locator)
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when value is expected" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_value(sample_locator) {"passed in value"}
-      end
-      test_case.assert_value(sample_locator, "passed in value")
-    end
+    describe "#assert_value" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when value is not expected" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_value(sample_locator) {"another value"}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_value("passed in value")
+          element
+        end
       end
-      proc do
+
+      it "passes when value is expected" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_value(sample_locator) {"passed in value"}
+        end
         test_case.assert_value(sample_locator, "passed in value")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_element_contains" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_contains("passed in value", {})
-        element
       end
-      @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
-    end
 
-    it "passes when text is in the element's inner_html" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) do
-          "html passed in value html"
+      it "fails when value is not expected" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_value(sample_locator) {"another value"}
         end
+        proc do
+          test_case.assert_value(sample_locator, "passed in value")
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
-      test_case.assert_element_contains(sample_locator, "passed in value")
     end
 
-    it "fails when text is not in the element's inner_html" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) {"another value"}
+    describe "#assert_element_contains" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_contains("passed in value", {})
+          element
+        end
+        @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
       end
-      proc do
+
+      it "passes when text is in the element's inner_html" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) do
+            "html passed in value html"
+          end
+        end
         test_case.assert_element_contains(sample_locator, "passed in value")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#element_does_not_contain_text" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "when element is not on the page, returns true" do
-      locator = "id=element_id"
-      expected_text = "foobar"
-      mock(driver).is_element_present(locator) {false}
-
-      test_case.element_does_not_contain_text(locator, expected_text).should == true
-    end
-
-    it "when element is on page and inner_html does not contain text, returns true" do
-      locator = "id=element_id"
-      inner_html = "Some text that does not contain the expected_text"
-      expected_text = "foobar"
-      mock(driver).do_command("isElementPresent", [locator]) do
-        result(true)
-      end
-      mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
-        inner_html
       end
 
-      test_case.element_does_not_contain_text(locator, expected_text).should == true
+      it "fails when text is not in the element's inner_html" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) {"another value"}
+        end
+        proc do
+          test_case.assert_element_contains(sample_locator, "passed in value")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "when element is on page and inner_html does contain text, returns false" do
-      locator = "id=element_id"
-      inner_html = "foobar foobar foobar"
-      expected_text = "foobar"
-      mock(driver).do_command("isElementPresent", [locator]) do
-        result(true)
-      end
-      mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
-        inner_html
+    describe "#element_does_not_contain_text" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "when element is not on the page, returns true" do
+        locator = "id=element_id"
+        expected_text = "foobar"
+        mock(driver).is_element_present(locator) {false}
+
+        test_case.element_does_not_contain_text(locator, expected_text).should == true
       end
 
-      test_case.element_does_not_contain_text(locator, expected_text).should == false
+      it "when element is on page and inner_html does not contain text, returns true" do
+        locator = "id=element_id"
+        inner_html = "Some text that does not contain the expected_text"
+        expected_text = "foobar"
+        mock(driver).do_command("isElementPresent", [locator]) do
+          result(true)
+        end
+        mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
+          inner_html
+        end
+
+        test_case.element_does_not_contain_text(locator, expected_text).should == true
+      end
+
+      it "when element is on page and inner_html does contain text, returns false" do
+        locator = "id=element_id"
+        inner_html = "foobar foobar foobar"
+        expected_text = "foobar"
+        mock(driver).do_command("isElementPresent", [locator]) do
+          result(true)
+        end
+        mock(driver).do_command("getEval", [driver.inner_html_js(locator)]) do
+          inner_html
+        end
+
+        test_case.element_does_not_contain_text(locator, expected_text).should == false
+      end
     end
-  end
 
-  describe TestCase, "#assert_element_does_not_contain" do
-    it_should_behave_like "Polonium::TestCase"
+    describe "#assert_element_does_not_contain" do
+      it_should_behave_like "Polonium::TestCase"
 
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_does_not_contain("passed in value", {})
-        element
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_does_not_contain("passed in value", {})
+          element
+        end
+        @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
       end
-      @evaled_js = "this.page().findElement(\"#{sample_locator}\").innerHTML"
+
+      it "passes when text is not in the element's inner_html" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) do
+            "another value"
+          end
+        end
+        test_case.assert_element_does_not_contain(sample_locator, "passed in value")
+      end
+
+      it "fails when text is in the element's inner_html" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) {"html passed in value html"}
+        end
+        proc do
+          test_case.assert_element_does_not_contain(sample_locator, "passed in value")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "passes when text is not in the element's inner_html" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) do
-          "another value"
+    describe "#assert_contains_in_order" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "when text is in order, it succeeds" do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_contains_in_order("one", "two", "three")
+          element
+        end
+        stub(@driver).get_text(sample_locator).returns("one\ntwo\nthree\n")
+        stub(@driver).is_element_present(sample_locator) {true}
+
+        test_case.assert_contains_in_order sample_locator, "one", "two", "three"
+      end
+    end
+
+    describe "#assert_attribute" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_attribute('id', "passed in value")
+          element
         end
       end
-      test_case.assert_element_does_not_contain(sample_locator, "passed in value")
-    end
 
-    it "fails when text is in the element's inner_html" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) {"html passed in value html"}
-      end
-      proc do
-        test_case.assert_element_does_not_contain(sample_locator, "passed in value")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "when text is in order, it succeeds" do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_contains_in_order("one", "two", "three")
-        element
-      end
-      stub(@driver).get_text(sample_locator).returns("one\ntwo\nthree\n")
-      stub(@driver).is_element_present(sample_locator) {true}
-
-      test_case.assert_contains_in_order sample_locator, "one", "two", "three"
-    end
-  end
-
-  describe TestCase, "#assert_attribute" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_attribute('id', "passed in value")
-        element
-      end
-    end
-
-    it "passes when attribute is expected" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_attribute("#{sample_locator}@id") {"passed in value"}
-      end
-      test_case.assert_attribute(sample_locator, 'id', "passed in value")
-    end
-
-    it "fails when attribute is not expected" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_attribute("#{sample_locator}@id") {"another value"}
-      end
-      proc do
+      it "passes when attribute is expected" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_attribute("#{sample_locator}@id") {"passed in value"}
+        end
         test_case.assert_attribute(sample_locator, 'id', "passed in value")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_selected" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_selected("passed_in_element")
-        element
+      it "fails when attribute is not expected" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_attribute("#{sample_locator}@id") {"another value"}
+        end
+        proc do
+          test_case.assert_attribute(sample_locator, 'id', "passed in value")
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when selected is expected" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_selected_label(sample_locator) {"passed_in_element"}
-      end
-      test_case.assert_selected(sample_locator, "passed_in_element")
-    end
+    describe "#assert_selected" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when selected is not expected" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_selected_label(sample_locator) {"another_element"}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_selected("passed_in_element")
+          element
+        end
       end
-      proc do
+
+      it "passes when selected is expected" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_selected_label(sample_locator) {"passed_in_element"}
+        end
         test_case.assert_selected(sample_locator, "passed_in_element")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_checked" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_checked
-        element
+      it "fails when selected is not expected" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_selected_label(sample_locator) {"another_element"}
+        end
+        proc do
+          test_case.assert_selected(sample_locator, "passed_in_element")
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when checked" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.is_checked(sample_locator) {true}
-      end
-      test_case.assert_checked(sample_locator)
-    end
+    describe "#assert_checked" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when not checked" do
-      stub(driver) do |driver|
-        driver.is_element_present(sample_locator) {true}
-        driver.is_checked(sample_locator) {false}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_checked
+          element
+        end
       end
-      proc do
+
+      it "passes when checked" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.is_checked(sample_locator) {true}
+        end
         test_case.assert_checked(sample_locator)
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_not_checked" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_not_checked
-        element
+      it "fails when not checked" do
+        stub(driver) do |driver|
+          driver.is_element_present(sample_locator) {true}
+          driver.is_checked(sample_locator) {false}
+        end
+        proc do
+          test_case.assert_checked(sample_locator)
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when not checked" do
-      mock(driver) do |driver|
-        driver.is_element_present(sample_locator) {true}
-        driver.is_checked(sample_locator) {false}
-      end
-      test_case.assert_not_checked(sample_locator)
-    end
+    describe "#assert_not_checked" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when checked" do
-      stub(driver) do |driver|
-        driver.is_element_present(sample_locator) {true}
-        driver.is_checked(sample_locator) {true}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_not_checked
+          element
+        end
       end
-      proc do
+
+      it "passes when not checked" do
+        mock(driver) do |driver|
+          driver.is_element_present(sample_locator) {true}
+          driver.is_checked(sample_locator) {false}
+        end
         test_case.assert_not_checked(sample_locator)
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_text" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_text("expected text")
-        element
+      it "fails when checked" do
+        stub(driver) do |driver|
+          driver.is_element_present(sample_locator) {true}
+          driver.is_checked(sample_locator) {true}
+        end
+        proc do
+          test_case.assert_not_checked(sample_locator)
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when text is expected" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_text(sample_locator) {"expected text"}
-      end
-      test_case.assert_text(sample_locator, "expected text")
-    end
+    describe "#assert_text" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when text is not expected" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_text(sample_locator) {"unexpected text"}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_text("expected text")
+          element
+        end
       end
-      proc do
+
+      it "passes when text is expected" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_text(sample_locator) {"expected text"}
+        end
         test_case.assert_text(sample_locator, "expected text")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_visible" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_visible
-        element
+      it "fails when text is not expected" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_text(sample_locator) {"unexpected text"}
+        end
+        proc do
+          test_case.assert_text(sample_locator, "expected text")
+        end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when element is visible" do
-      mock(driver).is_element_present(sample_locator) {true}
-      mock(driver).is_visible(sample_locator) {true}
+    describe "#assert_visible" do
+      it_should_behave_like "Polonium::TestCase"
 
-      test_case.assert_visible(sample_locator)
-    end
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_visible
+          element
+        end
+      end
 
-    it "fails when element is not visible" do
-      mock(driver).is_element_present(sample_locator) {true}
-      stub(driver).is_visible.returns {false}
+      it "passes when element is visible" do
+        mock(driver).is_element_present(sample_locator) {true}
+        mock(driver).is_visible(sample_locator) {true}
 
-      proc {
         test_case.assert_visible(sample_locator)
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
+      end
 
-  describe TestCase, "#assert_not_visible" do
-    it_should_behave_like "Polonium::TestCase"
+      it "fails when element is not visible" do
+        mock(driver).is_element_present(sample_locator) {true}
+        stub(driver).is_visible.returns {false}
 
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_not_visible
-        element
+        proc {
+          test_case.assert_visible(sample_locator)
+        }.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
 
-    it "passes when element is present and is not visible" do
-      mock(driver).is_element_present(sample_locator) {true}
-      mock(driver).is_visible(sample_locator) {false}
+    describe "#assert_not_visible" do
+      it_should_behave_like "Polonium::TestCase"
 
-      test_case.assert_not_visible(sample_locator)
-    end
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_not_visible
+          element
+        end
+      end
 
-    it "fails when element is visible" do
-      mock(driver).is_element_present(sample_locator) {true}
-      stub(driver).is_visible(sample_locator) {true}
+      it "passes when element is present and is not visible" do
+        mock(driver).is_element_present(sample_locator) {true}
+        mock(driver).is_visible(sample_locator) {false}
 
-      proc {
         test_case.assert_not_visible(sample_locator)
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_next_sibling" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator) do |element|
-        mock.proxy(element).assert_next_sibling("next_sibling")
-        element
       end
-      @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
+
+      it "fails when element is visible" do
+        mock(driver).is_element_present(sample_locator) {true}
+        stub(driver).is_visible(sample_locator) {true}
+
+        proc {
+          test_case.assert_not_visible(sample_locator)
+        }.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "passes when passed next sibling id" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) {"next_sibling"}
-      end
-      test_case.assert_next_sibling(sample_locator, "next_sibling")
-    end
+    describe "#assert_next_sibling" do
+      it_should_behave_like "Polonium::TestCase"
 
-    it "fails when not passed next sibling id" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_eval(@evaled_js) {"wrong_sibling"}
+      before do
+        mock.proxy(Element).new(driver, sample_locator) do |element|
+          mock.proxy(element).assert_next_sibling("next_sibling")
+          element
+        end
+        @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
       end
-      proc do
+
+      it "passes when passed next sibling id" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) {"next_sibling"}
+        end
         test_case.assert_next_sibling(sample_locator, "next_sibling")
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#assert_contains_in_order" do
-    it_should_behave_like "Polonium::TestCase"
-
-    before do
-      mock.proxy(Element).new(driver, sample_locator)
-      @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
-    end
-
-    it "passes when text is in order" do
-      mock(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_text(sample_locator) {"one\ntwo\nthree\n"}
       end
-      test_case.assert_contains_in_order sample_locator, "one", "two", "three"
+
+      it "fails when not passed next sibling id" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_eval(@evaled_js) {"wrong_sibling"}
+        end
+        proc do
+          test_case.assert_next_sibling(sample_locator, "next_sibling")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is present and text is not in order" do
-      stub(driver) do |o|
-        o.is_element_present(sample_locator) {true}
-        o.get_text(sample_locator) {"<html>one\ntext not in order\n</html>"}
+    describe "#assert_contains_in_order" do
+      it_should_behave_like "Polonium::TestCase"
+
+      before do
+        mock.proxy(Element).new(driver, sample_locator)
+        @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
       end
-      proc do
+
+      it "passes when text is in order" do
+        mock(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_text(sample_locator) {"one\ntwo\nthree\n"}
+        end
         test_case.assert_contains_in_order sample_locator, "one", "two", "three"
-      end.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#type" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "types when element is present and types" do
-      is_element_present_results = [false, true]
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-        result(is_element_present_results.shift)
-      end
-      mock(driver).do_command("type", ["id=foobar", "The Text"]) do
-        result()
       end
 
-      test_case.type "id=foobar", "The Text"
+      it "fails when element is present and text is not in order" do
+        stub(driver) do |o|
+          o.is_element_present(sample_locator) {true}
+          o.get_text(sample_locator) {"<html>one\ntext not in order\n</html>"}
+        end
+        proc do
+          test_case.assert_contains_in_order sample_locator, "one", "two", "three"
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is not present" do
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-        result(false)
-      end
-      dont_allow(driver).do_command("type", ["id=foobar", "The Text"])
+    describe "#type" do
+      it_should_behave_like "Polonium::TestCase"
 
-      proc {
+      it "types when element is present and types" do
+        is_element_present_results = [false, true]
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+          result(is_element_present_results.shift)
+        end
+        mock(driver).do_command("type", ["id=foobar", "The Text"]) do
+          result()
+        end
+
         test_case.type "id=foobar", "The Text"
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#click" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "click when element is present and types" do
-      is_element_present_results = [false, true]
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-        result(is_element_present_results.shift)
       end
-      mock(driver).do_command("click", ["id=foobar"]) {result}
 
-      test_case.click "id=foobar"
+      it "fails when element is not present" do
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
+          result(false)
+        end
+        dont_allow(driver).do_command("type", ["id=foobar", "The Text"])
+
+        proc {
+          test_case.type "id=foobar", "The Text"
+        }.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is not present" do
-      is_element_present_results = [false, false, false, false]
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-        result(is_element_present_results.shift)
-      end
-      dont_allow(driver).do_command("click", [])
+    describe "#click" do
+      it_should_behave_like "Polonium::TestCase"
 
-      proc {
+      it "click when element is present and types" do
+        is_element_present_results = [false, true]
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+          result(is_element_present_results.shift)
+        end
+        mock(driver).do_command("click", ["id=foobar"]) {result}
+
         test_case.click "id=foobar"
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#select" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "types when element is present and types" do
-      is_element_present_results = [false, true]
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-        result is_element_present_results.shift
       end
-      mock(driver).do_command("select", ["id=foobar", "value=3"]) {result}
 
-      test_case.select "id=foobar", "value=3"
+      it "fails when element is not present" do
+        is_element_present_results = [false, false, false, false]
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
+          result(is_element_present_results.shift)
+        end
+        dont_allow(driver).do_command("click", [])
+
+        proc {
+          test_case.click "id=foobar"
+        }.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is not present" do
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
-        result false
-      end
-      dont_allow(driver).do_command("select", ["id=foobar", "value=3"])
+    describe "#select" do
+      it_should_behave_like "Polonium::TestCase"
 
-      proc {
+      it "types when element is present and types" do
+        is_element_present_results = [false, true]
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+          result is_element_present_results.shift
+        end
+        mock(driver).do_command("select", ["id=foobar", "value=3"]) {result}
+
         test_case.select "id=foobar", "value=3"
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#wait_for_and_click" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "click when element is present and types" do
-      is_element_present_results = [false, true]
-      mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
-        result is_element_present_results.shift
       end
-      mock(driver).do_command("click", ["id=foobar"]) {result}
 
-      test_case.wait_for_and_click "id=foobar"
+      it "fails when element is not present" do
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).times(4) do
+          result false
+        end
+        dont_allow(driver).do_command("select", ["id=foobar", "value=3"])
+
+        proc {
+          test_case.select "id=foobar", "value=3"
+        }.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "fails when element is not present" do
-      is_element_present_results = [false, false, false, false]
-      mock(driver).is_element_present("id=foobar").times(4) do
-        is_element_present_results.shift
-      end
-      dont_allow(driver).click
+    describe "#wait_for_and_click" do
+      it_should_behave_like "Polonium::TestCase"
 
-      proc {
+      it "click when element is present and types" do
+        is_element_present_results = [false, true]
+        mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
+          result is_element_present_results.shift
+        end
+        mock(driver).do_command("click", ["id=foobar"]) {result}
+
         test_case.wait_for_and_click "id=foobar"
-      }.should raise_error(Test::Unit::AssertionFailedError)
-    end
-  end
-
-  describe TestCase, "#page" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "returns page" do
-      test_case.page.should == Page.new(driver)
-    end
-  end
-
-  describe TestCase, "#get_eval" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "delegates to Driver" do
-      mock(driver).get_eval "foobar"
-      test_case.get_eval "foobar"
-    end
-  end
-
-  describe "TestCase in test browser mode and test fails" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "should stop driver when configuration says to stop test" do
-      test_case.configuration = configuration = Polonium::Configuration.new
-      configuration.test_browser_mode
-
-      stub(test_case).passed? {false}
-      configuration.keep_browser_open_on_failure = false
-
-      mock(driver).stop.once
-      test_case.selenium_driver = driver
-
-      test_case.teardown
-    end
-
-    it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode?.returns(true)
-
-      stub(test_case).passed? {false}
-      mock(test_case.configuration).stop_driver?(false) {false}
-
-      test_case.selenium_driver = driver
-
-      test_case.teardown
-    end
-  end
-
-  describe "TestCase in test browser mode and test pass" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode?.returns(true)
-
-      stub(test_case).passed?.returns(true)
-      mock(test_case.configuration).stop_driver?(true) {true}
-
-      mock(driver).stop.once
-      test_case.selenium_driver = driver
-
-      test_case.teardown
-    end
-
-    it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode?.returns(true)
-
-      stub(test_case).passed?.returns(true)
-      mock(test_case.configuration).stop_driver?(true) {false}
-
-      test_case.selenium_driver = driver
-
-      test_case.teardown
-    end
-  end
-
-  describe "TestCase not in suite browser mode" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "should not stop driver when tests fail" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode? {false}
-
-      def test_case.passed?;
-        false;
       end
 
-      test_case.selenium_driver = driver
+      it "fails when element is not present" do
+        is_element_present_results = [false, false, false, false]
+        mock(driver).is_element_present("id=foobar").times(4) do
+          is_element_present_results.shift
+        end
+        dont_allow(driver).click
 
-      test_case.teardown
+        proc {
+          test_case.wait_for_and_click "id=foobar"
+        }.should raise_error(Test::Unit::AssertionFailedError)
+      end
     end
 
-    it "should stop driver when tests pass" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode? {false}
+    describe "#page" do
+      it_should_behave_like "Polonium::TestCase"
 
-      stub(test_case).passed?.returns(true)
-
-      test_case.selenium_driver = driver
-
-      test_case.teardown
-    end
-  end
-
-  describe "TestCase in test browser mode and test pass" do
-    it_should_behave_like "Polonium::TestCase"
-
-    it "should stop driver when configuration says to stop test" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode?.returns(true)
-
-      stub(test_case).passed?.returns(true)
-      mock(test_case.configuration).stop_driver?(true) {true}
-
-      mock(driver).stop.once
-      test_case.selenium_driver = driver
-
-      test_case.teardown
+      it "returns page" do
+        test_case.page.should == Page.new(driver)
+      end
     end
 
-    it "should not stop driver when configuration says not to stop test" do
-      test_case.configuration = "Polonium::Configuration"
-      mock(test_case.configuration).test_browser_mode? {true}
+    describe "#get_eval" do
+      it_should_behave_like "Polonium::TestCase"
 
-      stub(test_case).passed?.returns(true)
-      mock(test_case.configuration).stop_driver?(true) {false}
-
-      test_case.selenium_driver = driver
-
-      test_case.teardown
+      it "delegates to Driver" do
+        mock(driver).get_eval "foobar"
+        test_case.get_eval "foobar"
+      end
     end
+
+    describe "TestCase in test browser mode and test fails" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "should stop driver when configuration says to stop test" do
+        test_case.configuration = configuration = Polonium::Configuration.new
+        configuration.test_browser_mode
+
+        stub(test_case).passed? {false}
+        configuration.keep_browser_open_on_failure = false
+
+        mock(driver).stop.once
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+
+      it "should not stop driver when configuration says not to stop test" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode?.returns(true)
+
+        stub(test_case).passed? {false}
+        mock(test_case.configuration).stop_driver?(false) {false}
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+    end
+
+    describe "TestCase in test browser mode and test pass" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "should stop driver when configuration says to stop test" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode?.returns(true)
+
+        stub(test_case).passed?.returns(true)
+        mock(test_case.configuration).stop_driver?(true) {true}
+
+        mock(driver).stop.once
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+
+      it "should not stop driver when configuration says not to stop test" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode?.returns(true)
+
+        stub(test_case).passed?.returns(true)
+        mock(test_case.configuration).stop_driver?(true) {false}
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+    end
+
+    describe "TestCase not in suite browser mode" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "should not stop driver when tests fail" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode? {false}
+
+        def test_case.passed?;
+          false;
+        end
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+
+      it "should stop driver when tests pass" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode? {false}
+
+        stub(test_case).passed?.returns(true)
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+    end
+
+    describe "TestCase in test browser mode and test pass" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "should stop driver when configuration says to stop test" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode?.returns(true)
+
+        stub(test_case).passed?.returns(true)
+        mock(test_case.configuration).stop_driver?(true) {true}
+
+        mock(driver).stop.once
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+
+      it "should not stop driver when configuration says not to stop test" do
+        test_case.configuration = "Polonium::Configuration"
+        mock(test_case.configuration).test_browser_mode? {true}
+
+        stub(test_case).passed?.returns(true)
+        mock(test_case.configuration).stop_driver?(true) {false}
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+    end
+
+    describe "#wait_for_element_to_contain" do
+      it_should_behave_like "Polonium::TestCase"
+
+      it "when finding text within time limit, passes" do
+        is_element_present_results = [false, true]
+        mock(driver).do_command('isElementPresent', [sample_locator]).times(2) do
+          result(is_element_present_results.shift)
+        end
+        mock(driver).do_command('getEval', [driver.inner_html_js(sample_locator)]) do
+          result(sample_text)
+        end
+
+        test_case.wait_for_element_to_contain(sample_locator, sample_text)
+      end
+
+      it "when element not found in time, fails" do
+        mock(driver).do_command('isElementPresent', [sample_locator]).times(4) do
+          result(false)
+        end
+
+        proc do
+          test_case.wait_for_element_to_contain(sample_locator, "")
+        end.should raise_error(Test::Unit::AssertionFailedError, "Expected element 'sample_locator' to be present, but it was not (after 5 sec)")
+      end
+
+      it "when text does not match in time, fails" do
+        is_element_present_results = [false, true, true, true]
+        stub(driver).do_command('isElementPresent', [sample_locator]) do
+          result(is_element_present_results.shift)
+        end
+        stub(driver).do_command('getEval', [driver.inner_html_js(sample_locator)]) do
+          result(sample_text)
+        end
+
+        proc do
+          test_case.wait_for_element_to_contain(sample_locator, "wrong text")
+        end.should raise_error(Test::Unit::AssertionFailedError, "sample_locator should contain wrong text (after 5 sec)")
+      end
+    end    
   end
 end

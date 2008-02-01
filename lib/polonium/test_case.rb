@@ -12,7 +12,7 @@ module Polonium
     self.use_transactional_fixtures = false
     self.use_instantiated_fixtures  = true
 
-    include TestUnitDsl
+    include SeleniumDsl
     def setup
       #   set "setup_once" to true
       #   to prevent fixtures from being re-loaded and data deleted from the DB.

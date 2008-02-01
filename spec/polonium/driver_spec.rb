@@ -46,46 +46,6 @@ module Polonium
     end
   end
 
-  describe Driver, "#wait_for_element_to_contain" do
-    it_should_behave_like "Polonium::Driver"
-
-    it "when finding text within time limit, passes" do
-      is_element_present_results = [false, true]
-      mock(driver).do_command('isElementPresent', [sample_locator]).times(2) do
-        result(is_element_present_results.shift)
-      end
-      mock(driver).do_command('getEval', [driver.inner_html_js(sample_locator)]) do
-        result(sample_text)
-      end
-
-      driver.wait_for_element_to_contain(sample_locator, sample_text)
-    end
-
-    it "when element not found in time, fails" do
-      mock(driver).do_command('isElementPresent', [sample_locator]).times(4) do
-        result(false)
-      end
-
-      proc do
-        driver.wait_for_element_to_contain(sample_locator, "")
-      end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 5 sec)")
-    end
-
-    it "when text does not match in time, fails" do
-      is_element_present_results = [false, true, true, true]
-      stub(driver).do_command('isElementPresent', [sample_locator]) do
-        result(is_element_present_results.shift)
-      end
-      stub(driver).do_command('getEval', [driver.inner_html_js(sample_locator)]) do
-        result(sample_text)
-      end
-
-      proc do
-        driver.wait_for_element_to_contain(sample_locator, "wrong text", nil, 1)
-      end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 1 sec)")
-    end
-  end
-
   describe Driver, "#open and #open_and_wait" do
     it_should_behave_like "Polonium::Driver"
 

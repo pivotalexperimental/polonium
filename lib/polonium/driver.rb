@@ -51,17 +51,6 @@ module Polonium
       get_eval("selenium.browserbot.getCurrentWindow().location.reload()")
     end
 
-    def click(locator)
-      wait_for_is_element_present(locator)
-      super
-    end
-    alias_method :wait_for_and_click, :click
-
-    def select(select_locator, option_locator)
-      wait_for_is_element_present(select_locator)
-      super
-    end
-    
     # Click a link and wait for the page to load.
     def click_and_wait(locator, wait_for = default_timeout)
       click locator
@@ -85,11 +74,6 @@ module Polonium
     # Get the inner html of the located element.
     def get_inner_html(locator)
       get_eval(inner_html_js(locator))
-    end
-
-    # Does the element at locator contain the text?
-    def element_contains_text(locator, text)
-      is_element_present(locator) && element(locator).contains?(text)
     end
 
     # Does the element at locator not contain the text?
@@ -123,13 +107,6 @@ module Polonium
         flunk "We got a new page, but it was an application exception page.\n\n#{get_html_source}"
       end
     end
-
-    def wait_for_element_to_contain(locator, text, message=nil, timeout=default_wait_for_time)
-      wait_for(:message => message, :timeout => timeout) do
-        element_contains_text(locator, text)
-      end
-    end
-    alias_method :wait_for_element_to_contain_text, :wait_for_element_to_contain
 
     # Open the log window on the browser. This is useful to diagnose issues with Selenium Core.
     def show_log(log_level = "debug")
