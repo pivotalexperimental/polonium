@@ -9,11 +9,11 @@ module Polonium
     end
 
     def assert_element_present(params={})
-      driver.wait_for_is_element_present(locator, params)
+      driver.assert_element_present(locator, params)
     end
 
     def assert_element_not_present(params={})
-      driver.wait_for_is_element_not_present(locator, params)
+      driver.assert_element_not_present(locator, params)
     end
 
     def assert_value(expected_value)

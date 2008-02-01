@@ -127,7 +127,7 @@ module Polonium
       end
     end
 
-    describe "#wait_for_and_click" do
+    describe "#click" do
       it "click when element is present and types" do
         is_element_present_results = [false, true]
         mock(driver).do_command("isElementPresent", ["id=foobar"]).twice do
@@ -135,7 +135,7 @@ module Polonium
         end
         mock(driver).do_command("click", ["id=foobar"]) {result}
 
-        driver.wait_for_and_click "id=foobar"
+        driver.click "id=foobar"
       end
 
       it "fails when element is not present" do
@@ -143,10 +143,10 @@ module Polonium
         mock(driver).is_element_present("id=foobar").times(4) do
           is_element_present_results.shift
         end
-        dont_allow(driver).click
+        dont_allow(driver).do_command("click", ["id=foobar"])
 
         proc {
-          driver.wait_for_and_click "id=foobar"
+          driver.click "id=foobar"
         }.should raise_error(Test::Unit::AssertionFailedError)
       end
     end

@@ -48,24 +48,18 @@ module Polonium
     def assert_element_contains(locator, text, options = {})
       element(locator).assert_contains(text, options)
     end
-
+    alias_method :assert_element_contains_text, :assert_element_contains
+    
     # Assert and wait for locator element to not contain text.
     def assert_element_does_not_contain(locator, text, options={})
       element(locator).assert_does_not_contain(text, options)
     end
     deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
-    deprecate :wait_for_element_to_not_contain_text, :assert_element_does_not_contain
-    deprecate :wait_for_text_in_order, :assert_contains_in_order
 
     # Does the element at locator contain the text?
     def element_contains_text(locator, text)
       element(locator).assert_contains(text)
     end
-
-    def wait_for_element_to_contain(locator, text)
-      element(locator).assert_contains(text)
-    end
-    alias_method :wait_for_element_to_contain_text, :wait_for_element_to_contain
 
     attr_accessor :selenium_driver  
     include WaitFor

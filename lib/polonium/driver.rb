@@ -60,7 +60,6 @@ module Polonium
       assert_element_present locator
       super
     end
-    alias_method :wait_for_and_click, :click
 
     def select(select_locator, option_locator)
       assert_element_present select_locator
@@ -75,20 +74,19 @@ module Polonium
     # Click a link and wait for the page to load.
     def click_and_wait(locator, wait_for = default_timeout)
       click locator
-      wait_for_page_to_load(wait_for)
+      assert_page_loaded(wait_for)
     end
-    alias_method :click_and_wait_for_page_to_load, :click_and_wait
 
     # Click the back button and wait for the page to load.
     def go_back_and_wait
       go_back
-      wait_for_page_to_load
+      assert_page_loaded
     end
 
     # Open the home page of the Application and wait for the page to load.
     def open(url)
       super
-      wait_for_page_to_load
+      assert_page_loaded
     end
     alias_method :open_and_wait, :open
 
@@ -112,9 +110,8 @@ module Polonium
         is_element_present(locator)
       end
     end
-    alias_method :wait_for_is_element_present, :assert_element_present
 
-    def wait_for_is_element_not_present(locator, params={})
+    def assert_element_not_present(locator, params={})
       params = {
         :message => "Expected element '#{locator}' to be absent, but it was not"
       }.merge(params)
@@ -129,6 +126,7 @@ module Polonium
         flunk "We got a new page, but it was an application exception page.\n\n#{get_html_source}"
       end
     end
+    alias_method :assert_page_loaded, :wait_for_page_to_load
 
     # Open the log window on the browser. This is useful to diagnose issues with Selenium Core.
     def show_log(log_level = "debug")

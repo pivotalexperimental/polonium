@@ -779,7 +779,7 @@ module Polonium
       end
     end
 
-    describe "#wait_for_element_to_contain" do
+    describe "#assert_element_contains" do
       it_should_behave_like "Polonium::TestCase"
 
       it "when finding text within time limit, passes" do
@@ -791,7 +791,7 @@ module Polonium
           result(sample_text)
         end
 
-        test_case.wait_for_element_to_contain(sample_locator, sample_text)
+        test_case.assert_element_contains(sample_locator, sample_text)
       end
 
       it "when element not found in time, fails" do
@@ -800,7 +800,7 @@ module Polonium
         end
 
         proc do
-          test_case.wait_for_element_to_contain(sample_locator, "")
+          test_case.assert_element_contains(sample_locator, "")
         end.should raise_error(Test::Unit::AssertionFailedError, "Expected element 'sample_locator' to be present, but it was not (after 5 sec)")
       end
 
@@ -814,7 +814,7 @@ module Polonium
         end
 
         proc do
-          test_case.wait_for_element_to_contain(sample_locator, "wrong text")
+          test_case.assert_element_contains(sample_locator, "wrong text")
         end.should raise_error(Test::Unit::AssertionFailedError, "sample_locator should contain wrong text (after 5 sec)")
       end
     end    
