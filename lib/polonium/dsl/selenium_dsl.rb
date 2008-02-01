@@ -71,6 +71,10 @@ module Polonium
       Net::HTTP.get(uri)
     end
 
+    def configuration
+      Polonium::Configuration.instance
+    end
+
     protected
     def method_missing(method_name, *args, &block)
       selenium_driver.__send__(method_name, *args, &block)
