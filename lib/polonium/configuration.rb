@@ -29,25 +29,26 @@ module Polonium
       # * keep_browser_open_on_failure - If there is a failure in the test suite, keep the browser window open (default: false)
       # * verify_remote_app_server_is_running - Raise an exception if the Application Server is not running (default: true)
       def instance
-        return @instance if @instance
-        @instance = new
-        @instance.env = ENV
+        @instance ||= begin
+          @instance = new
+          @instance.env = ENV
 
-        @instance.browser = FIREFOX
-        @instance.selenium_server_host = "localhost"     # address of selenium RC server (java)
-        @instance.selenium_server_port = 4444
-        @instance.app_server_engine = :webrick
-        @instance.internal_app_server_host = "0.0.0.0"    # internal address of app server (webrick or mongrel)
-        @instance.internal_app_server_port = 4000
-        @instance.external_app_server_host = "localhost"             # external address of app server (webrick or mongrel)
-        @instance.external_app_server_port = 4000
-        @instance.server_engine = :webrick
-        @instance.keep_browser_open_on_failure = false
-        @instance.browser_mode = BrowserMode::Suite
-        @instance.verify_remote_app_server_is_running = true
+          @instance.browser = FIREFOX
+          @instance.selenium_server_host = "localhost"     # address of selenium RC server (java)
+          @instance.selenium_server_port = 4444
+          @instance.app_server_engine = :webrick
+          @instance.internal_app_server_host = "0.0.0.0"    # internal address of app server (webrick or mongrel)
+          @instance.internal_app_server_port = 4000
+          @instance.external_app_server_host = "localhost"             # external address of app server (webrick or mongrel)
+          @instance.external_app_server_port = 4000
+          @instance.server_engine = :webrick
+          @instance.keep_browser_open_on_failure = false
+          @instance.browser_mode = BrowserMode::Suite
+          @instance.verify_remote_app_server_is_running = true
 
-        establish_environment
-        @instance
+          establish_environment
+          @instance
+        end
       end
       attr_writer :instance
 
