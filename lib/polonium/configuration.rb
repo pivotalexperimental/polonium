@@ -218,17 +218,6 @@ module Polonium
       runner
     end
 
-    def create_webrick_server #:nodoc:
-      WEBrick::HTTPServer.new({
-        :Port => @internal_app_server_port,
-        :BindAddress => @internal_app_server_host,
-        :ServerType  => WEBrick::SimpleServer,
-        :MimeTypes => WEBrick::HTTPUtils::DefaultMimeTypes,
-        :Logger => new_logger,
-        :AccessLog => []
-      })
-    end
-
     def new_logger
       Logger.new(StringIO.new)
     end
@@ -239,31 +228,7 @@ module Polonium
       runner.thread_class = Thread
       runner
     end
-
-    def create_mongrel_configurator #:nodoc:
-      dir = File.dirname(__FILE__)
-      require 'mongrel/rails'
-      settings = {
-        :host => internal_app_server_host,
-        :port => internal_app_server_port,
-        :cwd => @rails_root,
-        :log_file => "#{@rails_root}/log/mongrel.log",
-        :pid_file => "#{@rails_root}/log/mongrel.pid",
-        :environment => @rails_env,
-        :docroot => "#{@rails_root}/public",
-        :mime_map => nil,
-        :daemon => false,
-        :debug => false,
-        :includes => ["mongrel"],
-        :config_script => nil
-      }
-
-      configurator = Mongrel::Rails::RailsConfigurator.new(settings) do
-        log "Starting Mongrel in #{defaults[:environment]} mode at #{defaults[:host]}:#{defaults[:port]}"
-      end
-      configurator
-    end
-
+    
     protected
     # Sets the failure state to true
     def failure_has_occurred

@@ -103,49 +103,11 @@ module Polonium
       runner.environment_path.should == File.expand_path("#{dir}/config/environment")
     end
 
-    it "creates webrick http server" do
-      configuration.internal_app_server_port = 4000
-      configuration.internal_app_server_host = "localhost"
-
-      mock_logger = "logger"
-      mock(configuration).new_logger {mock_logger}
-      mock(WEBrick::HTTPServer).new({
-        :Port => 4000,
-        :BindAddress => "localhost",
-        :ServerType  => WEBrick::SimpleServer,
-        :MimeTypes => WEBrick::HTTPUtils::DefaultMimeTypes,
-        :Logger => mock_logger,
-        :AccessLog => []
-      })
-      server = configuration.create_webrick_server
-    end
-
     it "creates Mongrel Server Runner" do
       server = configuration.create_mongrel_runner
       server.should be_instance_of(MongrelSeleniumServerRunner)
       server.configuration.should == configuration
       server.thread_class.should == Thread
-    end
-
-    it "creates Mongrel configurator" do
-      configuration.internal_app_server_host = "localhost"
-      configuration.internal_app_server_port = 4000
-      configuration.rails_env = "test"
-      configuration.rails_root = rails_root = File.dirname(__FILE__)
-
-      configurator = configuration.create_mongrel_configurator
-      configurator.defaults[:host].should == "localhost"
-      configurator.defaults[:port].should == 4000
-      configurator.defaults[:cwd].should == configuration.rails_root
-      configurator.defaults[:log_file].should == "#{configuration.rails_root}/log/mongrel.log"
-      configurator.defaults[:pid_file].should == "#{configuration.rails_root}/log/mongrel.pid"
-      configurator.defaults[:environment].should == "test"
-      configurator.defaults[:docroot].should == "#{rails_root}/public"
-      configurator.defaults[:mime_map].should be_nil
-      configurator.defaults[:daemon].should == false
-      configurator.defaults[:debug].should == false
-      configurator.defaults[:includes].should == ["mongrel"]
-      configurator.defaults[:config_script].should be_nil
     end
   end
 

@@ -1,7 +1,7 @@
 module Polonium
   class MongrelSeleniumServerRunner < ServerRunner
     def start
-      mongrel_configurator = configuration.create_mongrel_configurator
+      mongrel_configurator = create_mongrel_configurator
       initialize_server(mongrel_configurator)
 
       @thread_class.start do
@@ -33,5 +33,29 @@ module Polonium
 
     def stop_server
     end
+
+    def create_mongrel_configurator #:nodoc:
+      dir = File.dirname(__FILE__)
+      require 'mongrel/rails'
+      settings = {
+        :host => configuration.internal_app_server_host,
+        :port => configuration.internal_app_server_port,
+        :cwd => configuration.rails_root,
+        :log_file => "#{configuration.rails_root}/log/mongrel.log",
+        :pid_file => "#{configuration.rails_root}/log/mongrel.pid",
+        :environment => configuration.rails_env,
+        :docroot => "#{configuration.rails_root}/public",
+        :mime_map => nil,
+        :daemon => false,
+        :debug => false,
+        :includes => ["mongrel"],
+        :config_script => nil
+      }
+
+      configurator = Mongrel::Rails::RailsConfigurator.new(settings) do
+        log "Starting Mongrel in #{defaults[:environment]} mode at #{defaults[:host]}:#{defaults[:port]}"
+      end
+      configurator
+    end    
   end
 end
