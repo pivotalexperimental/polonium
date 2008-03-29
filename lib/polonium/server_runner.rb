@@ -1,12 +1,13 @@
 module Polonium
   class ServerRunner
-    attr_accessor :configuration, :thread_class
-    def initialize
+    attr_reader :configuration
+    def initialize(configuration)
+      @configuration = configuration
       @started = false
     end
 
     def start
-      @thread_class.start do
+      Thread.start do
         start_server
       end
       @started = true

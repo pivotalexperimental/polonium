@@ -86,29 +86,6 @@ module Polonium
       passed_driver.should == driver
       start_called.should == true
     end
-
-    it "creates a Webrick Server Runner" do
-      configuration.selenium_server_port = 4000
-      configuration.selenium_server_host = "localhost"
-      dir = File.dirname(__FILE__)
-      configuration.rails_root = dir
-      configuration.rails_env = "test"
-
-      runner = configuration.create_webrick_runner
-      runner.should be_an_instance_of(WebrickSeleniumServerRunner)
-      runner.configuration.should == configuration
-      runner.thread_class.should == Thread
-      runner.socket.should == Socket
-      runner.dispatch_servlet.should == DispatchServlet
-      runner.environment_path.should == File.expand_path("#{dir}/config/environment")
-    end
-
-    it "creates Mongrel Server Runner" do
-      server = configuration.create_mongrel_runner
-      server.should be_instance_of(MongrelSeleniumServerRunner)
-      server.configuration.should == configuration
-      server.thread_class.should == Thread
-    end
   end
 
   describe Configuration, "#establish_environment" do

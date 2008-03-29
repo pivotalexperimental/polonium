@@ -9,6 +9,10 @@ module Polonium
     end
     FIREFOX = "firefox" unless const_defined? :FIREFOX
     IEXPLORE = "iexplore" unless const_defined? :IEXPLORE
+    SERVER_RUNNERS = {
+      :webrick => WebrickSeleniumServerRunner,
+      :mongrel => MongrelSeleniumServerRunner
+    }
 
     class << self
       # The instance of the Singleton Configuration. On its initial call, the initial configuration is set.
@@ -197,38 +201,15 @@ module Polonium
     end
 
     def create_server_runner #:nodoc:
-      case @app_server_engine.to_sym
-      when :mongrel
-        create_mongrel_runner
-      when :webrick
-        create_webrick_runner
-      else
-        raise "Invalid server type: #{selenium_configuration.app_server_type}"
-      end
-    end
-
-    def create_webrick_runner #:nodoc:
-      require 'webrick_server'
-      runner = WebrickSeleniumServerRunner.new
-      runner.configuration = self
-      runner.thread_class = Thread
-      runner.socket = Socket
-      runner.dispatch_servlet = DispatchServlet
-      runner.environment_path = File.expand_path("#{@rails_root}/config/environment")
-      runner
+      app_server_type = SERVER_RUNNERS[@app_server_engine.to_sym]
+      raise "Invalid server engine #{@app_server_engine}" unless app_server_type
+      app_server_type.new(configuration)
     end
 
     def new_logger
       Logger.new(StringIO.new)
     end
 
-    def create_mongrel_runner #:nodoc:
-      runner = MongrelSeleniumServerRunner.new
-      runner.configuration = self
-      runner.thread_class = Thread
-      runner
-    end
-    
     protected
     # Sets the failure state to true
     def failure_has_occurred

@@ -9,7 +9,7 @@ module Polonium
       end
 
       it "initializes server and runs app_server_initialization callback" do
-        runner = configuration.create_mongrel_runner
+        runner = MongrelSeleniumServerRunner.new(configuration)
         
         fake_rails = "fake rails"
         mongrel_configurator = nil
@@ -31,8 +31,7 @@ module Polonium
           callback_mongrel = mongrel
         end
         stub(runner).defaults do; {:environment => ""}; end
-        runner.thread_class = mock_thread_class = "mock_thread_class"
-        mock(mock_thread_class).start.yields
+        mock(Thread).start.yields
 
         runner.start
         callback_mongrel.should == mongrel_configurator
@@ -45,7 +44,7 @@ module Polonium
           configuration.rails_env = "test"
           configuration.rails_root = rails_root = File.dirname(__FILE__)
 
-          runner = configuration.create_mongrel_runner
+          runner = MongrelSeleniumServerRunner.new(configuration)
           configurator = runner.send(:create_mongrel_configurator)
           configurator.defaults[:host].should == "localhost"
           configurator.defaults[:port].should == 4000

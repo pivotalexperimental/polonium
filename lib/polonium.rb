@@ -1,6 +1,8 @@
+require 'rubygems'
 require 'socket'
 require 'logger'
 require "stringio"
+require "resolv-replace"
 
 require "active_record"
 

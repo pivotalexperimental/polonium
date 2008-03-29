@@ -1,11 +1,14 @@
 module Polonium
   class WebrickSeleniumServerRunner < ServerRunner
-    attr_accessor :socket, :dispatch_servlet, :environment_path, :server
+    attr_accessor :server
+
+    def initialize(configuration)
+      require 'webrick_server'
+      super
+    end
 
     protected
     def start_server
-      socket.do_not_reverse_lookup = true # patch for OS X
-
       @server = create_webrick_server
       mount_parameters = {
         :port            => configuration.internal_app_server_port,
@@ -17,17 +20,17 @@ module Polonium
         :mime_types      => WEBrick::HTTPUtils::DefaultMimeTypes,
         :working_directory => File.expand_path(configuration.rails_root.to_s)
       }
-      server.mount('/', dispatch_servlet, mount_parameters)
+      server.mount('/', DispatchServlet, mount_parameters)
 
       trap("INT") { stop_server }
 
-      require @environment_path
+      require File.expand_path("#{configuration.rails_root}/config/environment")
       require "dispatcher"
       server.start
     end
 
     def stop_server
-      server.shutdown
+      server.shutdown if server
     end
 
     def create_webrick_server #:nodoc:

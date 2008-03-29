@@ -4,7 +4,7 @@ module Polonium
       mongrel_configurator = create_mongrel_configurator
       initialize_server(mongrel_configurator)
 
-      @thread_class.start do
+      Thread.start do
         start_server(mongrel_configurator)
       end
       @started = true

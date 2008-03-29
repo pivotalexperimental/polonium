@@ -11,11 +11,6 @@ module Polonium
       Object.instance_eval {remove_const :RAILS_ROOT}
     end
 
-    it "start method should set socket.do_not_reverse_lookup to true and" do
-      runner = create_runner_that_is_stubbed_so_start_method_works
-      runner.start
-    end
-
     it "start method should initialize the HttpServer with parameters" do
       runner = create_runner_that_is_stubbed_so_start_method_works
       runner.start
@@ -23,16 +18,6 @@ module Polonium
 
     it "start method should mount and start the server" do
       runner = create_runner_that_is_stubbed_so_start_method_works
-      runner.start
-    end
-
-    it "start method should require the environment and dispatcher" do
-      runner = create_runner_that_is_stubbed_so_start_method_works
-
-      mock(runner).require("foobar")
-      mock(runner).require("dispatcher")
-
-      runner.environment_path = "foobar"
       runner.start
     end
 
@@ -71,15 +56,12 @@ module Polonium
 
     def create_runner_that_is_stubbed_so_start_method_works
       configuration = Polonium::Configuration.new
-      runner = configuration.create_webrick_runner
+      runner = WebrickSeleniumServerRunner.new(configuration)
       class << runner;
         public :start_server;
       end
 
       stub(runner).require
-
-      stub(mock_socket = "mock_socket").do_not_reverse_lookup=(true)
-      runner.socket = mock_socket
 
       configuration.internal_app_server_port = 4000
       configuration.internal_app_server_host = "localhost"
@@ -107,9 +89,7 @@ module Polonium
         s.start
       end
 
-      mock_thread_class = "mock_thread_class"
-      runner.thread_class = mock_thread_class
-      mock(mock_thread_class).start {|block| block.call}
+      mock(Thread).start.yields
 
       return runner
     end
@@ -130,7 +110,7 @@ module Polonium
           :Logger => mock_logger,
           :AccessLog => []
         })
-        runner = configuration.create_webrick_runner
+        runner = WebrickSeleniumServerRunner.new(configuration)
         server = runner.send(:create_webrick_server)
       end
     end
