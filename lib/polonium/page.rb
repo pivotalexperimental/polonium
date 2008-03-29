@@ -2,7 +2,18 @@ module Polonium
   class Page
     include WaitFor, ValuesMatch
     attr_reader :driver
-    PAGE_LOADED_COMMAND = "this.browserbot.getDocument().body ? true : false"
+    PAGE_LOADED_COMMAND = <<-JS
+      (function(selenium) {
+        BrowserBot.prototype.bodyText = function() {
+            if (!this.getDocument().body) {
+                return "";
+            }
+            return getText(this.getDocument().body);
+        };
+        selenium.browserbot.bodyText = BrowserBot.prototype.bodyText;
+        return selenium.browserbot.getDocument().body ? true : false;
+      })(this);
+    JS
 
     def initialize(driver)
       @driver = driver

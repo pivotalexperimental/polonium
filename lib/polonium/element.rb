@@ -144,6 +144,10 @@ module Polonium
       driver.click locator
     end
 
+    def type(text)
+      driver.type(locator, text)
+    end
+
     def select(option_locator)
       driver.select(locator, option_locator)
     end
