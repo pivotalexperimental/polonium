@@ -1,7 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 
 module Polonium
-  describe MongrelServerRunner do
+  module ServerRunners
+    describe MongrelServerRunner do
     describe "#start_server" do
       attr_reader :configuration
       before do
@@ -10,7 +11,7 @@ module Polonium
 
       it "initializes server and runs app_server_initialization callback" do
         runner = MongrelServerRunner.new(configuration)
-        
+
         fake_rails = "fake rails"
         mongrel_configurator = nil
         mock.proxy(runner).create_mongrel_configurator do |mongrel_configurator|
@@ -61,5 +62,6 @@ module Polonium
         end
       end
     end
+  end
   end
 end

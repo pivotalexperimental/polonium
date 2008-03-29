@@ -1,5 +1,6 @@
 module Polonium
-  class WebrickSeleniumServerRunner < ServerRunner
+  module ServerRunners
+    class WebrickServerRunner < ServerRunner
     attr_accessor :server
 
     def initialize(configuration)
@@ -43,5 +44,6 @@ module Polonium
         :AccessLog => []
       })
     end
+  end
   end
 end

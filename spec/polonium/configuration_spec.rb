@@ -1,24 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe Configuration, ".instance" do
-    attr_reader :configuration
-    before(:each) do
-      Configuration.instance = nil
-      @configuration = Configuration.new
-    end
-
-    it "should create a new Configuration if it hasn't been called yet" do
-      mock(Configuration).new.returns(configuration)
-      Configuration.instance.should == configuration
-    end
-
-    it "should reuse the existing Configuration if it has been called.  So new/establish_environment should only be called once." do
-      Configuration.instance.should_not be_nil
-      dont_allow(Configuration).new
-    end
-  end
-
   describe Configuration do
     attr_reader :configuration
     before(:each) do
@@ -88,7 +70,25 @@ module Polonium
     end
   end
 
-  describe Configuration, "#establish_environment" do
+  describe ".instance" do
+    attr_reader :configuration
+    before(:each) do
+      Configuration.instance = nil
+      @configuration = Configuration.new
+    end
+
+    it "should create a new Configuration if it hasn't been called yet" do
+      mock(Configuration).new.returns(configuration)
+      Configuration.instance.should == configuration
+    end
+
+    it "should reuse the existing Configuration if it has been called.  So new/establish_environment should only be called once." do
+      Configuration.instance.should_not be_nil
+      dont_allow(Configuration).new
+    end
+  end
+
+  describe "#establish_environment" do
     attr_reader :configuration
     before(:each) do
       @old_configuration = Configuration.instance
@@ -235,7 +235,7 @@ module Polonium
     end
   end
 
-  describe Configuration, "#stop_driver_if_necessary" do
+  describe "#stop_driver_if_necessary" do
     attr_reader :configuration
     before(:each) do
       @configuration = Configuration.new
@@ -269,30 +269,31 @@ module Polonium
 
   end
 
-  describe Configuration, "#create_server_runner where application server engine is mongrel" do
-    it "creates a mongrel server runner" do
-      configuration = Configuration.new
-      configuration.app_server_engine = :mongrel
-      runner = configuration.create_server_runner
-      runner.should be_instance_of(MongrelServerRunner)
-    end
-  end
-
-  describe Configuration, "#create_server_runner where application server engine is webrick" do
-    before do
-      Object.const_set :RAILS_ROOT, "foobar"
-      require 'webrick_server'
+  describe "#create_server_runner" do
+    describe "when server engine in mongrel" do
+      it "creates a mongrel server runner" do
+        configuration = Configuration.new
+        configuration.app_server_engine = :mongrel
+        runner = configuration.create_server_runner
+        runner.should be_instance_of(ServerRunners::MongrelServerRunner)
+      end
     end
 
-    after do
-      Object.instance_eval {remove_const :RAILS_ROOT}
-    end
+    describe "when server engine is webrick" do
+      before do
+        Object.const_set :RAILS_ROOT, "foobar"
+      end
 
-    it "creates a webrick server runner" do
-      configuration = Configuration.new
-      configuration.app_server_engine = :webrick
-      runner = configuration.create_server_runner
-      runner.should be_instance_of(WebrickServerRunner)
+      after do
+        Object.instance_eval {remove_const :RAILS_ROOT}
+      end
+
+      it "creates a webrick server runner" do
+        configuration = Configuration.new
+        configuration.app_server_engine = :webrick
+        runner = configuration.create_server_runner
+        runner.should be_instance_of(ServerRunners::WebrickServerRunner)
+      end
     end
   end
 end

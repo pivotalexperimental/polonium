@@ -10,8 +10,8 @@ module Polonium
     FIREFOX = "firefox" unless const_defined? :FIREFOX
     IEXPLORE = "iexplore" unless const_defined? :IEXPLORE
     SERVER_RUNNERS = {
-      :webrick => WebrickServerRunner,
-      :mongrel => MongrelServerRunner
+      :webrick => ServerRunners::WebrickServerRunner,
+      :mongrel => ServerRunners::MongrelServerRunner
     }
 
     class << self

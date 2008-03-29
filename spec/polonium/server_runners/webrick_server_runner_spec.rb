@@ -1,7 +1,8 @@
-require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 
 module Polonium
-  describe WebrickSeleniumServerRunner do
+  module ServerRunners
+    describe WebrickServerRunner do
     attr_reader :configuration, :mock_server
     before(:each) do
       Object.const_set(:RAILS_ROOT, "foobar")
@@ -56,7 +57,7 @@ module Polonium
 
     def create_runner_that_is_stubbed_so_start_method_works
       configuration = Polonium::Configuration.new
-      runner = WebrickSeleniumServerRunner.new(configuration)
+      runner = WebrickServerRunner.new(configuration)
       class << runner;
         public :start_server;
       end
@@ -66,7 +67,7 @@ module Polonium
       configuration.internal_app_server_port = 4000
       configuration.internal_app_server_host = "localhost"
       configuration.rails_env = "test"
-      
+
       @mock_server = "mock_server"
       stub(WEBrick::HTTPServer).new {mock_server}
 
@@ -110,10 +111,11 @@ module Polonium
           :Logger => mock_logger,
           :AccessLog => []
         })
-        runner = WebrickSeleniumServerRunner.new(configuration)
+        runner = WebrickServerRunner.new(configuration)
         server = runner.send(:create_webrick_server)
       end
     end
 
+  end
   end
 end

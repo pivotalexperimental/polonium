@@ -1,5 +1,6 @@
 module Polonium
-  class MongrelSeleniumServerRunner < ServerRunner
+  module ServerRunners
+    class MongrelServerRunner < ServerRunner
     def start
       mongrel_configurator = create_mongrel_configurator
       initialize_server(mongrel_configurator)
@@ -56,6 +57,7 @@ module Polonium
         log "Starting Mongrel in #{defaults[:environment]} mode at #{defaults[:host]}:#{defaults[:port]}"
       end
       configurator
-    end    
+    end
+  end
   end
 end
