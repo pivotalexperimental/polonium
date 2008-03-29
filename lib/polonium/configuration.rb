@@ -12,7 +12,7 @@ module Polonium
     SERVER_RUNNERS = {
       :webrick => ServerRunners::WebrickServerRunner,
       :mongrel => ServerRunners::MongrelServerRunner
-    }
+    } unless const_defined? :SERVER_RUNNERS
 
     class << self
       # The instance of the Singleton Configuration. On its initial call, the initial configuration is set.

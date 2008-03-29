@@ -1,36 +1,36 @@
 module Polonium
   module ServerRunners
     class ServerRunner
-    attr_reader :configuration
-    def initialize(configuration)
-      @configuration = configuration
-      @started = false
-    end
-
-    def start
-      Thread.start do
-        start_server
+      attr_reader :configuration
+      def initialize(configuration)
+        @configuration = configuration
+        @started = false
       end
-      @started = true
-    end
 
-    def stop
-      stop_server
-      @started = false
-    end
+      def start
+        Thread.start do
+          start_server
+        end
+        @started = true
+      end
 
-    def started?
-      @started
-    end
+      def stop
+        stop_server
+        @started = false
+      end
 
-    protected
-    def start_server
-      raise NotImplementedError.new("this is abstract!")
-    end
+      def started?
+        @started
+      end
 
-    def stop_server
-      raise NotImplementedError.new("this is abstract!")
+      protected
+      def start_server
+        raise NotImplementedError.new("this is abstract!")
+      end
+
+      def stop_server
+        raise NotImplementedError.new("this is abstract!")
+      end
     end
-  end
   end
 end
