@@ -275,7 +275,8 @@ module Polonium
         configuration = Configuration.new
         configuration.app_server_engine = :mongrel
         runner = configuration.create_server_runner
-        runner.should be_instance_of(ServerRunners::MongrelServerRunner)
+        runner.class.should == ServerRunners::MongrelServerRunner
+        runner.configuration.should == configuration
       end
     end
 
@@ -292,7 +293,8 @@ module Polonium
         configuration = Configuration.new
         configuration.app_server_engine = :webrick
         runner = configuration.create_server_runner
-        runner.should be_instance_of(ServerRunners::WebrickServerRunner)
+        runner.class.should == ServerRunners::WebrickServerRunner
+        runner.configuration.should == configuration
       end
     end
   end

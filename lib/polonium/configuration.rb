@@ -86,7 +86,6 @@ module Polonium
     end
 
     attr_accessor(
-      :configuration,
       :env,
       :rails_env,
       :rails_root,
@@ -197,7 +196,7 @@ module Polonium
     def create_server_runner #:nodoc:
       app_server_type = SERVER_RUNNERS[@app_server_engine.to_sym]
       raise "Invalid server engine #{@app_server_engine}" unless app_server_type
-      app_server_type.new(configuration)
+      app_server_type.new self
     end
 
     def new_logger
