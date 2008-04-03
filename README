@@ -6,6 +6,8 @@ This plugin is designed to let you use Polonium to write Selenium tests in Ruby,
 Rake tasks.
 
 == Installation
+Polonium depends on the Selenium gem. To install this dependency, run:
+  sudo gem install Selenium
 
 The current version of this plugin can be found at: http://rubyforge.org/var/svn/pivotalrb/polonium/trunk
 
