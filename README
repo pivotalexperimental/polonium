@@ -19,13 +19,11 @@ You may install the plugin with the following command:
 The polonium plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
 it.  A sample selenium_suite.rb and selenium_helper.rb can be copied into your test/selenium directory.
 
-You'll get the following tasks:
-  - selenium:test - starts a Selenium RC server, runs selenium tests, and shuts the server down
-     when they're done
+To start the selenium server, run the command:
+  selenium
+The selenium command was installed with the Selenium Gem.
 
-and lower level tasks as well:
-  - selenium:server starts up a Selenium RC server
-  - selenium:test_with_server_started  runs Selenium tests off of an existing server
+You can run Poloium tests using rspec or test/unit.
 
 == Future Enhancements
 

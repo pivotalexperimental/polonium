@@ -8,4 +8,18 @@ namespace :selenium do
   task :start_servant do
     system('export MOZ_NO_REMOTE=1; selenium')
   end
+
+  desc "Runs Selenium tests"
+  task :test do
+    Dir["#{RAILS_ROOT}/test/selenium/**/*_test.rb"].each do |file|
+      require file
+    end
+  end
+
+  desc "Runs Selenium tests"
+  task :spec do
+    Dir["#{RAILS_ROOT}/test/selenium/**/*_spec.rb"].each do |file|
+      require file
+    end
+  end
 end
