@@ -23,7 +23,10 @@ To start the selenium server, run the command:
   selenium
 The selenium command was installed with the Selenium Gem.
 
-You can run Poloium tests using rspec or test/unit.
+You can run Poloium tests using rspec or test/unit through the rake tasks.
+  rake selenium:test
+  # or
+  rake selenium:spec
 
 == Future Enhancements
 
