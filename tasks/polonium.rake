@@ -18,7 +18,7 @@ namespace :selenium do
 
   desc "Runs Selenium tests"
   task :spec do
-    Dir["#{RAILS_ROOT}/test/selenium/**/*_spec.rb"].each do |file|
+    Dir["#{RAILS_ROOT}/spec/selenium/**/*_spec.rb"].each do |file|
       require file
     end
   end
