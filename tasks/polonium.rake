@@ -18,8 +18,11 @@ namespace :selenium do
 
   desc "Runs Selenium tests"
   task :spec do
+    runner_code = <<-CODE
     Dir["#{RAILS_ROOT}/spec/selenium/**/*_spec.rb"].each do |file|
       require file
     end
+    CODE
+    system("ruby -e '#{runner_code}'")
   end
 end
