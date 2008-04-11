@@ -589,6 +589,34 @@ module Polonium
         end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end
+    
+    describe "#assert_number_of_children" do
+      before do
+        @element_locator = "id=foobar"
+        @evaled_js = "this.page().findElement('#{@element_locator}').childNodes.length"
+      end
+      
+      it "passes when element is present and it contains the correct number of (direct) children" do
+        stub(driver).is_element_present(@element_locator) {true}
+        stub(driver).get_eval(@evaled_js) { 3 }
+        element.assert_number_of_children(3)
+      end
+
+      it "fails when element is present and it contains the wrong number of (direct) children" do
+        stub(driver).is_element_present(@element_locator) {true}
+        stub(driver).get_eval(@evaled_js) { 999 }
+        proc do
+          element.assert_number_of_children(3)
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+
+      it "fails when element is not present" do
+        stub(driver).is_element_present(@element_locator) {false}
+        proc do
+          element.assert_number_of_children 3
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+    end
 
     describe "#method_missing" do
       it "delegates command to the driver" do

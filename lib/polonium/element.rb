@@ -139,6 +139,15 @@ module Polonium
         success
       end
     end
+    
+    def assert_number_of_children(expected_number)
+      assert_element_present
+      eval_js = "this.page().findElement('#{locator}').childNodes.length"
+      wait_for(:message => "id '#{locator}' should contain exactly #{expected_number} children") do
+        actual_number = driver.get_eval(eval_js)
+        expected_number == actual_number.to_i
+      end
+    end
 
     def click
       driver.click locator
