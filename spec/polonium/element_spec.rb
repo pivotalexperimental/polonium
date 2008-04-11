@@ -149,12 +149,6 @@ module Polonium
     end
 
     describe "#assert_attribute" do
-      attr_reader :element_locator
-
-      before do
-        element_locator = "id=foobar"
-      end
-
       it "passes when element is present and value is expected value" do
         element_ticks = [false, false, false, true]
         mock(driver).is_element_present(element_locator) do
@@ -182,6 +176,29 @@ module Polonium
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_attribute('theattribute', "joe")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+    end
+
+    describe "#assert_attribute_does_not_contain" do
+      it "passes when element is present and value does not contain the illegal value" do
+        stub(driver).is_element_present(element_locator) {true}
+        stub(driver).get_attribute("#{element_locator}@theattribute") { "jane" }
+        element.assert_attribute_does_not_contain('theattribute', "joe")
+      end
+
+      it "passes when element is present and value does contain the illegal value" do
+        stub(driver).is_element_present(element_locator) {true}
+        stub(driver).get_attribute("#{element_locator}@theattribute") { "jane" }
+        proc do
+          element.assert_attribute_does_not_contain('theattribute', "jane")
+        end.should raise_error(Test::Unit::AssertionFailedError)
+      end
+      
+      it "fails when element is not present" do
+        stub(driver).is_element_present(element_locator) {false}
+        proc do
+          element.assert_attribute_does_not_contain('theattribute', "jane")
         end.should raise_error(Test::Unit::AssertionFailedError)
       end
     end

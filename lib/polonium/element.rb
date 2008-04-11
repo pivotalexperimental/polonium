@@ -35,6 +35,16 @@ module Polonium
       end
     end
 
+    def assert_attribute_does_not_contain(attribute_name, illegal_value)
+      assert_element_present
+      attr_locator = "#{locator}@#{attribute_name}"
+      wait_for do |configuration|
+        actual = driver.get_attribute(attr_locator)  #todo: actual value
+        configuration.message = "Expected attribute '#{attr_locator}' to not contain '#{illegal_value}' but was '#{actual}'"
+        !actual.match(illegal_value)
+      end
+    end
+
     def assert_selected(expected_value)
       assert_element_present
       wait_for do |configuration|
