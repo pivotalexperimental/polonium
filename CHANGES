@@ -1,3 +1,5 @@
+* Removed mysql specific setup logic.
+
 0.1.1
 * Rspec support
 
