@@ -77,7 +77,11 @@ module Polonium
 
     protected
     def method_missing(method_name, *args, &block)
-      selenium_driver.__send__(method_name, *args, &block)
+      if selenium_driver.respond_to?(method_name)
+        selenium_driver.__send__(method_name, *args, &block)
+      else
+        super
+      end
     end
     delegate :open,
              :type,

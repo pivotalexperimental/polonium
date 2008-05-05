@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Polonium
-  describe TestCase, :shared => true do
+  describe TestCase do
     it_should_behave_like "Selenium"
     include TestCaseSpecHelper
     attr_reader :driver, :test_case, :configuration
@@ -35,13 +35,9 @@ module Polonium
       configuration.external_app_server_port = 80
 
       stub(Configuration.instance) {configuration}
-    end
-  end
+    end    
 
-  describe TestCase do
     describe "#setup" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "should not allow transactional fixtures" do
         test_case.class.use_transactional_fixtures = true
 
@@ -53,8 +49,6 @@ module Polonium
     end
 
     describe "#wait_for" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "should pass when the block returns true within time limit" do
         test_case.wait_for(:timeout => 2) do
           true
@@ -69,16 +63,12 @@ module Polonium
     end
 
     describe "#default_timeout" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "default_timeout should be 20 seconds" do
         test_case.default_timeout.should == 20000
       end
     end
 
     describe "#open_home_page" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "opens home page" do
         mock(driver).open("http://localhost:4000")
         test_case.open_home_page
@@ -86,8 +76,6 @@ module Polonium
     end
 
     describe "#assert_title" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "when title is expected, passes" do
         mock(driver).do_command("getTitle", []) {result("my page")}
         test_case.assert_title("my page")
@@ -102,8 +90,6 @@ module Polonium
     end
 
     describe "#assert_text_present" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Page).new(driver) do |page|
           mock.proxy(page).assert_text_present("my page", {})
@@ -128,8 +114,6 @@ module Polonium
     end
 
     describe "#assert_text_not_present" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Page).new(driver) do |page|
           mock.proxy(page).assert_text_not_present("my page", {})
@@ -154,8 +138,6 @@ module Polonium
     end
 
     describe "#assert_location_ends_with" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         @ends_with = "foobar.com?arg1=2"
         mock.proxy(Page).new(driver) do |page|
@@ -186,8 +168,6 @@ module Polonium
     end
 
     describe "#assert_element_present" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_element_present
@@ -214,8 +194,6 @@ module Polonium
     end
 
     describe "#assert_element_not_present" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_element_not_present
@@ -244,8 +222,6 @@ module Polonium
     end
 
     describe "#assert_value" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_value("passed in value")
@@ -273,8 +249,6 @@ module Polonium
     end
 
     describe "#assert_element_contains" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_contains("passed in value", {})
@@ -305,8 +279,6 @@ module Polonium
     end
 
     describe "#element_does_not_contain_text" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "when element is not on the page, returns true" do
         locator = "id=element_id"
         expected_text = "foobar"
@@ -345,8 +317,6 @@ module Polonium
     end
 
     describe "#assert_element_does_not_contain" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_does_not_contain("passed in value", {})
@@ -377,8 +347,6 @@ module Polonium
     end
 
     describe "#assert_contains_in_order" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "when text is in order, it succeeds" do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_contains_in_order("one", "two", "three")
@@ -392,8 +360,6 @@ module Polonium
     end
 
     describe "#assert_attribute" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_attribute('id', "passed in value")
@@ -421,8 +387,6 @@ module Polonium
     end
 
     describe "#assert_selected" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_selected("passed_in_element")
@@ -450,8 +414,6 @@ module Polonium
     end
 
     describe "#assert_checked" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_checked
@@ -479,8 +441,6 @@ module Polonium
     end
 
     describe "#assert_not_checked" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_not_checked
@@ -508,8 +468,6 @@ module Polonium
     end
 
     describe "#assert_text" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_text("expected text")
@@ -537,8 +495,6 @@ module Polonium
     end
 
     describe "#assert_visible" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_visible
@@ -564,8 +520,6 @@ module Polonium
     end
 
     describe "#assert_not_visible" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_not_visible
@@ -591,8 +545,6 @@ module Polonium
     end
 
     describe "#assert_next_sibling" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator) do |element|
           mock.proxy(element).assert_next_sibling("next_sibling")
@@ -621,8 +573,6 @@ module Polonium
     end
 
     describe "#assert_contains_in_order" do
-      it_should_behave_like "Polonium::TestCase"
-
       before do
         mock.proxy(Element).new(driver, sample_locator)
         @evaled_js = "this.page().findElement('#{sample_locator}').nextSibling.id"
@@ -648,140 +598,19 @@ module Polonium
     end
 
     describe "#page" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "returns page" do
         test_case.page.should == Page.new(driver)
       end
     end
 
     describe "#get_eval" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "delegates to Driver" do
         mock(driver).get_eval "foobar"
         test_case.get_eval "foobar"
       end
     end
 
-    describe "TestCase in test browser mode and test fails" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "should stop driver when configuration says to stop test" do
-        Configuration.instance = configuration = Polonium::Configuration.new
-        configuration.test_browser_mode
-
-        stub(test_case).passed? {false}
-        configuration.keep_browser_open_on_failure = false
-
-        mock(driver).stop.once
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-
-      it "should not stop driver when configuration says not to stop test" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode?.returns(true)
-
-        stub(test_case).passed? {false}
-        mock(Configuration.instance).stop_driver?(false) {false}
-
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-    end
-
-    describe "TestCase in test browser mode and test pass" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "should stop driver when configuration says to stop test" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode?.returns(true)
-
-        stub(test_case).passed?.returns(true)
-        mock(Configuration.instance).stop_driver?(true) {true}
-
-        mock(driver).stop.once
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-
-      it "should not stop driver when configuration says not to stop test" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode?.returns(true)
-
-        stub(test_case).passed?.returns(true)
-        mock(Configuration.instance).stop_driver?(true) {false}
-
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-    end
-
-    describe "TestCase not in suite browser mode" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "should not stop driver when tests fail" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode? {false}
-
-        def test_case.passed?;
-          false;
-        end
-
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-
-      it "should stop driver when tests pass" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode? {false}
-
-        stub(test_case).passed?.returns(true)
-
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-    end
-
-    describe "TestCase in test browser mode and test pass" do
-      it_should_behave_like "Polonium::TestCase"
-
-      it "should stop driver when configuration says to stop test" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode?.returns(true)
-
-        stub(test_case).passed?.returns(true)
-        mock(Configuration.instance).stop_driver?(true) {true}
-
-        mock(driver).stop.once
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-
-      it "should not stop driver when configuration says not to stop test" do
-        Configuration.instance = "Polonium::Configuration"
-        mock(Configuration.instance).test_browser_mode? {true}
-
-        stub(test_case).passed?.returns(true)
-        mock(Configuration.instance).stop_driver?(true) {false}
-
-        test_case.selenium_driver = driver
-
-        test_case.teardown
-      end
-    end
-
     describe "#assert_element_contains" do
-      it_should_behave_like "Polonium::TestCase"
-
       it "when finding text within time limit, passes" do
         is_element_present_results = [false, true]
         mock(driver).do_command('isElementPresent', [sample_locator]).times(2) do
@@ -817,6 +646,113 @@ module Polonium
           test_case.assert_element_contains(sample_locator, "wrong text")
         end.should raise_error(Test::Unit::AssertionFailedError, "sample_locator should contain wrong text (after 5 sec)")
       end
-    end    
+    end
+
+    describe "#method_missing" do
+      describe "when the #selenium_driver responds to the method" do
+        before do
+          driver.respond_to?(:assert_element_present).should be_true
+        end
+
+        it "delegates the invocation to the selenium_driver" do
+          mock(driver).assert_element_present("id=element", {})
+          test_case.assert_element_present("id=element", {})
+        end
+      end
+
+      describe "when the #selenium_driver does not respond to the method" do
+        before do
+          driver.respond_to?(:another_method).should_not be_true
+        end
+
+        it "handles invokes the superclass method_missing" do
+          lambda do
+            test_case.another_method
+          end.should raise_error(NoMethodError, /TestCaseSpecHelper::MySeleniumTestCase/)
+        end
+      end
+    end
+
+    describe "when in test browser mode" do
+      describe "and test fails" do
+        it "should stop driver when configuration says to stop test" do
+          Configuration.instance = configuration = Polonium::Configuration.new
+          configuration.test_browser_mode
+
+          stub(test_case).passed? {false}
+          configuration.keep_browser_open_on_failure = false
+
+          mock(driver).stop.once
+          test_case.selenium_driver = driver
+
+          test_case.teardown
+        end
+
+        it "should not stop driver when configuration says not to stop test" do
+          Configuration.instance = "Polonium::Configuration"
+          mock(Configuration.instance).test_browser_mode?.returns(true)
+
+          stub(test_case).passed? {false}
+          mock(Configuration.instance).stop_driver?(false) {false}
+
+          test_case.selenium_driver = driver
+
+          test_case.teardown
+        end
+      end
+
+      describe "and test passes" do
+        it "should stop driver when configuration says to stop test" do
+          Configuration.instance = "Polonium::Configuration"
+          mock(Configuration.instance).test_browser_mode?.returns(true)
+
+          stub(test_case).passed?.returns(true)
+          mock(Configuration.instance).stop_driver?(true) {true}
+
+          mock(driver).stop.once
+          test_case.selenium_driver = driver
+
+          test_case.teardown
+        end
+
+        it "should not stop driver when configuration says not to stop test" do
+          Configuration.instance = "Polonium::Configuration"
+          mock(Configuration.instance).test_browser_mode?.returns(true)
+
+          stub(test_case).passed?.returns(true)
+          mock(Configuration.instance).stop_driver?(true) {false}
+
+          test_case.selenium_driver = driver
+
+          test_case.teardown
+        end
+      end
+    end
+
+    describe "when in suite browser mode" do
+      it "should not stop driver when tests fail" do
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode? {false}
+
+        def test_case.passed?;
+          false;
+        end
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+
+      it "should stop driver when tests pass" do
+        Configuration.instance = "Polonium::Configuration"
+        mock(Configuration.instance).test_browser_mode? {false}
+
+        stub(test_case).passed?.returns(true)
+
+        test_case.selenium_driver = driver
+
+        test_case.teardown
+      end
+    end
   end
 end
