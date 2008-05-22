@@ -37,7 +37,7 @@ PKG_FILES = FileList[
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME
   s.version = PKG_VERSION
-  s.summary = "Selenium RC with enhanced assertions that also runs your rails app."
+  s.summary = "Selenium RC with Rails integration and enhanced assertions."
   s.test_files = "spec/spec_suite.rb"
   s.description = s.summary
 
