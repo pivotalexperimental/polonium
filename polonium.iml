@@ -2,7 +2,7 @@
 <module relativePaths="true" type="RUBY_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Ruby SDK" jdkType="RUBY_SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntryProperties />
   </component>
@@ -10,7 +10,7 @@
     <TEST_URLS url="file://$MODULE_DIR$/spec" />
   </component>
   <component name="RModuleSettingsStorage">
-    <RMODULE_SETTINGS_STORAGE_ID NAME="SHOULD_USE_RSPEC_TEST_FRAMEWORK" VALUE="false" />
+    <RMODULE_SETTINGS_STORAGE_ID NAME="SHOULD_USE_RSPEC_TEST_FRAMEWORK" VALUE="true" />
     <RMODULE_SETTINGS_STORAGE_ID NAME="NUMBER" VALUE="0" />
   </component>
 </module>

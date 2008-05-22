@@ -12,7 +12,10 @@ module Polonium
       configuration = Context.new(message)
       begin_time = time_class.now
       while (time_class.now - begin_time) < timeout
-        return if yield(configuration)
+        if value = yield(configuration)
+          return value
+        end
+        return value if value
         sleep 0.25
       end
       flunk(configuration.message + " (after #{timeout} sec)")

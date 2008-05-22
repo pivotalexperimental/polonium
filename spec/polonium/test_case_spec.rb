@@ -49,16 +49,26 @@ module Polonium
     end
 
     describe "#wait_for" do
-      it "should pass when the block returns true within time limit" do
-        test_case.wait_for(:timeout => 2) do
-          true
+      describe "when the block returns true within time limit" do
+        it "does not raise an error" do
+          test_case.wait_for(:timeout => 2) do
+            true
+          end
+        end
+
+        it "returns the value of the evaluated block" do
+          test_case.wait_for(:timeout => 2) do
+            99
+          end.should == 99
         end
       end
 
-      it "should raise a AssertionFailedError when block times out" do
-        proc do
-          test_case.wait_for(:timeout => 2) {false}
-        end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
+      describe "when block times out" do
+        it "raises a AssertionFailedError" do
+          proc do
+            test_case.wait_for(:timeout => 2) {false}
+          end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
+        end
       end
     end
 
