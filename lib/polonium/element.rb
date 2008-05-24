@@ -17,8 +17,7 @@ module Polonium
     end
 
     def assert_value(expected_value)
-      assert_element_present
-      wait_for do |configuration|
+      wait_for_element do |configuration|
         actual_value = driver.get_value(locator)
         configuration.message = "Expected '#{locator}' to be '#{expected_value}' but was '#{actual_value}'"
         has_value? expected_value, actual_value
@@ -26,9 +25,8 @@ module Polonium
     end
 
     def assert_attribute(expected_name, expected_value)
-      assert_element_present
       attr_locator = "#{locator}@#{expected_name}"
-      wait_for do |configuration|
+      wait_for_element do |configuration|
         actual = driver.get_attribute(attr_locator)  #todo: actual value
         configuration.message = "Expected attribute '#{attr_locator}' to be '#{expected_value}' but was '#{actual}'"
         values_match? actual, expected_value
@@ -36,9 +34,8 @@ module Polonium
     end
 
     def assert_attribute_does_not_contain(attribute_name, illegal_value)
-      assert_element_present
       attr_locator = "#{locator}@#{attribute_name}"
-      wait_for do |configuration|
+      wait_for_element do |configuration|
         actual = driver.get_attribute(attr_locator)  #todo: actual value
         configuration.message = "Expected attribute '#{attr_locator}' to not contain '#{illegal_value}' but was '#{actual}'"
         !actual.match(illegal_value)
@@ -46,8 +43,7 @@ module Polonium
     end
 
     def assert_selected(expected_value)
-      assert_element_present
-      wait_for do |configuration|
+      wait_for_element do |configuration|
         actual = driver.get_selected_label(locator)
         configuration.message = "Expected '#{locator}' to be selected with '#{expected_value}' but was '#{actual}"
         values_match? actual, expected_value
@@ -55,42 +51,37 @@ module Polonium
     end
 
     def assert_visible(options={})
-      assert_element_present
       options = {
         :message => "Expected '#{locator}' to be visible, but it wasn't"
       }.merge(options)
-      wait_for(options) do
+      wait_for_element(options) do
         driver.is_visible(locator)
       end
     end
 
     def assert_not_visible(options={})
-      assert_element_present
       options = {
         :message => "Expected '#{locator}' to be hidden, but it wasn't"
       }.merge(options)
-      wait_for(options) do
+      wait_for_element(options) do
         !driver.is_visible(locator)
       end
     end
 
     def assert_checked
-      assert_element_present
-      wait_for(:message => "Expected '#{locator}' to be checked") do
+      wait_for_element(:message => "Expected '#{locator}' to be checked") do
         driver.is_checked(locator)
       end
     end
 
     def assert_not_checked
-      assert_element_present
-      wait_for(:message => "Expected '#{locator}' to not be checked") do
+      wait_for_element(:message => "Expected '#{locator}' to not be checked") do
         !driver.is_checked(locator)
       end
     end
 
     def assert_text(expected_text, options={})
-      assert_element_present
-      wait_for(options) do |configuration|
+      wait_for_element(options) do |configuration|
         actual = driver.get_text(locator)
         configuration.message = "Expected text '#{expected_text}' to be full contents of #{locator} but was '#{actual}')"
         values_match? actual, expected_text
@@ -99,34 +90,32 @@ module Polonium
 
     def assert_contains(expected_text, options={})
       return assert_contains_in_order(*expected_text) if expected_text.is_a? Array
-      assert_element_present
-      options = {
-        :message => "#{locator} should contain #{expected_text}"
-      }.merge(options)
-      wait_for(options) do
-        contains?(expected_text)
+      wait_for_element(options) do |configuration|
+        if contains?(expected_text)
+          true
+        else
+          configuration.message = "#{locator} should contain #{expected_text}"
+          false
+        end
       end
     end
 
     def assert_does_not_contain(expected_text, options={})
-      assert_element_present
-      wait_for(options) do
+      wait_for_element(options) do
         !contains?(expected_text)
       end
     end
 
     def assert_next_sibling(expected_sibling_id, options = {})
-      assert_element_present
       eval_js = "this.page().findElement('#{locator}').nextSibling.id"
-      wait_for(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do
+      wait_for_element(:message => "id '#{locator}' should be next to '#{expected_sibling_id}'") do
         actual_sibling_id = driver.get_eval(eval_js)
         expected_sibling_id == actual_sibling_id
       end
     end
 
     def assert_contains_in_order(*text_fragments)
-      assert_element_present
-      wait_for do |configuration|
+      wait_for_element do |configuration|
         success = false
 
         html = driver.get_text(locator)
@@ -151,9 +140,8 @@ module Polonium
     end
     
     def assert_number_of_children(expected_number)
-      assert_element_present
       eval_js = "this.page().findElement('#{locator}').childNodes.length"
-      wait_for(:message => "id '#{locator}' should contain exactly #{expected_number} children") do
+      wait_for_element(:message => "id '#{locator}' should contain exactly #{expected_number} children") do
         actual_number = driver.get_eval(eval_js)
         expected_number == actual_number.to_i
       end
@@ -199,6 +187,18 @@ module Polonium
     end
 
     protected
+    def wait_for_element(options={})
+      wait_for(options) do |configuration|
+        if is_present?
+          configuration.message = ""
+          yield(configuration)
+        else
+          configuration.message = "Expected element '#{locator}' to be present, but it was not"
+          false
+        end
+      end
+    end
+
     def method_missing(method_name, *args, &blk)
       if driver.respond_to?(method_name)
         driver_args = [locator] + args

@@ -109,7 +109,7 @@ module Polonium
 
     describe "#assert_value" do
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -121,7 +121,7 @@ module Polonium
       end
 
       it "fails when element is present and not expected value" do
-        mock(driver).is_element_present(element_locator) {true}
+        stub(driver).is_element_present(element_locator) {true}
         stub(driver).get_value(element_locator) {"jane"}
         proc do
           element.assert_value("joe")
@@ -150,7 +150,7 @@ module Polonium
 
     describe "#assert_attribute" do
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -209,7 +209,7 @@ module Polonium
       end
 
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -246,7 +246,7 @@ module Polonium
       end
 
       it "passes when element exists and is visible" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -279,7 +279,7 @@ module Polonium
       end
 
       it "passes when element exists and is not visible" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -312,7 +312,7 @@ module Polonium
       end
 
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -345,7 +345,7 @@ module Polonium
       end
 
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -378,7 +378,7 @@ module Polonium
       end
 
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(element_locator) do
           element_ticks.shift
         end.times(4)
@@ -417,7 +417,7 @@ module Polonium
 
       describe "when passed a String" do
         it "passes when element is present and the element contains text" do
-          element_ticks = [false, false, false, true]
+          element_ticks = [true, true, true, true]
           mock(driver).is_element_present(element_locator) do
             element_ticks.shift
           end.times(4)
@@ -439,7 +439,7 @@ module Polonium
 
       describe "when passed a Regexp" do
         it "passes when element is present and the element contains text that matches the regexp" do
-          element_ticks = [false, false, false, true]
+          element_ticks = [true, true, true, true]
           mock(driver).is_element_present(element_locator) do
             element_ticks.shift
           end.times(4)
@@ -484,7 +484,7 @@ module Polonium
 
       describe "when passed a String" do
         it "passes when element is present and the element does not contain text" do
-          element_ticks = [false, false, false, true]
+          element_ticks = [true, true, true, true]
           mock(driver).is_element_present(element_locator) do
             element_ticks.shift
           end.times(4)
@@ -506,7 +506,7 @@ module Polonium
 
       describe "when passed a Regexp" do
         it "passes when element is present and the element does not contain text that matches the Regexp" do
-          element_ticks = [false, false, false, true]
+          element_ticks = [true, true, true, true]
           mock(driver).is_element_present(element_locator) do
             element_ticks.shift
           end.times(4)
@@ -541,7 +541,7 @@ module Polonium
       end
 
       it "passes when element is present and value is expected value" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(@element_locator) do
           element_ticks.shift
         end.times(4)
@@ -575,7 +575,7 @@ module Polonium
       end
 
       it "passes when element is present and passed in text and Regexp matches are in order" do
-        element_ticks = [false, false, false, true]
+        element_ticks = [true, true, true, true]
         mock(driver).is_element_present(@element_locator) do
           element_ticks.shift
         end.times(4)

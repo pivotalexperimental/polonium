@@ -520,7 +520,7 @@ module Polonium
       end
 
       it "fails when element is not visible" do
-        mock(driver).is_element_present(sample_locator) {true}
+        stub(driver).is_element_present(sample_locator) {true}
         stub(driver).is_visible.returns {false}
 
         proc {
@@ -545,7 +545,7 @@ module Polonium
       end
 
       it "fails when element is visible" do
-        mock(driver).is_element_present(sample_locator) {true}
+        stub(driver).is_element_present(sample_locator) {true}
         stub(driver).is_visible(sample_locator) {true}
 
         proc {
