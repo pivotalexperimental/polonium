@@ -2,8 +2,8 @@
 
 Welcome to Polonium!
 
-This plugin is designed to let you use Polonium to write Selenium tests in Ruby, using a simple series of
-Rake tasks.
+Polonium is a wrapper for Selenium that lets your write cleaner Selenium tests
+in ruby, and run them with a simple set of rake tasks.
 
 == Installation
 Polonium depends on the Selenium gem. To install this dependency, run:
@@ -15,18 +15,30 @@ You may install the plugin with the following command:
 
   script/plugin install svn://rubyforge.org/var/svn/pivotalrb/polonium/trunk
 
-== Usage
-The polonium plugin assumes you have a test/selenium directory with a selenium_suite.rb file in
-it.  A sample selenium_suite.rb and selenium_helper.rb can be copied into your test/selenium directory.
+You may also use Polonium as a gem:
+
+  sudo gem install polonium
+
+== Getting Started
+The polonium plugin rake tasks assumes you have a test/selenium directory with a selenium_suite.rb file in
+it.  To get started, copy examples/selenium_suite.rb, examples/selenium_helper.rb, and examples/example_test.rb
+into your test/selenium directory.
 
 To start the selenium server, run the command:
   selenium
 The selenium command was installed with the Selenium Gem.
 
-You can run Poloium tests using rspec or test/unit through the rake tasks.
+You can run Polonium tests using rspec or test/unit through the rake tasks.
   rake selenium:test
   # or
   rake selenium:spec
+
+[TODO: this doesn't seem to work on a vanilla project that is using Polonium as a gem & the code in
+the examples directory; @selenium_driver is nil.  Is there an extra step necessary to get this working?]
+
+You can also run individual tests straight ruby:
+
+ruby test/selenium/any_selenium_test.rb
 
 == Future Enhancements
 
@@ -34,7 +46,7 @@ There are a few things we'd like to improve, but we wanted to get this out now. 
 
 == License
 
-Polonium is distributed under the MIT license. Copyright © 2007 Pivotal Labs, Inc.
+Polonium is distributed under the MIT license. Copyright © 2007-2008 Pivotal Labs, Inc.
 
 == Contributing
 
