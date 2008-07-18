@@ -11,7 +11,8 @@ module Polonium
     IEXPLORE = "iexplore" unless const_defined? :IEXPLORE
     SERVER_RUNNERS = {
       :webrick => ServerRunners::WebrickServerRunner,
-      :mongrel => ServerRunners::MongrelServerRunner
+      :mongrel => ServerRunners::MongrelServerRunner,
+      :external => ServerRunners::ExternalServerRunner
     } unless const_defined? :SERVER_RUNNERS
 
     class << self
