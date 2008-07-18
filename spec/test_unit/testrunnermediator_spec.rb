@@ -10,8 +10,8 @@ describe Test::Unit::UI::TestRunnerMediator do
     suite = Test::Unit::TestSuite.new
     mediator = Test::Unit::UI::TestRunnerMediator.new(suite)
 
-    runner = driver.create_server_runner
-    mock(driver).create_server_runner {runner}
+    runner = driver.create_app_server_runner
+    mock(driver).create_app_server_runner {runner}
     mock(runner).stop
     mock(driver).stop_driver_if_necessary(true)
     mediator.run_suite

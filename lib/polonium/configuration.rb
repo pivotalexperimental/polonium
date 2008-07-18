@@ -194,10 +194,11 @@ module Polonium
       )
     end
 
-    def create_server_runner #:nodoc:
+    attr_reader :app_server_runner
+    def create_app_server_runner #:nodoc:
       app_server_type = SERVER_RUNNERS[@app_server_engine.to_sym]
       raise "Invalid server engine #{@app_server_engine}" unless app_server_type
-      app_server_type.new self
+      @app_server_runner = app_server_type.new(self)
     end
 
     def new_logger

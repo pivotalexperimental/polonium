@@ -269,12 +269,12 @@ module Polonium
 
   end
 
-  describe "#create_server_runner" do
+  describe "#create_app_server_runner" do
     describe "when server engine in mongrel" do
       it "creates a mongrel server runner" do
         configuration = Configuration.new
         configuration.app_server_engine = :mongrel
-        runner = configuration.create_server_runner
+        runner = configuration.create_app_server_runner
         runner.class.should == ServerRunners::MongrelServerRunner
         runner.configuration.should == configuration
       end
@@ -292,7 +292,7 @@ module Polonium
       it "creates a webrick server runner" do
         configuration = Configuration.new
         configuration.app_server_engine = :webrick
-        runner = configuration.create_server_runner
+        runner = configuration.create_app_server_runner
         runner.class.should == ServerRunners::WebrickServerRunner
         runner.configuration.should == configuration
       end

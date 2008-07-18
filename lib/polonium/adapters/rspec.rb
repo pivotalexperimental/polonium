@@ -1,9 +1,7 @@
 class Spec::Runner::Options
-  attr_accessor :selenium_configuration, :selenium_app_runner
-
   def stop_selenium(success)
-    selenium_app_runner.stop
-    selenium_configuration.stop_driver_if_necessary(success)
+    Polonium::Configuration.instance.app_server_runner.stop
+    Polonium::Configuration.instance.stop_driver_if_necessary(success)
     success
   end
 
@@ -21,12 +19,9 @@ class Spec::Runner::Options
   end
 end
 
-rspec_options.selenium_configuration = Polonium::Configuration.instance
-rspec_options.selenium_app_runner = nil
-
 Spec::Example::ExampleMethods.before(:all) do
-  unless rspec_options.selenium_app_runner
-    rspec_options.selenium_app_runner = rspec_options.selenium_configuration.create_server_runner
-    rspec_options.selenium_app_runner.start
+  unless Polonium::Configuration.instance.app_server_runner
+    app_server_runner = Polonium::Configuration.instance.create_app_server_runner
+    app_server_runner.start
   end
 end
