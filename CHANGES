@@ -1,3 +1,4 @@
+* Added ExternalServerRunner.
 * Removed mysql specific setup logic.
 
 0.1.1
