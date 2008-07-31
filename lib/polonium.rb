@@ -30,6 +30,6 @@ require "polonium/tasks/selenium_test_task"
 require 'webrick_server' if self.class.const_defined? :RAILS_ROOT
 
 require "polonium/adapters/test_unit"
-if Object.const_defined?(:Spec)
+if Object.const_defined?(:Spec) && !(Object.const_defined?(:IGNORE_RSPEC) && IGNORE_RSPEC)
   require "polonium/adapters/rspec"
 end
