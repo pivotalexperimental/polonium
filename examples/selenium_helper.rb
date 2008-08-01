@@ -4,8 +4,7 @@ require 'selenium'
 require "polonium"
 
 class SeleniumTestCase < Test::Unit::TestCase
-
-    include Polonium::TestUnitDsl
+    include Polonium::SeleniumDsl
     
     delegate :select, :to => :selenium_driver
 

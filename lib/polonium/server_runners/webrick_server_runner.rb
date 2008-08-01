@@ -11,10 +11,11 @@ module Polonium
       protected
       def start_server
         @server = create_webrick_server
+        rails_env = configuration.rails_env ? configuration.rails_env.dup : nil
         mount_parameters = {
           :port            => configuration.internal_app_server_port,
           :ip              => configuration.internal_app_server_host,
-          :environment     => configuration.rails_env.dup,
+          :environment     => rails_env,
           :server_root     => configuration.server_root,
           :server_type     => WEBrick::SimpleServer,
           :charset         => "UTF-8",
