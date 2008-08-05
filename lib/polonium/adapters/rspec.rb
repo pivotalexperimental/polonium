@@ -1,6 +1,6 @@
 module Polonium::Adapters
   class Rspec
-    class << self
+  class << self
       def stop_selenium(success)
         configuration.app_server_runner.stop
         configuration.stop_driver_if_necessary(success)
