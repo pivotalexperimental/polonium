@@ -6,7 +6,7 @@ module Polonium
     # The Configuration object.
     def configuration
       Configuration.instance
-    end    
+    end
 
     def browser_start_command
       @browserStartCommand
