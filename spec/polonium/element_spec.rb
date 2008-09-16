@@ -125,14 +125,14 @@ module Polonium
         stub(driver).get_value(element_locator) {"jane"}
         proc do
           element.assert_value("joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_value("joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -169,14 +169,14 @@ module Polonium
         mock.proxy(element).values_match?.with_any_args.times(4)
         proc do
           element.assert_attribute('theattribute', "joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_attribute('theattribute', "joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -192,14 +192,14 @@ module Polonium
         stub(driver).get_attribute("#{element_locator}@theattribute") { "jane" }
         proc do
           element.assert_attribute_does_not_contain('theattribute', "jane")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
       
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_attribute_does_not_contain('theattribute', "jane")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -229,14 +229,14 @@ module Polonium
         
         proc do
           element.assert_selected("joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_selected("joe")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -262,14 +262,14 @@ module Polonium
         stub(driver).is_visible(element_locator) {false}
         proc do
           element.assert_visible
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_visible
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -295,14 +295,14 @@ module Polonium
         stub(driver).is_visible(element_locator) {true}
         proc do
           element.assert_not_visible
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_visible
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -328,14 +328,14 @@ module Polonium
         stub(driver).is_checked(element_locator) {false}
         proc do
           element.assert_checked
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_checked
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -361,14 +361,14 @@ module Polonium
         stub(driver).is_checked(element_locator) {true}
         proc do
           element.assert_not_checked
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_not_checked
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -398,14 +398,14 @@ module Polonium
         
         proc do
           element.assert_text "match"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_text "match"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -433,7 +433,7 @@ module Polonium
           stub(driver).get_eval(@evaled_js) {"html"}
           proc do
             element.assert_contains "this is not contained in the html"
-          end.should raise_error(Test::Unit::AssertionFailedError)
+          end.should raise_error(PoloniumError)
         end
       end
 
@@ -455,7 +455,7 @@ module Polonium
           stub(driver).get_eval(@evaled_js) {"html"}
           proc do
             element.assert_contains /blahblah/
-          end.should raise_error(Test::Unit::AssertionFailedError)
+          end.should raise_error(PoloniumError)
         end
       end
 
@@ -463,7 +463,7 @@ module Polonium
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_contains "the element does not exist"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "calls assert_contains_in_order when passed an array" do
@@ -500,7 +500,7 @@ module Polonium
           stub(driver).get_eval(@evaled_js) {"html match html"}
           proc do
             element.assert_does_not_contain "match"
-          end.should raise_error(Test::Unit::AssertionFailedError)
+          end.should raise_error(PoloniumError)
         end
       end
 
@@ -522,7 +522,7 @@ module Polonium
           stub(driver).get_eval(@evaled_js) {"html match html"}
           proc do
             element.assert_does_not_contain /match/
-          end.should raise_error(Test::Unit::AssertionFailedError)
+          end.should raise_error(PoloniumError)
         end
       end
 
@@ -530,7 +530,7 @@ module Polonium
         stub(driver).is_element_present(element_locator) {false}
         proc do
           element.assert_does_not_contain "match"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -557,14 +557,14 @@ module Polonium
         stub(driver).get_eval(@evaled_js) {""}
         proc do
           element.assert_next_sibling "next_element"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(@element_locator) {false}
         proc do
           element.assert_next_sibling "match"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -596,14 +596,14 @@ module Polonium
         stub(driver).get_text(@element_locator) {"no match"}
         proc do
           element.assert_contains_in_order 'one', 'two', 'three'
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(@element_locator) {false}
         proc do
           element.assert_contains_in_order 'one', 'two', 'three'
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
     
@@ -624,14 +624,14 @@ module Polonium
         stub(driver).get_eval(@evaled_js) { 999 }
         proc do
           element.assert_number_of_children(3)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
 
       it "fails when element is not present" do
         stub(driver).is_element_present(@element_locator) {false}
         proc do
           element.assert_number_of_children 3
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 

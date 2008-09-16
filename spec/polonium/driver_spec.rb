@@ -76,7 +76,7 @@ module Polonium
 
         proc {
           driver.type "id=foobar", "The Text"
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
 
@@ -100,7 +100,7 @@ module Polonium
 
         proc {
           driver.click "id=foobar"
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
 
@@ -123,7 +123,7 @@ module Polonium
 
         proc {
           driver.select "id=foobar", "value=3"
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
 
@@ -147,7 +147,7 @@ module Polonium
 
         proc {
           driver.click "id=foobar"
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
   end

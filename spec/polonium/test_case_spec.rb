@@ -67,7 +67,7 @@ module Polonium
         it "raises a AssertionFailedError" do
           proc do
             test_case.wait_for(:timeout => 2) {false}
-          end.should raise_error(Test::Unit::AssertionFailedError, "Timeout exceeded (after 2 sec)")
+          end.should raise_error(PoloniumError, "Timeout exceeded (after 2 sec)")
         end
       end
     end
@@ -95,7 +95,7 @@ module Polonium
         stub(driver).do_command("getTitle", []) {result("no page")}
         proc do
           test_case.assert_title("my page")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -119,7 +119,7 @@ module Polonium
         stub(driver).is_text_present("my page") {false}
         proc do
           test_case.assert_text_present("my page")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -143,7 +143,7 @@ module Polonium
         stub(driver).is_text_present("my page") {true}
         proc do
           test_case.assert_text_not_present("my page")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -173,7 +173,7 @@ module Polonium
         stub(driver).get_location {"http://no.com"}
         proc do
           test_case.assert_location_ends_with(@ends_with)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -199,7 +199,7 @@ module Polonium
         end
         proc do
           test_case.assert_element_present(sample_locator)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -227,7 +227,7 @@ module Polonium
         end
         proc do
           test_case.assert_element_not_present(sample_locator)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -254,7 +254,7 @@ module Polonium
         end
         proc do
           test_case.assert_value(sample_locator, "passed in value")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -284,7 +284,7 @@ module Polonium
         end
         proc do
           test_case.assert_element_contains(sample_locator, "passed in value")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -352,7 +352,7 @@ module Polonium
         end
         proc do
           test_case.assert_element_does_not_contain(sample_locator, "passed in value")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -392,7 +392,7 @@ module Polonium
         end
         proc do
           test_case.assert_attribute(sample_locator, 'id', "passed in value")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -419,7 +419,7 @@ module Polonium
         end
         proc do
           test_case.assert_selected(sample_locator, "passed_in_element")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -446,7 +446,7 @@ module Polonium
         end
         proc do
           test_case.assert_checked(sample_locator)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -473,7 +473,7 @@ module Polonium
         end
         proc do
           test_case.assert_not_checked(sample_locator)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -500,7 +500,7 @@ module Polonium
         end
         proc do
           test_case.assert_text(sample_locator, "expected text")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -525,7 +525,7 @@ module Polonium
 
         proc {
           test_case.assert_visible(sample_locator)
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
 
@@ -550,7 +550,7 @@ module Polonium
 
         proc {
           test_case.assert_not_visible(sample_locator)
-        }.should raise_error(Test::Unit::AssertionFailedError)
+        }.should raise_error(PoloniumError)
       end
     end
 
@@ -578,7 +578,7 @@ module Polonium
         end
         proc do
           test_case.assert_next_sibling(sample_locator, "next_sibling")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -603,7 +603,7 @@ module Polonium
         end
         proc do
           test_case.assert_contains_in_order sample_locator, "one", "two", "three"
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -640,7 +640,7 @@ module Polonium
 
         proc do
           test_case.assert_element_contains(sample_locator, "")
-        end.should raise_error(Test::Unit::AssertionFailedError, "Expected element 'sample_locator' to be present, but it was not (after 5 sec)")
+        end.should raise_error(PoloniumError, "Expected element 'sample_locator' to be present, but it was not (after 5 sec)")
       end
 
       it "when text does not match in time, fails" do
@@ -654,7 +654,7 @@ module Polonium
 
         proc do
           test_case.assert_element_contains(sample_locator, "wrong text")
-        end.should raise_error(Test::Unit::AssertionFailedError, "sample_locator should contain wrong text (after 5 sec)")
+        end.should raise_error(PoloniumError, "sample_locator should contain wrong text (after 5 sec)")
       end
     end
 

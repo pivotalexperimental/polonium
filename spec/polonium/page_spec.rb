@@ -61,7 +61,7 @@ module Polonium
       end
       proc do
         page.open_and_wait("/users/list")
-      end.should raise_error(Test::Unit::AssertionFailedError)
+      end.should raise_error(PoloniumError)
     end
   end
 
@@ -118,7 +118,7 @@ module Polonium
 
         lambda do
           page.assert_text_present("nowhere")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -135,7 +135,7 @@ module Polonium
 
         lambda do
           page.assert_text_present(/nowhere/)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -170,7 +170,7 @@ module Polonium
 
         lambda do
           page.assert_text_not_present("match")
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 
@@ -186,7 +186,7 @@ module Polonium
 
         lambda do
           page.assert_text_not_present(/match/)
-        end.should raise_error(Test::Unit::AssertionFailedError)
+        end.should raise_error(PoloniumError)
       end
     end
 

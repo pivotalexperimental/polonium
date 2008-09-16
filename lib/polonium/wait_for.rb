@@ -37,7 +37,7 @@ module Polonium
     attr_writer :default_timeout
 
     def flunk(message)
-      raise Test::Unit::AssertionFailedError, message
+      raise Polonium::PoloniumError, message
     end
   end
 end

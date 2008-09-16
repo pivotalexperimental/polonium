@@ -13,6 +13,7 @@ require 'test/unit/ui/testrunnermediator'
 
 require "selenium"
 require "polonium/extensions/module"
+require "polonium/polonium_error"
 require "polonium/wait_for"
 require "polonium/driver"
 require "polonium/server_runners/server_runner"
