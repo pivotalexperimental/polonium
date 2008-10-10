@@ -183,7 +183,7 @@ module Polonium
     end
 
     it "external_app_server_host" do
-      should_lazily_load configuration, :external_app_server_host, "localhost"
+      should_lazily_load configuration, :external_app_server_host, Socket.gethostname
     end
 
     it "external_app_server_port" do

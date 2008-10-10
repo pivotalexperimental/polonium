@@ -80,7 +80,7 @@ module Polonium
 
     describe "#open_home_page" do
       it "opens home page" do
-        mock(driver).open("http://localhost:4000")
+        mock(driver).open("http://#{Socket.gethostname}:4000")
         test_case.open_home_page
       end
     end
