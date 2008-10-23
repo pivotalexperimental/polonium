@@ -8,7 +8,7 @@ describe Spec::Runner::Options do
       @configuration = Polonium::Configuration.new
       Polonium::Configuration.instance = configuration
       @the_rspec_options = Spec::Runner::Options.new(StringIO.new, StringIO.new)
-      the_rspec_options.after_suite_parts.push(*rspec_options.after_suite_parts)
+      the_rspec_options.after_suite_parts.push(*Spec::Runner.options.after_suite_parts)
 
       configuration.app_server_engine = :mongrel
       @app_server_runner = configuration.create_app_server_runner

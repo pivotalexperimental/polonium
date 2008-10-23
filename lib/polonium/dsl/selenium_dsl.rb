@@ -26,7 +26,7 @@ module Polonium
     page_assertion :text_present
     page_assertion :text_not_present
     page_assertion :location_ends_with
-    deprecate :assert_location_ends_in, :assert_location_ends_with
+    polonium_deprecate :assert_location_ends_in, :assert_location_ends_with
 
     element_assertion :value
     element_assertion :selected
@@ -54,7 +54,7 @@ module Polonium
     def assert_element_does_not_contain(locator, text, options={})
       element(locator).assert_does_not_contain(text, options)
     end
-    deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
+    polonium_deprecate :assert_element_does_not_contain_text, :assert_element_does_not_contain
 
     # Does the element at locator contain the text?
     def element_contains_text(locator, text)

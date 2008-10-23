@@ -30,7 +30,7 @@ class Spec::Runner::Options
   end
 end
 
-Spec::Example::ExampleMethods.before(:all) do
+Spec::Runner.configuration.before do
   unless Polonium::Configuration.instance.app_server_runner
     app_server_runner = Polonium::Configuration.instance.create_app_server_runner
     app_server_runner.start
