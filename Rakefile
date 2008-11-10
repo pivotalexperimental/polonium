@@ -54,6 +54,7 @@ spec = Gem::Specification.new do |s|
   s.email = "opensource@pivotallabs.com"
   s.homepage = "http://pivotalrb.rubyforge.org"
   s.rubyforge_project = "pivotalrb"
+  s.add_dependency "Selenium", ">=1.1.14"
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
