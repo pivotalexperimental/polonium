@@ -1,5 +1,4 @@
 require 'rubygems'
-gem 'rspec', ">=1.1.0"
 require 'spec'
 require 'rr'
 
