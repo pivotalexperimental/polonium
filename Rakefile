@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "polonium"
-PKG_VERSION = "0.2.3"
+PKG_VERSION = "0.3.0"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
@@ -52,7 +52,7 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.author = "Pivotal Labs"
   s.email = "opensource@pivotallabs.com"
-  s.homepage = "http://pivotallabs.com"
+  s.homepage = "http://pivotalrb.rubyforge.org"
   s.rubyforge_project = "pivotalrb"
 end
 
@@ -62,7 +62,5 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 def tag_release
-  dashed_version = PKG_VERSION.gsub('.', '-')
-  svn_user_prefix = "#{ENV['SVN_USER']}@" if ENV['SVN_USER']
-  `svn cp svn+ssh://#{svn_user_prefix}rubyforge.org/var/svn/pivotalrb/polonium/trunk svn+ssh://#{svn_user_prefix}rubyforge.org/var/svn/pivotalrb/polonium/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
+  raise 'make this work for Git'
 end
