@@ -1,3 +1,5 @@
+* Fixed integration issues rspec 1.1.11.
+
 0.2.2
 * fixed a bug that was preventing webrick server runner to start [Jeremy Lightsmith]
 
