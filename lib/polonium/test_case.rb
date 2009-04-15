@@ -1,7 +1,7 @@
 module Polonium
   # The Test Case class that runs your Selenium tests.
   # You are able to use all methods provided by Selenium::SeleneseInterpreter with some additions.
-  class TestCase < Test::Unit::TestCase
+  class TestCase < defined?(ActiveSupport::TestCase) ? ActiveSupport::TestCase : Test::Unit::TestCase
     class << self
       unless Object.const_defined?(:RAILS_ROOT)
         attr_accessor :use_transactional_fixtures, :use_instantiated_fixtures
