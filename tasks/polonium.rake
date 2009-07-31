@@ -1,12 +1,12 @@
 namespace :selenium do
   desc "Run the selenium remote-control server"
   task :server do
-    system('export MOZ_NO_REMOTE=1; selenium-rc')
+    start_selenium_rc_server
   end
 
   desc "Start the selenium servant (the server that launches browsers) on localhost"
   task :start_servant do
-    system('export MOZ_NO_REMOTE=1; selenium-rc')
+    start_selenium_rc_server
   end
 
   desc "Runs Selenium tests"
@@ -24,5 +24,9 @@ namespace :selenium do
     end
     CODE
     system("ruby -e '#{runner_code}'")
+  end
+
+  def start_selenium_rc_server
+    system('export MOZ_NO_REMOTE=1; selenium-rc') || raise("Starting selenium-rc failed. You may need to install the selenium-rc gem.")
   end
 end
