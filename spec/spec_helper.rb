@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spec'
+require 'spec/autorun'
 require 'rr'
 
 dir = File.dirname(__FILE__)

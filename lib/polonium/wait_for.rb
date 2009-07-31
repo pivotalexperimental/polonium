@@ -7,6 +7,7 @@ module Polonium
     #     User.count == 5
     #   end
     def wait_for(params={})
+      return super unless block_given?
       timeout = params[:timeout] || default_wait_for_time
       message = params[:message] || "Timeout exceeded"
       configuration = Context.new(message)
