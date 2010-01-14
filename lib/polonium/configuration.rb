@@ -126,7 +126,7 @@ module Polonium
 
     # The browser formatted for the Selenese driver.
     def formatted_browser
-      return "*#{@browser}"
+      @browser.index('*') == 0 ? @browser : "*#{@browser}"
     end
 
     # The http host name and port to be entered into the browser address bar

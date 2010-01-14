@@ -26,7 +26,7 @@ def run_suite
 end
 
 PKG_NAME = "polonium"
-PKG_VERSION = "0.3.2"
+PKG_VERSION = "0.3.3"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
@@ -54,7 +54,6 @@ spec = Gem::Specification.new do |s|
   s.email = "opensource@pivotallabs.com"
   s.homepage = "http://pivotalrb.rubyforge.org"
   s.rubyforge_project = "pivotalrb"
-  s.add_dependency "Selenium", ">=1.1.14"
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

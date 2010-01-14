@@ -1,3 +1,7 @@
+== DEPRECATED
+
+Polonium is being deprecated!  Please use webrat or selenium-client instead.
+
 == Introduction
 
 Welcome to Polonium!

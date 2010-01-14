@@ -1,6 +1,10 @@
 ---
+default:
+  install_options: --no-ri --no-rdoc
 gems:
 - name: rr
   version: '>= 0.4.10'
 - name: rspec
   version: '>= 1.1.11'
+- name: rails
+  version: '2.3.5'

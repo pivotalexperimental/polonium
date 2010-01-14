@@ -102,31 +102,31 @@ module Polonium
     end
 
     it "establish_environment__webrick_host" do
-      should_establish_environment('internal_app_server_host', '192.168.10.1', :internal_app_server_host )
+      assert_should_establish_environment('internal_app_server_host', '192.168.10.1', :internal_app_server_host )
     end
 
     it "initializes webrick_port" do
-      should_establish_environment('internal_app_server_port', 1337, :internal_app_server_port )
+      assert_should_establish_environment('internal_app_server_port', 1337, :internal_app_server_port )
     end
 
     it "initializes internal_app_server_port" do
-      should_establish_environment('external_app_server_port', 1337, :external_app_server_port )
+      assert_should_establish_environment('external_app_server_port', 1337, :external_app_server_port )
     end
 
     it "initializes internal_app_server_host" do
-      should_establish_environment('external_app_server_host', 'sammich.com', :external_app_server_host)
+      assert_should_establish_environment('external_app_server_host', 'sammich.com', :external_app_server_host)
     end
 
     it "initializes selenium_server_host" do
-      should_establish_environment('selenium_server_host', 'sammich.com')
+      assert_should_establish_environment('selenium_server_host', 'sammich.com')
     end
 
     it "initializes selenium_server_host" do
-      should_establish_environment('selenium_server_port', 1337)
+      assert_should_establish_environment('selenium_server_port', 1337)
     end
 
     it "initializes app_server_engine" do
-      should_establish_environment('app_server_engine', :webrick, :app_server_engine)
+      assert_should_establish_environment('app_server_engine', :webrick, :app_server_engine)
     end
 
     it "initializes browser" do
@@ -203,6 +203,11 @@ module Polonium
       configuration.formatted_browser.should == "*iexplore"
     end
 
+    it "formatted_browser does not prepend an extra asterisk" do
+      configuration.browser = "*foobrowser"
+      configuration.formatted_browser.should == "*foobrowser"
+    end
+
     it "browser_url" do
       configuration.external_app_server_host = "test.com"
       configuration.external_app_server_port = 101
@@ -215,7 +220,7 @@ module Polonium
     end
 
     protected
-    def should_establish_environment(env_var, expected_value, method_name=nil )
+    def assert_should_establish_environment(env_var, expected_value, method_name=nil )
       method_name = env_var unless method_name
       configuration.env = stub_env
       stub_env[env_var] = expected_value

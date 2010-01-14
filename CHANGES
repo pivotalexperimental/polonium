@@ -1,4 +1,9 @@
+0.3.3
 * Fixed integration issues rspec 1.1.11.
+* Some other versions and releases and stuff 
+* Remove dependency on Selenium or selenium-rc gem, give a helpful message to install and run selenium-rc if no local server is running
+* Don't prepend an asterisk to browser string if it already has one
+* Put a deprecation message in readme
 
 0.2.2
 * fixed a bug that was preventing webrick server runner to start [Jeremy Lightsmith]

@@ -1,3 +1,8 @@
+# jump through ugly hoops so we can find MiddlewareStack successfully
+require 'rubygems'
+gem 'rails', '2.3.5'
+require 'action_controller/middleware_stack'
+
 class SpecSuite
   def run
     puts "Running #{self.class}"
