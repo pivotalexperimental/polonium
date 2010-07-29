@@ -48,10 +48,8 @@ ruby test/selenium/any_selenium_test.rb
 
 There are a few things we'd like to improve, but we wanted to get this out now.  Check the tracker in the pivotal.rb RubyForge project for details.
 
-== License
-
-Polonium is distributed under the MIT license. Copyright © 2007-2008 Pivotal Labs, Inc.
-
 == Contributing
 
 Contributions to this plugin are welcome.  Contributions should be accompanied by tests.  See http://pivotalrb.rubyforge.org for more details.
+
+Copyright (c) 2010 Pivotal Labs. This software is licensed under the MIT License.
