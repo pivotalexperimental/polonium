@@ -52,4 +52,4 @@ There are a few things we'd like to improve, but we wanted to get this out now. 
 
 Contributions to this plugin are welcome.  Contributions should be accompanied by tests.  See http://pivotalrb.rubyforge.org for more details.
 
-Copyright (c) 2010 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2007-2010 Pivotal Labs. This software is licensed under the MIT License.
